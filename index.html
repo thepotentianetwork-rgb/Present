@@ -1179,7 +1179,7 @@ details.deeper[open] summary::after{content:'−'}
 .playhead b{font-size:18px;display:block;color:var(--plum)}.playhead small{display:block;font-size:13px;color:var(--ink-soft);margin-top:3px;line-height:1.45}
 .playclose{flex:0 0 auto;border:0;background:var(--plum);color:#fff;font-family:inherit;font-weight:700;font-size:14px;border-radius:999px;padding:12px 16px;min-height:44px;cursor:pointer}
 .playstage{position:relative;flex:1;min-height:0;border-radius:22px;overflow:hidden;background:#FFFDF9;box-shadow:inset 0 0 0 1px var(--lav-pale)}
-#playCanvas{display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#playCanvas{position:absolute;left:0;top:0;display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .playdone{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(253,247,240,.55)}
 .playdone.on{display:flex}
 .playdonecard{background:var(--cream);border-radius:22px;padding:20px;box-shadow:var(--lift);text-align:center;width:min(300px,86%);display:flex;flex-direction:column;gap:8px}
@@ -8164,6 +8164,12 @@ function playHvMove(p, now){
   if(!a.anchor) playHv.last={x:p.x, y:p.y};
   if(a.done) playHvSet('done');
 }
+/* Remember which path sample a point was nearest, to find it again after a re-layout. */
+function playSampleRef(a, p){
+  const sets=()=>a.pts ? [a.pts] : a.petals ? a.petals.map(x=>x.pts) : null; const S=sets(); if(!S) return null;
+  let bi=0, bj=0, bd=1e9; S.forEach((set,i)=>set.forEach((q,j)=>{ const d=Math.hypot(q.x-p.x,q.y-p.y); if(d<bd){ bd=d; bi=i; bj=j; } }));
+  return ()=>{ const q=sets()[bi][bj]; return {x:q.x, y:q.y}; };
+}
 function playHvStatus(){
   const st=playHv.state, maze=!!(playEng.act && playEng.act.anchor);
   if(st==='paused') return 'Paused. Choose Resume when you\u2019re ready.';
@@ -8237,6 +8243,9 @@ function playMount(){
   const end=e=>{ if(playEng.active!==e.pointerId) return; playEng.active=null; playEng.act && playEng.act.up && playEng.act.up(); };
   surf.addEventListener('pointerup',end); surf.addEventListener('pointercancel',end); surf.addEventListener('lostpointercapture',end);
   window.addEventListener('resize',()=>{ if(playEng.key) playResize(); });
+  // the stage can also change size without a window resize (e.g. the mouse instruction line appearing)
+  if(window.ResizeObserver){ let lw=0, lh=0; new ResizeObserver(en=>{ const r=en[0].contentRect; if(!playEng.key) return;
+    if(Math.floor(r.width)!==lw || Math.floor(r.height)!==lh){ lw=Math.floor(r.width); lh=Math.floor(r.height); if(lw!==playEng.W || lh!==playEng.H) playResize(); } }).observe(document.getElementById('playStage')); }
   window.addEventListener('orientationchange',()=>{ if(playEng.key) setTimeout(playResize,250); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape' && playEng.key) closePlay(); });
   document.addEventListener('visibilitychange',()=>{ if(!playEng.key) return; if(document.hidden) playStop(); else playLoop(); });
@@ -8248,7 +8257,9 @@ function playResize(){
   c.width=Math.round(playEng.W*dpr); c.height=Math.round(playEng.H*dpr);
   c.style.width=playEng.W+'px'; c.style.height=playEng.H+'px';
   playEng.ctx=c.getContext('2d'); playEng.ctx.setTransform(dpr,0,0,dpr,0,0);
-  if(playEng.act){ playEng.act._W=playEng.W; playEng.act._H=playEng.H; playEng.act.layout(playEng.W, playEng.H); }
+  const a=playEng.act, keep=(a && playHv.last) ? playSampleRef(a, playHv.last) : null;
+  if(a){ a._W=playEng.W; a._H=playEng.H; a.layout(playEng.W, playEng.H); }
+  if(keep) playHv.last=keep();   // the resume point stays on the same spot of the path
   playFrame();
 }
 function playFrame(){
@@ -8265,7 +8276,8 @@ function playLoop(){ playStop(); const tick=()=>{ playFrame(); playEng.raf=reque
 function playStop(){ if(playEng.raf) cancelAnimationFrame(playEng.raf); playEng.raf=0; }
 function playUI(){
   const a=playEng.act; if(!a) return;
-  const prog=document.getElementById('playProg'), p=a.progress();
+  const prog=document.getElementById('playProg');
+  let p=null; try{ p=a.progress(); }catch(e){ p=null; }   // may run before the first layout (opening)
   const hvMsg = playMouseMode() ? playHvStatus() : null;
   if(prog) prog.textContent = hvMsg!==null ? hvMsg : p===null ? '' : (a.done ? '' : (p>0 ? (playEng.key==='flower' ? `${a.filled.filter(f=>f).length} of ${a.N} petals` : 'Keep going, at your own pace') : ''));
   const bar=document.getElementById('playBar'); if(!bar || bar.dataset.k===playEng.key) return;
@@ -8312,6 +8324,7 @@ function openPlay(key){
   const d=document.getElementById('playDone'); d.classList.remove('on'); d.innerHTML='';
   document.getElementById('playWrap').classList.add('on');
   if(a.open) a.open();
+  playHoverUI();   // final layout (mouse instruction line) before measuring the stage
   requestAnimationFrame(()=>{ playResize(); playHoverUI(); playLoop(); document.getElementById('playClose').focus({preventScroll:true}); });
 }
 function closePlay(){
