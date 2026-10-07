@@ -1438,7 +1438,7 @@ window.addEventListener('error', function(e){
 <section class="screen" id="s-foryou"><div class="scroll">
   <div class="subhead">
     <div class="statusbar"><span>9:41</span><span>▮▮▮ ᯤ ▰</span></div>
-    <h2>For you today</h2><p id="fyBasis">Little things that might help you understand what you're feeling.</p>
+    <h2>Understand</h2><p id="fyBasis">Little things that might help you understand what you're feeling.</p>
   </div>
   <div style="padding-top:14px"><div class="pills" id="fyPills"></div></div>
   <div class="pad" style="padding-top:12px">
@@ -1764,28 +1764,6 @@ window.addEventListener('error', function(e){
 </div></section>
 
 <!-- ================= SANCTUARY (screen) ================= -->
-<section class="screen" id="s-sanctuary"><div class="scroll">
-  <div class="subhead">
-    <div class="statusbar"><span>9:41</span><span>▮▮▮ ᯤ ▰</span></div>
-    <h2>Sanctuary</h2><p>Your space to come back to yourself.</p>
-  </div>
-
-  <div class="pad" style="padding-top:14px">
-    <button class="sanchero" id="sancHero" onclick="enterImmersive()">
-      <span class="scene-mount" id="sancHeroScene"></span>
-      <span class="sancherocap" id="sancHeroCap"></span>
-      <span class="sancenter">Enter your Sanctuary</span>
-      <span class="herocompanion" id="heroCompanion"></span>
-    </button>
-    <div id="sancResume" style="margin-top:12px"></div>
-
-    <div class="eyebrow">Ways to be here</div>
-    <div id="sancWays"></div>
-
-    <p class="note">Nothing here needs finishing. Stay as long as you like.</p>
-  </div>
-</div></section>
-
 <!-- ================= SANCTUARY FULLSCREEN ================= -->
 <div class="sanc" id="sanc">
   <div class="scene-mount" id="sancScene"></div>
@@ -2384,7 +2362,7 @@ function renderHome(){
   // "Something for today" removed — For You is where recommendations live.
   // The path through to it stays.
   $('#homeForYouWrap').innerHTML =
-    `<button class="btn quiet" onclick="go('foryou')">See more in For You</button>`;
+    `<button class="btn quiet" onclick="go('foryou')">See more in Understand</button>`;
 }
 
 /* Moved from Me — same entry points, same destinations, one copy only. */
@@ -3480,7 +3458,6 @@ function openSanctuary(){
 }
 function closeSanctuary(){
   Breath.stop(); breathIdle(); closeTray(); exitSitting(); closeMeditation();
-  setTimeout(renderSanctuaryScreen,0);
   setTimer(0); Audio_.stopAll(); updateSoundBar();
   $('#sanc').classList.remove('on');
 }
@@ -3494,8 +3471,8 @@ $('#ciSlider').addEventListener('input',e=>{
 });
 
 /* ---------------- NAV ---------------- */
-const tabs=[{id:'home',i:ICON.home,l:'Home'},{id:'foryou',i:ICON.foryou,l:'For You'},
- {id:'sanctuary',i:ICON.orb,l:'Sanctuary',center:1},{id:'me',i:ICON.me,l:'Me'},{id:'therapy',i:ICON.therapy,l:'Therapy'}];
+const tabs=[{id:'home',i:ICON.home,l:'Home'},{id:'foryou',i:ICON.foryou,l:'Understand'},
+ {id:'sanctuary',i:ICON.orb,l:'Ground',center:1},{id:'me',i:ICON.me,l:'Me'},{id:'therapy',i:ICON.therapy,l:'Therapy'}];
 let current='home';
 function buildTabs(){
   $('#tabbar').innerHTML=tabs.map(t=>
@@ -3505,6 +3482,8 @@ function buildTabs(){
 let navStack=[];
 function back(){ const prev=navStack.pop(); go(prev||'home', true); }
 function go(id, isBack){
+  // Ground opens the Sanctuary itself; there is no intermediate screen.
+  if(id==='sanctuary'){ openSanctuary(); return; }
   if(!isBack && current && current!==id) navStack.push(current);
   if(navStack.length>12) navStack.shift();
   if(current==='onboard' && id!=='onboard') Audio_.stopAll();
@@ -3523,7 +3502,6 @@ function go(id, isBack){
   if(id==='insights') setTimeout(()=>{renderInsights();renderReviewQueue();renderPatterns();},0);
   if(id==='me') setTimeout(()=>{renderMeStats();renderMeGroups();},0);
   if(id==='progress') setTimeout(renderProgress,0);
-  if(id==='sanctuary') setTimeout(()=>{renderSanctuaryScreen();refreshCompanion();},0);
   if(id==='chat') setTimeout(refreshCompanion,0);
   if(id==='helps') setTimeout(renderHelps,0);
   if(id==='trends') setTimeout(()=>{renderTrends();renderManageTrackers();},0);
@@ -6333,7 +6311,7 @@ function galleryStep(b){
 function pickPreset(id){ applyPreset(draft,id); galleryStep($('#toolBody')||$('#stepBody')); renderStep(); }
 function confirmPreset(){
   if(!draft.presetId){ toast('Pick a place first'); return; }
-  setupStep='sound'; renderStep();
+  draft.sounds=[]; finishSetup();   // no sound step: nothing is assigned, nothing autoplays
 }
 function useGallery(){ draft.type='preset'; setupStep='gallery'; renderStep(); }
 function skipSanctuary(){
@@ -6342,29 +6320,10 @@ function skipSanctuary(){
   finishSetup();
 }
 
-function soundStep(b){
-  const cur=draft.sounds[0]||'Silence';
-  b.innerHTML=`
-    <button class="link" onclick="setupStep=draft.type==='photo'?'home':'gallery';renderStep()">‹ Back</button>
-    <h3 class="toolh" style="margin-top:12px;margin-bottom:6px">Add a sound?</h3>
-    <p class="toolsub">Optional, and it doesn't have to match the picture.</p>
-    <div class="soundrow">
-       <span class="sicon">◦</span>
-       <span style="flex:1"><b style="display:block">No sound</b>
-         <small style="font-size:11.5px;opacity:.62">Just the place</small></span>
-       <div class="selbox${cur==='Silence'?' on':''}" onclick="pickSound('Silence')">✓</div></div>
-    ${SOUND_LIBRARY.filter(s=>s.cat==='Nature').map(c=>`<div class="soundrow">
-       <button class="playbtn" onclick="previewSound('${c.id}',this)">▶</button>
-       <span style="flex:1"><b style="display:block">${c.name}</b>
-         <small style="font-size:11.5px;opacity:.62">${c.desc}</small></span>
-       <div class="selbox${cur===c.id?' on':''}" onclick="pickSound('${c.id}')">✓</div></div>`).join('')}
-    <button class="btn" style="margin-top:16px" onclick="finishSetup()">Done</button>`;
-}
-
 function finishSetup(){
   Audio_.stopAll();
   sanctuary=JSON.parse(JSON.stringify(draft));
-  if(sanctuary.sounds[0]==='Silence') sanctuary.sounds=[];
+  sanctuary.sounds=[];   // sounds are chosen from Ground → Play a sound, never assigned here
   saveSanctuary(); paintScene();
   if(returnAfterBuild==='welcome'){
     go('welcome'); welcomeStep=WELCOME_STEPS.indexOf('companion'); renderWelcome();
@@ -10272,29 +10231,6 @@ const SANCTUARY_WAYS = [
   {k:'settings', i:'⚙',  bg:'#FDF0DC', t:'Settings',       s:'Name it, change the place, timer'}
 ];
 
-function renderSanctuaryScreen(){
-  const cap=$('#sancHeroCap');
-  if(cap){
-    const name=sanctuaryName();
-    // "Your photo" only when there actually is one.
-    const place = (sanctuary.type==='photo' && sanctuary.photo) ? 'Your photo'
-                : (sanctuary.presetId ? presetOf(sanctuary.presetId).name : '');
-    cap.innerHTML = `<b>${name || place || 'Your Sanctuary'}</b>${
-      name && place ? `<small>${place}</small>` : (sanctuaryNote()?`<small>${sanctuaryNote()}</small>`:'')}`;
-  }
-  const mount=document.getElementById('sancHeroScene');
-  if(mount) renderScene(mount, sanctuary, {noAvatar:true, wide:true});
-
-  const ways=$('#sancWays');
-  if(ways) ways.innerHTML=SANCTUARY_WAYS.map(w=>
-    `<button class="wayrow" onclick="sanctuaryWay('${w.k}')">
-       <span class="wayic" style="background:${w.bg}">${w.i}</span>
-       <span style="flex:1"><b>${w.t}</b><small>${w.s}</small></span>
-     </button>`).join('');
-
-  renderResume();
-}
-
 /* Every way opens the immersive view first, so the tools appear in the
    place they belong rather than floating over a list. */
 function enterImmersive(){ openSanctuary(); }
@@ -12119,7 +12055,7 @@ const SYSTEMS = {
   patterns:{label:'Noticing patterns', hint:'Present looks for possible connections in what you record'},
   memory:  {label:'Remembering things about me', hint:'Present may ask to remember what it notices'},
   therapy: {label:'Therapy features', hint:'Session notes, briefs, and next-session reminders'},
-  personal:{label:'Personalised suggestions', hint:'For You is ordered by what seems relevant'}
+  personal:{label:'Personalised suggestions', hint:'Understand is ordered by what seems relevant'}
 };
 function systemOn(k){ return store.get('presentOff_'+k)!=='1'; }
 function setSystem(k,on){
@@ -12229,7 +12165,6 @@ function renderStep(){
 
   if(setupStep==='home')    return setupHome(b);
   if(setupStep==='gallery') return galleryStep(b);
-  if(setupStep==='sound')   return soundStep(b);
   if(setupStep==='photo')   return photoStep(b);
   return setupHome(b);
 }
@@ -12266,7 +12201,7 @@ function photoStep(b){
            <button class="btn line sm" onclick="clearPhoto()">Remove</button>
          </div>
        </div>
-       <button class="btn" style="margin-top:16px" onclick="setupStep='sound';renderStep()">Use this photo</button>`
+       <button class="btn" style="margin-top:16px" onclick="draft.sounds=[];finishSetup()">Use this photo</button>`
     : `<button class="link" onclick="setupStep='home';renderStep()">‹ Back</button>
        <h3 class="toolh" style="margin-top:12px;margin-bottom:6px">Use my own photo</h3>
        <p class="toolsub">Somewhere real that already feels safe to you.</p>
