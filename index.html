@@ -6831,171 +6831,160 @@ const PAL = {
   sand:'#E8D9C2', lav:'#D8CCEA', cream:'#FBF7F2'
 };
 
-/* A small person, used across many cards. Expression is a parameter so the
-   same figure can look tired, overwhelmed, settled or thoughtful. */
-function artPerson(mood, x, y, s){
-  const c=PAL, k=(s||1);
-  const faces={
-    tired:   `<path d="M-5 2 q5 3 10 0" stroke="${c.line}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-              <path d="M-8 -4 q3 -2 6 0M2 -4 q3 -2 6 0" stroke="${c.line}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`,
-    over:    `<path d="M-5 3 q5 -2 10 0" stroke="${c.line}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-              <circle cx="-5" cy="-4" r="1.7" fill="${c.line}"/><circle cx="5" cy="-4" r="1.7" fill="${c.line}"/>
-              <path d="M-9 -9 q4 -3 7 -1M9 -9 q-4 -3 -7 -1" stroke="${c.line}" stroke-width="1.4" fill="none" stroke-linecap="round"/>`,
-    calm:    `<path d="M-5 2 q5 3 10 0" stroke="${c.line}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-              <path d="M-8 -5 q3 2 6 0M2 -5 q3 2 6 0" stroke="${c.line}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`,
-    think:   `<circle cx="-5" cy="-4" r="1.7" fill="${c.line}"/><circle cx="5" cy="-4" r="1.7" fill="${c.line}"/>
-              <path d="M-3 3 q4 1 7 -1" stroke="${c.line}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`,
-    soft:    `<circle cx="-5" cy="-4" r="1.7" fill="${c.line}"/><circle cx="5" cy="-4" r="1.7" fill="${c.line}"/>
-              <path d="M-4 2 q4 3 8 0" stroke="${c.line}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`
-  };
-  return `<g transform="translate(${x} ${y}) scale(${k})">
-    <ellipse cx="0" cy="34" rx="17" ry="3.5" fill="${PAL.line}" opacity=".13"/>
-    <path d="M-15 32 q-2 -22 15 -22 q17 0 15 22z" fill="${PAL.lav}"/>
-    <circle cx="0" cy="-2" r="15" fill="${PAL.warm}"/>
-    ${faces[mood]||faces.soft}
-  </g>`;
-}
+/* ---- shared primitives ----
+   One canvas width (300), one 12px safe inset, one line weight, one label
+   function. Every illustration is a single metaphor with at most two short
+   labels, placed in a label band the canvas grows to fit — so nothing can
+   overflow. Still placeholders: each card calls one meta*() so real art can
+   swap in one line at a time. */
+const ART_W=300, ART_INSET=12, ART_DRAW_H=150, ART_LW=2.2;
 
-/* Wrapper: gives every illustration a viewBox, a label and consistent scale. */
+/* Break text into lines that fit maxW at a given size (approximate glyph
+   width for Nunito Sans; generous so real rendering stays inside). */
+function wrapLabel(text, maxW, size){
+  const per=(size||11)*0.58, maxChars=Math.max(4, Math.floor(maxW/per));
+  const words=String(text).split(/\s+/), lines=[]; let cur='';
+  words.forEach(w=>{
+    if(!cur) cur=w;
+    else if((cur+' '+w).length<=maxChars) cur+=' '+w;
+    else { lines.push(cur); cur=w; }
+  });
+  if(cur) lines.push(cur);
+  return lines.map(l=>l.length>maxChars ? l.slice(0,maxChars-1)+'…' : l);
+}
+/* Render a wrapped label as tspans. Returns {svg, h}. */
+function artLabel(text, x, y, opts){
+  const o=Object.assign({size:11, maxW:ART_W-ART_INSET*2, anchor:'middle', color:PAL.ink}, opts||{});
+  const lines=wrapLabel(text, o.maxW, o.size), lh=Math.round(o.size*1.3);
+  const svg=`<text x="${x}" y="${y+o.size}" font-size="${o.size}" fill="${o.color}" text-anchor="${o.anchor}" font-weight="600">${
+    lines.map((l,i)=>`<tspan x="${x}" dy="${i?lh:0}">${String(l).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</tspan>`).join('')}</text>`;
+  return {svg, h:o.size+(lines.length-1)*lh};
+}
+/* Wrapper: viewBox, accessible label, consistent scale. */
 function artFrame(label, w, h, inner, bg){
   return `<svg class="artsvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="${attr(label)}"
     preserveAspectRatio="xMidYMid meet">
     <rect width="${w}" height="${h}" rx="18" fill="${bg||PAL.cream}"/>${inner}</svg>`;
 }
-
-/* ---- format: overflowing cup ---- */
-function artCup(items){
-  const c=PAL;
-  const drops=items.slice(0,5).map((t,i)=>
-    `<text x="${34+i*1}" y="${26+i*15}" font-size="9.5" fill="${c.soft}" text-anchor="end">${t}</text>
-     <circle cx="${44+i*2}" cy="${23+i*15}" r="2.6" fill="${c.sky}"/>`).join('');
-  return artFrame('A cup filling past the brim, with small things dropping in',
-    280, 150, `
-    ${drops}
-    <path d="M96 52 h72 l-7 62 q-1 10 -11 10 h-36 q-10 0 -11 -10z" fill="none" stroke="${c.line}" stroke-width="2.4" stroke-linejoin="round"/>
-    <path d="M100 74 h64 l-5 40 q-1 6 -7 6 h-40 q-6 0 -7 -6z" fill="${c.sky}" opacity=".75"/>
-    <path d="M97 60 q35 -9 70 0" stroke="${c.sky}" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M92 62 q-4 10 -2 18M172 62 q4 10 2 18" stroke="${c.sky}" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".8"/>
-    ${artPerson('over', 226, 78, .8)}`);
+/* A drawing in the 300x150 area plus up to two labels in a band below. */
+function metaScene(alt, drawing, labels, bg){
+  const ls=(labels||[]).slice(0,2), y0=ART_DRAW_H+2;
+  let band='', bandH=0;
+  if(ls.length===1){ const a=artLabel(ls[0], ART_W/2, y0); band=a.svg; bandH=a.h; }
+  else if(ls.length===2){
+    const half=(ART_W-ART_INSET*3)/2;
+    const a=artLabel(ls[0], ART_INSET+half/2, y0, {maxW:half}), b=artLabel(ls[1], ART_W-ART_INSET-half/2, y0, {maxW:half});
+    band=a.svg+b.svg; bandH=Math.max(a.h,b.h);
+  }
+  const h=ls.length ? y0+bandH+ART_INSET+4 : ART_DRAW_H;
+  return artFrame(alt, ART_W, Math.ceil(h), drawing+band, bg);
 }
+const mLine=(d,c)=>`<path d="${d}" stroke="${c||PAL.line}" stroke-width="${ART_LW}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
 
-/* ---- format: battery ---- */
-function artBattery(pct, drains){
-  const c=PAL, w=Math.max(4, Math.round(1.32*pct));
-  const list=drains.slice(0,4).map((t,i)=>
-    `<text x="26" y="${104+i*13}" font-size="9.5" fill="${c.soft}">− ${t}</text>`).join('');
-  return artFrame(`A battery at about ${pct} percent, with things that drained it listed below`,
-    280, 160, `
-    <rect x="26" y="30" width="152" height="52" rx="13" fill="none" stroke="${c.line}" stroke-width="2.4"/>
-    <rect x="180" y="46" width="9" height="20" rx="4" fill="${c.line}"/>
-    <rect x="33" y="37" width="${w}" height="38" rx="8" fill="${pct<30?c.rose:c.sage}"/>
-    <text x="102" y="63" font-size="15" font-weight="700" fill="${c.ink}" text-anchor="middle">${pct}%</text>
-    ${list}
-    ${artPerson('tired', 226, 84, .82)}`);
-}
-
-/* ---- format: labelled diagram around a figure ---- */
-function artOrbit(centreMood, labels){
-  const c=PAL;
-  const pos=[[46,32],[234,32],[26,84],[254,84],[52,136],[228,136]];
-  const pins=labels.slice(0,6).map((t,i)=>{
-    const [x,y]=pos[i]; const left=x<140;
-    return `<text x="${x}" y="${y}" font-size="10" fill="${c.soft}" text-anchor="${left?'start':'end'}">${t}</text>
-      <path d="M${left?x+2:x-2} ${y+5} q${left?26:-26} ${y<90?14:-14} ${left?44:-44} ${y<90?24:-24}"
-        stroke="${c.lav}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
-  }).join('');
-  return artFrame('An illustrated figure surrounded by labelled ideas',
-    280, 168, `${pins}${artPerson(centreMood, 140, 76, 1.15)}`);
-}
-
-/* ---- format: side-by-side comparison ---- */
-function artCompare(leftLabel, rightLabel, leftMood, rightMood){
-  const c=PAL;
-  return artFrame(`A comparison between ${leftLabel} and ${rightLabel}`,
-    280, 150, `
-    <rect x="8" y="8" width="128" height="134" rx="16" fill="${c.sand}" opacity=".55"/>
-    <rect x="144" y="8" width="128" height="134" rx="16" fill="${c.lav}" opacity=".55"/>
-    <text x="72" y="30" font-size="11" font-weight="700" fill="${c.ink}" text-anchor="middle">${leftLabel}</text>
-    <text x="208" y="30" font-size="11" font-weight="700" fill="${c.ink}" text-anchor="middle">${rightLabel}</text>
-    ${artPerson(leftMood, 72, 92, .92)}
-    ${artPerson(rightMood, 208, 92, .92)}
-    <text x="140" y="80" font-size="10" fill="${c.soft}" text-anchor="middle">or</text>`);
-}
-
-/* ---- format: body map ---- */
-function artBody(spots){
-  const c=PAL;
-  const anchors={head:[140,30],jaw:[140,52],chest:[140,80],stomach:[140,104],hands:[100,104],shoulders:[140,64]};
-  const marks=spots.slice(0,6).map((s,i)=>{
-    const [x,y]=anchors[s.at]||[140,80];
-    const left=i%2===0, lx=left?32:248;
-    return `<circle cx="${x}" cy="${y}" r="6" fill="${c.rose}" opacity=".8"/>
-      <path d="M${x} ${y} L${left?lx+42:lx-42} ${y}" stroke="${c.lav}" stroke-width="1.4"/>
-      <text x="${lx}" y="${y+3}" font-size="9.5" fill="${c.soft}" text-anchor="${left?'start':'end'}">${s.t}</text>`;
-  }).join('');
-  return artFrame('A simple body outline with sensations labelled at different places',
-    280, 170, `
-    <ellipse cx="140" cy="160" rx="26" ry="4" fill="${c.line}" opacity=".12"/>
-    <circle cx="140" cy="30" r="16" fill="${c.warm}"/>
-    <path d="M124 56 q16 -8 32 0 l6 50 q-22 8 -44 0z" fill="${c.lav}"/>
-    <path d="M124 60 l-18 40M156 60 l18 40" stroke="${c.lav}" stroke-width="9" stroke-linecap="round"/>
-    <path d="M130 106 l-5 44M150 106 l5 44" stroke="${c.lav}" stroke-width="10" stroke-linecap="round"/>
-    ${marks}`);
-}
-
-/* ---- format: mini comic, three or four panels ---- */
-function artComic(panels){
-  const c=PAL, n=Math.min(4, panels.length), w=280, pw=(w-10*(n+1))/n;
-  const cells=panels.slice(0,4).map((p,i)=>{
-    const x=10+i*(pw+10);
-    return `<rect x="${x}" y="10" width="${pw}" height="104" rx="12" fill="#fff" stroke="${c.lav}" stroke-width="1.4"/>
-      ${artPerson(p.mood, x+pw/2, 78, .58)}
-      ${p.think?`<g><rect x="${x+6}" y="18" width="${pw-12}" height="26" rx="9" fill="${c.cream}"/>
-        <text x="${x+pw/2}" y="31" font-size="7.5" fill="${c.soft}" text-anchor="middle">${p.think.slice(0,22)}</text>
-        <text x="${x+pw/2}" y="40" font-size="7.5" fill="${c.soft}" text-anchor="middle">${(p.think.slice(22,44))||''}</text></g>`:''}
-      <text x="${x+pw/2}" y="128" font-size="8" fill="${c.soft}" text-anchor="middle">${i+1}</text>`;
-  }).join('');
-  return artFrame('A short comic in '+n+' panels', 280, 140, cells);
-}
-
-/* ---- format: step-by-step how-to ---- */
-function artSteps(steps){
-  const c=PAL;
-  const row=steps.slice(0,5).map((s,i)=>{
-    const x=28+i*56;
-    return `<circle cx="${x}" cy="56" r="21" fill="${c.sage}" opacity=".55"/>
-      <text x="${x}" y="61" font-size="17" text-anchor="middle">${s.i}</text>
-      <text x="${x}" y="96" font-size="8.5" fill="${c.soft}" text-anchor="middle">${s.t}</text>
-      ${i<Math.min(5,steps.length)-1?`<path d="M${x+25} 56 h8" stroke="${c.lav}" stroke-width="2" stroke-linecap="round"/>`:''}`;
-  }).join('');
-  return artFrame('Steps shown in order', 280, 120, row);
-}
-
-/* ---- format: chain, one thing leading to another ---- */
-function artChain(links){
-  const c=PAL;
-  const row=links.slice(0,4).map((l,i)=>{
-    const x=36+i*70;
-    return `<rect x="${x-30}" y="34" width="60" height="44" rx="14" fill="${c.sky}" opacity=".5"/>
-      <text x="${x}" y="54" font-size="9" fill="${c.ink}" text-anchor="middle">${l.split(' ')[0]}</text>
-      <text x="${x}" y="66" font-size="9" fill="${c.ink}" text-anchor="middle">${l.split(' ').slice(1).join(' ')}</text>
-      ${i<Math.min(4,links.length)-1?`<path d="M${x+32} 56 h10 m-4 -4 l4 4 l-4 4" stroke="${c.soft}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`:''}`;
-  }).join('');
-  return artFrame('One thing leading to the next', 280, 110, row);
-}
-
-/* ---- format: weather, for emotions that pass ---- */
-function artWeather(){
-  const c=PAL;
-  return artFrame('Weather moving across a sky, from rain to clearing', 280, 140, `
-    <path d="M0 110 h280" stroke="${c.lav}" stroke-width="1.4"/>
-    <g opacity=".9"><ellipse cx="52" cy="46" rx="26" ry="16" fill="${c.soft}" opacity=".55"/>
-      <path d="M40 66 l-4 12M52 68 l-4 12M64 66 l-4 12" stroke="${c.sky}" stroke-width="2.4" stroke-linecap="round"/></g>
-    <g><ellipse cx="140" cy="44" rx="24" ry="14" fill="${c.soft}" opacity=".3"/></g>
-    <g><circle cx="228" cy="44" r="16" fill="${c.warm}"/>
-      <path d="M228 20 v-7M228 75 v7M204 44 h-7M252 44 h7" stroke="${c.warm}" stroke-width="2.4" stroke-linecap="round"/></g>
-    <text x="140" y="128" font-size="9.5" fill="${c.soft}" text-anchor="middle">the same sky, a few hours apart</text>`);
-}
+/* ---- one metaphor per card ---- */
+function metaCup(){ const c=PAL; return metaScene('A glass already full to the brim, with one last drop about to fall in',
+  `<path d="M115 50 h70 l-8 80 q-1 8 -9 8 h-36 q-8 0 -9 -8z" fill="${c.sky}" opacity=".7"/>
+   ${mLine('M115 50 h70 l-8 80 q-1 8 -9 8 h-36 q-8 0 -9 -8z')}
+   <path d="M112 52 q-6 14 -3 30M188 52 q6 14 3 30" stroke="${c.sky}" stroke-width="3" fill="none" stroke-linecap="round"/>
+   <path d="M150 18 q-6 9 0 13 q6 -4 0 -13z" fill="${c.sky}" stroke="${c.line}" stroke-width="1.4"/>`,
+  ['already full','one last drop']); }
+function metaKnot(){ const c=PAL; return metaScene('A figure with a single tangled knot sitting across the shoulders',
+  `<circle cx="150" cy="36" r="16" fill="${c.warm}"/><path d="M118 132 q-4 -64 32 -64 q36 0 32 64z" fill="${c.lav}"/>
+   ${mLine('M128 72 q8 -10 16 0 q8 10 16 0 q8 -10 14 2 q-10 8 -22 -2 q-12 -10 -24 0',c.rose)}`,
+  ['tension can gather here']); }
+function metaFog(){ const c=PAL; return metaScene('A path that disappears into soft fog',
+  `<path d="M120 140 q20 -40 30 -70 q8 -24 20 -40" stroke="${c.sand}" stroke-width="18" fill="none" stroke-linecap="round"/>
+   <ellipse cx="170" cy="40" rx="90" ry="26" fill="#fff" opacity=".85"/><ellipse cx="130" cy="58" rx="70" ry="16" fill="#fff" opacity=".7"/>`,
+  ['the next step, out of sight']); }
+function metaExhale(){ const c=PAL; return metaScene('A breath drawn as a short rise and a long, slow fall',
+  `${mLine('M24 120 q30 -90 70 -90 q80 0 182 90',c.sage)}<circle cx="94" cy="30" r="5" fill="${c.sage}"/>`,
+  ['in','out, a little longer']); }
+function metaHill(){ const c=PAL; return metaScene('A small cart with an almost empty fuel gauge at the bottom of a hill',
+  `<path d="M12 138 L200 40 L288 40" fill="none" stroke="${c.sand}" stroke-width="10" stroke-linecap="round"/>
+   <rect x="34" y="104" width="44" height="22" rx="6" fill="${c.lav}"/><circle cx="44" cy="130" r="6" fill="${c.line}"/><circle cx="70" cy="130" r="6" fill="${c.line}"/>
+   ${mLine('M226 96 a24 24 0 0 1 48 0')}${mLine('M250 96 l-16 -10',c.rose)}`,
+  ['the same hill, less fuel']); }
+function metaCurtain(){ const c=PAL; return metaScene('A drawn curtain with warm light behind it',
+  `<rect x="80" y="20" width="140" height="118" rx="6" fill="${c.warm}" opacity=".6"/>
+   <path d="M80 20 q20 60 0 118 h70 q-14 -60 0 -118z" fill="${c.lav}"/><path d="M220 20 q-20 60 0 118 h-70 q14 -60 0 -118z" fill="${c.lav}" opacity=".9"/>`,
+  ['resting, or hiding?']); }
+function metaCharge(){ const c=PAL; return metaScene('A battery charging from a leaf',
+  `<rect x="90" y="54" width="110" height="50" rx="12" fill="none" stroke="${c.line}" stroke-width="${ART_LW}"/>
+   <rect x="200" y="70" width="8" height="18" rx="3" fill="${c.line}"/><rect x="97" y="61" width="60" height="36" rx="7" fill="${c.sage}"/>
+   <path d="M50 80 q10 -30 34 -20 q-10 30 -34 20z" fill="${c.sage}"/>${mLine('M60 76 q14 -6 30 4')}`,
+  ['more than one way to recharge']); }
+function metaIceberg(){ const c=PAL; return metaScene('An iceberg with only its small tip above the water',
+  `<path d="M12 62 h276" stroke="${c.sky}" stroke-width="3"/><path d="M130 62 l20 -36 l22 36z" fill="#fff" stroke="${c.line}" stroke-width="1.6"/>
+   <path d="M118 62 l64 0 l30 46 l-60 34 l-58 -30z" fill="${c.sky}" opacity=".55"/>`,
+  ['anger, the visible tip']); }
+function metaCloud(){ const c=PAL; return metaScene('A cloud drifting past the sun',
+  `<circle cx="190" cy="66" r="30" fill="${c.warm}"/><ellipse cx="130" cy="78" rx="52" ry="24" fill="${c.soft}" opacity=".45"/>
+   ${mLine('M50 120 h40',c.lav)}${mLine('M70 132 h40',c.lav)}`,
+  ['it moves through']); }
+function metaLamp(){ const c=PAL; return metaScene('A small signal lamp glowing on a dashboard',
+  `<rect x="70" y="40" width="160" height="80" rx="16" fill="${c.sand}" opacity=".7"/>
+   <circle cx="150" cy="80" r="18" fill="${c.warm}"/><circle cx="150" cy="80" r="28" fill="${c.warm}" opacity=".3"/>`,
+  ['a signal, not a verdict']); }
+function metaFrosted(){ const c=PAL; return metaScene('A figure standing behind frosted glass',
+  `<circle cx="150" cy="58" r="16" fill="${c.warm}" opacity=".6"/><path d="M122 132 q-4 -50 28 -50 q32 0 28 50z" fill="${c.lav}" opacity=".6"/>
+   <rect x="70" y="20" width="160" height="118" rx="10" fill="#fff" opacity=".62" stroke="${c.lav}" stroke-width="1.6"/>`,
+  ['everything a little far away']); }
+function metaDoorAjar(){ const c=PAL; return metaScene('A door left slightly open, with light coming through',
+  `<rect x="110" y="18" width="80" height="122" rx="4" fill="${c.warm}" opacity=".7"/>
+   <path d="M110 18 l52 10 v104 l-52 8z" fill="${c.lav}"/><circle cx="152" cy="82" r="3" fill="${c.line}"/>`,
+  ['space, not goodbye']); }
+function metaBubbles(){ const c=PAL; return metaScene('Two speech bubbles that overlap only partly',
+  `<ellipse cx="120" cy="70" rx="62" ry="40" fill="${c.rose}" opacity=".7"/><ellipse cx="184" cy="78" rx="62" ry="40" fill="${c.sky}" opacity=".7"/>`,
+  ['I hear you','I see it differently']); }
+function metaHands(){ const c=PAL; return metaScene('Two open hands holding a small light',
+  `<circle cx="150" cy="62" r="14" fill="${c.warm}"/><circle cx="150" cy="62" r="24" fill="${c.warm}" opacity=".3"/>
+   <path d="M96 92 q54 46 108 0 q-10 26 -54 30 q-44 -4 -54 -30z" fill="${c.sand}" stroke="${c.line}" stroke-width="1.6"/>`,
+  ['holding it, not fixing it']); }
+function metaGate(){ const c=PAL; return metaScene('A low garden fence with a gate in it',
+  `${[30,60,90,210,240,270].map(x=>`<rect x="${x-5}" y="70" width="10" height="56" rx="3" fill="${c.sand}"/>`).join('')}
+   ${mLine('M24 88 h96M180 88 h96',c.sand)}<rect x="122" y="66" width="56" height="60" rx="4" fill="none" stroke="${c.line}" stroke-width="${ART_LW}"/>
+   ${mLine('M122 126 L178 66',c.line)}`,
+  ['a gate, not a wall']); }
+function metaPlane(){ const c=PAL; return metaScene('A paper plane held back on a loose string',
+  `<path d="M150 50 l70 20 l-70 18 l12 -18z" fill="#fff" stroke="${c.line}" stroke-width="1.6"/>${mLine('M150 88 q-40 30 -90 36',c.soft)}
+   <circle cx="58" cy="124" r="5" fill="${c.soft}"/>`,
+  ['wait a moment first']); }
+function metaHourglass(){ const c=PAL; return metaScene('An hourglass with a little sand falling',
+  `${mLine('M120 26 h60M120 134 h60')}${mLine('M126 26 q0 34 24 54 q24 -20 24 -54M126 134 q0 -34 24 -54 q24 20 24 54')}
+   <path d="M134 128 q16 -18 32 0z" fill="${c.sand}"/>${mLine('M150 82 v40',c.sand)}`,
+  ['a minute is allowed']); }
+function metaSeed(){ const c=PAL; return metaScene('A seed resting in soil, not yet sprouted',
+  `<path d="M12 104 q138 -20 276 0 v34 h-276z" fill="${c.sand}"/><ellipse cx="150" cy="114" rx="12" ry="8" fill="${c.warm}" stroke="${c.line}" stroke-width="1.4"/>`,
+  ['worth that isn\u2019t counted']); }
+function metaSprout(){ const c=PAL; return metaScene('A cupped hand sheltering a small sprout',
+  `${mLine('M150 120 v-40',c.sage)}<path d="M150 86 q-26 -6 -28 -30 q26 4 28 30zM150 92 q24 -4 28 -26 q-24 2 -28 26z" fill="${c.sage}"/>
+   <path d="M96 118 q54 30 108 0 l-6 16 q-48 14 -96 0z" fill="${c.warm}" stroke="${c.line}" stroke-width="1.4"/>`,
+  ['kind, and still growing']); }
+function metaSnowball(){ const c=PAL; return metaScene('A snowball rolling downhill and getting bigger',
+  `${mLine('M20 50 L280 132',c.lav)}<circle cx="52" cy="52" r="7" fill="#fff" stroke="${c.line}" stroke-width="1.4"/>
+   <circle cx="150" cy="70" r="15" fill="#fff" stroke="${c.line}" stroke-width="1.4"/><circle cx="240" cy="92" r="26" fill="#fff" stroke="${c.line}" stroke-width="1.4"/>`,
+  ['start small','it can build']); }
+function metaCandle(){ const c=PAL; return metaScene('A single candle in a dim room',
+  `<rect x="12" y="12" width="276" height="130" rx="14" fill="${c.ink}" opacity=".12"/>
+   <rect x="140" y="80" width="20" height="50" rx="4" fill="${c.cream}" stroke="${c.line}" stroke-width="1.4"/>
+   <path d="M150 52 q-9 14 0 24 q9 -10 0 -24z" fill="${c.warm}"/><circle cx="150" cy="66" r="26" fill="${c.warm}" opacity=".25"/>`,
+  ['one small light counts']); }
+function metaCompass(){ const c=PAL; return metaScene('A compass needle pointing toward something',
+  `<circle cx="150" cy="78" r="50" fill="${c.cream}" stroke="${c.line}" stroke-width="${ART_LW}"/>
+   <path d="M150 78 l34 -28 l-24 36z" fill="${c.rose}"/><path d="M150 78 l-34 28 l24 -36z" fill="${c.lav}"/>`,
+  ['wanting, moving toward']); }
+function metaDial(){ const c=PAL; return metaScene('A single dial crossed out beside many interwoven threads',
+  `<circle cx="80" cy="76" r="34" fill="none" stroke="${c.line}" stroke-width="${ART_LW}"/>${mLine('M80 76 l18 -18')}
+   ${mLine('M50 46 L110 106',c.rose)}
+   ${[0,1,2,3,4].map(i=>mLine(`M160 ${40+i*16} q35 ${i%2?-20:20} 70 0 q30 ${i%2?20:-20} 58 0`,[c.sky,c.sage,c.lav,c.warm,c.rose][i])).join('')}`,
+  ['not one dial','many threads']); }
+function metaRings(){ const c=PAL; return metaScene('Two circles overlapping, like a bond',
+  `<circle cx="126" cy="76" r="44" fill="${c.rose}" opacity=".6"/><circle cx="176" cy="76" r="44" fill="${c.warm}" opacity=".6"/>`,
+  ['one part of closeness']); }
+function metaCushion(){ const c=PAL; return metaScene('A soft cushion under a falling stone',
+  `<ellipse cx="150" cy="118" rx="80" ry="18" fill="${c.lav}"/><circle cx="150" cy="58" r="16" fill="${c.soft}" opacity=".7"/>
+   ${mLine('M150 80 v14',c.soft)}`,
+  ['a buffer, sometimes']); }
 
 /* ===================== VISUAL LEARNING LIBRARY =====================
    Data-driven: each item names a format and the illustration builds itself.
@@ -7021,28 +7010,26 @@ const LEARN = [
 /* ---------- anxiety & stress ---------- */
 {id:'overwhelm-cup', cat:'anxiety', title:'When everything feels like too much',
  tags:['Overwhelmed','Stressed','Tired'], format:'cup',
- art:()=>artCup(['work','a conflict','noise','poor sleep','things owed to people']),
+ art:()=>metaCup(),
  line:"Sometimes the last small thing isn't the whole reason you came apart. The cup was already full.",
  more:"Capacity isn't fixed. The same task can be easy on one day and too much on another, and that difference is usually about what else was already in the cup — not about how capable you are."},
 
 {id:'body-stress', cat:'anxiety', title:'Stress can show up in your body',
  tags:['Stressed','Anxious','Tense'], format:'body',
- art:()=>artBody([{at:'head',t:'racing thoughts'},{at:'jaw',t:'clenching'},{at:'shoulders',t:'tension'},
-                  {at:'chest',t:'tightness'},{at:'stomach',t:'butterflies, nausea'},{at:'hands',t:'restlessness'}]),
+ art:()=>metaKnot(),
  line:"Stress isn't only a feeling. It often has a physical side.",
  more:"These can also have completely different causes. A body sensation on its own doesn't tell you why it's happening — and if something physical worries you, that's worth taking to a doctor rather than an app.",
  caution:true},
 
 {id:'uncertainty', cat:'anxiety', title:'Why not knowing is so uncomfortable',
  tags:['Anxious','Worried'], format:'orbit',
- art:()=>artOrbit('think', ['what if it means…','checking again','replaying it','asking once more',
-                            'imagining the worst','needing to be sure']),
+ art:()=>metaFog(),
  line:"Uncertainty can feel like danger, so the mind tries to close it — often by checking.",
  more:"Reassurance tends to work for a moment and then wear off, which is why the urge returns. Sitting with not-knowing is usually harder at first and steadier later."},
 
 {id:'longer-exhale', cat:'nervous', title:'What a longer exhale can do',
  tags:['Anxious','Overwhelmed'], format:'steps',
- art:()=>artSteps([{i:'🫁',t:'breathe in'},{i:'⏳',t:'let it out slower'},{i:'🔁',t:'a few times'},{i:'🌿',t:'notice'}]),
+ art:()=>metaExhale(),
  line:"Breathing out for longer than you breathe in is associated with a calmer state in some people.",
  more:"Slow breathing has reasonable evidence behind it for short-term stress, though effects vary a lot between people. It isn't right for everyone — if breath focus makes panic worse for you, grounding through the senses may suit you better.",
  evidence:'Reviewed research · effects vary'},
@@ -7050,145 +7037,136 @@ const LEARN = [
 /* ---------- sleep & rest ---------- */
 {id:'tired-harder', cat:'sleep', title:'Why everything is harder when you\'re tired',
  tags:['Tired','Exhausted','Overwhelmed'], format:'chain',
- art:()=>artChain(['less sleep','less energy','less capacity','bigger feelings']),
+ art:()=>metaHill(),
  line:"Tiredness doesn't create the problem. It shrinks the room you have to handle it.",
  more:"Short sleep is associated with stronger emotional reactions and a harder time regulating them. It's one factor among many, and it's also one of the more changeable ones."},
 
 {id:'rest-avoid', cat:'sleep', title:'Rest, or avoidance?',
  tags:['Tired','Stuck','Low'], format:'compare',
- art:()=>artCompare('Rest','Avoiding','calm','tired'),
+ art:()=>metaCurtain(),
  line:"Sometimes the difference is how you feel afterwards, not what you did.",
  more:"Rest tends to leave you a little more able to face things. Avoidance tends to leave the thing exactly where it was, plus a bit of dread. The same afternoon on the sofa can be either — and plenty of times it's genuinely both."},
 
 {id:'kinds-of-rest', cat:'sleep', title:'Rest isn\'t only sleep',
  tags:['Tired','Drained'], format:'orbit',
- art:()=>artOrbit('calm', ['quiet','no decisions','no screens','being outside','company','being alone']),
+ art:()=>metaCharge(),
  line:"You can sleep eight hours and still feel unrested if the thing draining you wasn't sleep.",
  more:"Different kinds of tiredness ask for different things. Social tiredness rarely responds to a nap."},
 
 /* ---------- emotions & mind ---------- */
 {id:'under-anger', cat:'mind', title:'What can sit underneath anger',
  tags:['Angry','Frustrated','Hurt'], format:'orbit',
- art:()=>artOrbit('over', ['hurt','fear','shame','tiredness','feeling unseen','feeling powerless']),
+ art:()=>metaIceberg(),
  line:"Anger is often the part that reaches the surface first.",
  more:"This doesn't mean anger isn't real, or that it's a cover story. It's frequently the most available feeling when something underneath is harder to say."},
 
 {id:'weather', cat:'mind', title:'Feelings move',
  tags:['Sad','Low','Numb'], format:'weather',
- art:()=>artWeather(),
+ art:()=>metaCloud(),
  line:"A feeling can be completely true and still not be permanent.",
  more:"When something is intense it tends to feel like the whole forecast. Noticing that states pass isn't the same as dismissing them."},
 
 {id:'feelings-facts', cat:'mind', title:'Feelings and facts',
  tags:['Anxious','Sad','Confused'], format:'compare',
- art:()=>artCompare('What happened','What it means','think','over'),
+ art:()=>metaLamp(),
  line:"Sometimes the difference looks like: one you could film, the other you concluded.",
  more:"Feelings are real information. They're just not always information about the outside world — sometimes they're information about how tired, hurt or frightened you are."},
 
 {id:'numbness', cat:'mind', title:'What numbness can feel like',
  tags:['Numb','Flat','Empty'], format:'orbit',
- art:()=>artOrbit('tired', ['far away','watching yourself','nothing lands','no words for it',
-                            'not sad exactly','tired of feeling']),
+ art:()=>metaFrosted(),
  line:"Feeling nothing is a feeling too, and it often follows feeling a great deal.",
  more:"Numbness can show up after a stretch of intensity. If it stays for a long time or worries you, it's worth mentioning to someone who can help properly."},
 
 /* ---------- relationships ---------- */
 {id:'space-comic', cat:'relations', title:'When someone needs space',
  tags:['Anxious','Lonely','Hurt'], format:'comic',
- art:()=>artComic([
-   {mood:'think', think:'short reply'},
-   {mood:'over',  think:'they are mad at me'},
-   {mood:'think', think:'or… something else'},
-   {mood:'calm',  think:'ask later'}]),
+ art:()=>metaDoorAjar(),
  line:"Uncertainty can feel like rejection before you actually know what happened.",
  more:"A short message has many possible explanations, and most of them aren't about you. Waiting to find out is uncomfortable, which is exactly why the mind rushes to fill it."},
 
 {id:'validate-agree', cat:'relations', title:'Validation isn\'t agreement',
  tags:['Conflict','Frustrated'], format:'compare',
- art:()=>artCompare('Validating','Agreeing','soft','think'),
+ art:()=>metaBubbles(),
  line:"Sometimes the difference looks like: \u201cthat makes sense\u201d versus \u201cyou're right\u201d.",
  more:"You can understand why someone felt something without accepting their version of events. That distinction gives you somewhere to stand in an argument that isn't capitulation."},
 
 {id:'listen-fix', cat:'relations', title:'Listening, or fixing?',
  tags:['Conflict','Relationships'], format:'compare',
- art:()=>artCompare('Listening','Fixing','soft','think'),
+ art:()=>metaHands(),
  line:"Both are kind. They just answer different requests.",
  more:"Solving is often the fastest way to be useful and the quickest way to feel unheard. Asking which one someone wants takes about four words."},
 
 {id:'boundary', cat:'relations', title:'What a boundary actually is',
  tags:['Conflict','Relationships','Guilty'], format:'compare',
- art:()=>artCompare('A boundary','A request','calm','think'),
+ art:()=>metaGate(),
  line:"Often the difference is this: a boundary is about what you'll do, a request is about what someone else does.",
  more:"\u201cPlease stop calling late\u201d needs their cooperation. \u201cI turn my phone off after ten\u201d only needs yours. Requests are perfectly fine — it just helps to know which one you're making."},
 
 /* ---------- communication ---------- */
 {id:'pause-text', cat:'communic', title:'Before you send it',
  tags:['Angry','Conflict','Anxious'], format:'steps',
- art:()=>artSteps([{i:'✍️',t:'write it'},{i:'⏸',t:'wait'},{i:'👀',t:'reread'},{i:'✂️',t:'cut a line'},{i:'📤',t:'or don\'t send'}]),
+ art:()=>metaPlane(),
  line:"Writing it and sending it don't have to happen in the same minute.",
  more:"Most messages you'd regret get written in the first few minutes after something happens. Writing is often the useful part; sending is the optional part."},
 
 {id:'need-a-minute', cat:'communic', title:'Ways to say \u201cI need a minute\u201d',
  tags:['Overwhelmed','Conflict'], format:'orbit',
- art:()=>artOrbit('calm', ['I want to get this right','can we come back to it',
-                           'I\'m not walking away','give me ten minutes','I\'m still here','I need to think']),
+ art:()=>metaHourglass(),
  line:"Taking space works better when it comes with a way back.",
  more:"Leaving without a word and asking for a pause can look identical from the outside. Saying you'll return is usually what makes the difference."},
 
 /* ---------- self-worth ---------- */
 {id:'productivity', cat:'worth', title:'Your worth isn\'t your output',
  tags:['Guilty','Low','Tired'], format:'compare',
- art:()=>artCompare('What you did','Who you are','tired','soft'),
+ art:()=>metaSeed(),
  line:"A day where you managed very little can still be a day of your life rather than a failed one.",
  more:"Tying worth to output can mean every low-energy day becomes evidence against yourself. It's a common measure to use, and often a harsh one."},
 
 {id:'self-compassion', cat:'worth', title:'Self-compassion isn\'t letting yourself off',
  tags:['Guilty','Ashamed'], format:'compare',
- art:()=>artCompare('Kind to yourself','No standards','soft','calm'),
+ art:()=>metaSprout(),
  line:"Sometimes the difference looks like: \u201cthat went badly, and I can face it\u201d.",
  more:"Harshness feels like accountability but tends to produce avoidance. Being decent to yourself about a mistake usually makes it easier to look at, not easier to repeat."},
 
 /* ---------- mood & motivation ---------- */
 {id:'motivation-after', cat:'mood', title:'Motivation often comes after starting',
  tags:['Stuck','Low','Tired'], format:'chain',
- art:()=>artChain(['start small','a little movement','slightly easier','a bit more']),
+ art:()=>metaSnowball(),
  line:"Waiting to feel like it can mean waiting a long time.",
  more:"Doing a small piece of something first, and letting the wanting catch up, is the idea behind behavioural activation. It works better for some people than others, and small genuinely means small."},
 
 {id:'tiny-actions', cat:'mood', title:'Tiny things on low days',
  tags:['Low','Tired','Empty'], format:'steps',
- art:()=>artSteps([{i:'💧',t:'water'},{i:'🪟',t:'daylight'},{i:'🧦',t:'clean socks'},{i:'🚪',t:'the doorstep'}]),
+ art:()=>metaCandle(),
  line:"On some days these are not a lowered bar. They're the whole task.",
  more:"None of these fix anything. They're a way of being slightly on your own side while you wait for a hard stretch to pass."},
 
 /* ---------- the chemicals, told carefully ---------- */
 {id:'dopamine', cat:'mind', title:'Dopamine, more carefully',
  tags:['Curious'], format:'orbit',
- art:()=>artOrbit('think', ['motivation','learning','expecting a reward',
-                            'reinforcement','movement','noticing something new']),
+ art:()=>metaCompass(),
  line:"Often associated with wanting and learning — not simply with pleasure.",
  more:"Calling dopamine \u201cthe reward chemical\u201d is a considerable oversimplification. It's involved in motivation, learning from outcomes and movement, among other things. \u201cDopamine detox\u201d isn't a recognised process — you can't drain and refill it like a tank.",
  caution:true, evidence:'Widely studied · popular framing often wrong'},
 
 {id:'serotonin', cat:'mind', title:'Serotonin, more carefully',
  tags:['Curious'], format:'orbit',
- art:()=>artOrbit('soft', ['mood, partly','sleep','appetite','digestion','body temperature','much of it in the gut']),
+ art:()=>metaDial(),
  line:"Not a happiness level you can read off.",
  more:"Serotonin has many roles throughout the body, and most of it isn't in the brain at all. The idea that low mood is simply \u201clow serotonin\u201d is not well supported, and researchers have moved away from it.",
  caution:true, evidence:'Contested · avoid the simple version'},
 
 {id:'oxytocin', cat:'mind', title:'Oxytocin, more carefully',
  tags:['Curious','Lonely'], format:'orbit',
- art:()=>artOrbit('soft', ['social bonding','trust, sometimes','childbirth','breastfeeding',
-                           'context matters','not always positive']),
+ art:()=>metaRings(),
  line:"Involved in bonding, and in a good deal of physiology besides.",
  more:"\u201cThe love hormone\u201d is a nickname, not a description. Its effects depend heavily on context, and the claim that any particular cosy activity meaningfully raises it is usually stronger than the evidence.",
  caution:true, evidence:'Popular claims outrun the research'},
 
 {id:'endorphins', cat:'mind', title:'Endorphins, more carefully',
  tags:['Curious'], format:'orbit',
- art:()=>artOrbit('calm', ['the body\'s own pain relief','exercise, sometimes','stress response',
-                           'not a guaranteed high','varies by person','one system among several']),
+ art:()=>metaCushion(),
  line:"Mostly about how the body dampens pain.",
  more:"Endorphins are part of the body's pain-modulating system. \u201cDo this and get an endorphin rush\u201d is more confident than the research supports — responses differ a lot between people and activities.",
  caution:true, evidence:'Real mechanism · overstated in popular use'}
