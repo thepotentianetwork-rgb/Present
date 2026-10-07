@@ -1257,7 +1257,7 @@ window.addEventListener('error', function(e){
     <button class="bepresent" onclick="openSanctuary()">◉ Be Present</button>
     <div class="greetcard">
       <div class="hb">♥</div>
-      <h2>Hey, I'm here.<br>How are you feeling right now?</h2>
+      <h2><span id="homeGreet">Hey, I'm here.</span><br>How are you feeling right now?</h2>
       <button class="btn" onclick="go('needs')">Let's talk</button>
     </div>
     <div id="homeSceneLabel" style="position:absolute;right:16px;bottom:16px;z-index:9;color:rgba(255,255,255,.75);font-size:11px;font-weight:600"></div>
@@ -2642,7 +2642,7 @@ function parseCast(text){
   }
 
   // "I" / "me" counts as a participant only when the user is in the action
-  const userIsActor = USER_IN_CONFLICT_RE.test(t) ||
+  const userIsActor = selfNameIn(t) || USER_IN_CONFLICT_RE.test(t) ||
     /^\s*(i|we)\b/i.test(t) ||
     (USER_ACTOR_RE.test(t) && !people.length);
 
@@ -8113,6 +8113,9 @@ PRIVATE CONVERSATIONAL CONTEXT — never mention any of this to the user
 ==================================================
 
 Preferred name: ${userName || 'unknown'}
+Name use: don't insert their name mechanically (not "I understand, Kami.").
+Most replies use no name at all; if it fits naturally, rarely and only once.
+If their own name appears in what they write, it refers to them, not someone else.
 Primary support need: ${intent.primaryMode}
 Secondary support need: ${intent.secondaryMode || 'none'}
 Confidence: ${intent.confidence}
@@ -8170,7 +8173,7 @@ function buildPresentContext(opts){
 function currentPresentContext(){
   return buildPresentContext({
     supportMode: (typeof convo!=='undefined' && convo.mode) || 'talk',
-    userName: store.get('presentName') || null,
+    userName: preferredName() || null,
     relevantProfileContext: (typeof vals!=='undefined' && vals.core && vals.core.length)
       ? [`Values they chose: ${vals.core.slice(0,3).join(', ')}`] : [],
     recentCheckIn: (typeof latestCheckin==='function') ? latestCheckin() : null,
@@ -8189,7 +8192,7 @@ const PresentAI = {
   configured(){ return !!(this.client && typeof this.client.generate==='function'); },
 
   async generate(userMessage){
-    const system = `${buildPresentSystemPrompt(userMessage, store.get('presentName'), convo.explicitMode)}
+    const system = `${buildPresentSystemPrompt(userMessage, preferredName(), convo.explicitMode)}
 
 ==================================================
 CURRENT USER CONTEXT
@@ -10419,6 +10422,30 @@ function profile(){
 function saveProfile(patch){
   store.set('presentProfile', JSON.stringify({...profile(), ...patch}));
 }
+/* ---- one preferred name ----
+   presentProfile.name is the source of truth; the legacy presentName key is
+   kept in step for older readers. Only the Home greeting shows it. */
+function preferredName(){
+  const n = (profile().name || store.get('presentName') || '').trim();
+  return n.slice(0,40);
+}
+function setPreferredName(n){
+  const v = String(n||'').trim().slice(0,40);
+  saveProfile({name:v}); store.set('presentName', v);
+  refreshNameSurfaces();
+}
+function renderHomeGreeting(){
+  const el=document.getElementById('homeGreet'); if(!el) return;
+  const n=preferredName();
+  el.textContent = n ? `Hey ${n}, I'm here.` : "Hey, I'm here.";
+}
+function refreshNameSurfaces(){ renderHomeGreeting(); }
+/* Is the user's own name in this text? Then it's about them, not a third party. */
+function selfNameIn(text){
+  const n=preferredName(); if(!n) return false;
+  const safe=n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return new RegExp('(^|[^\\w])'+safe+'(?![\\w])','i').test(String(text||''));
+}
 function onboarded(){ return store.get('presentOnboarded')==='1'; }
 function finishWelcome(){
   store.set('presentOnboarded','1');
@@ -10428,7 +10455,7 @@ function finishWelcome(){
 
 let welcomeStep=0, whyPicked=[];
 
-const WELCOME_STEPS = ['hello','name','why','therapy','tone','reminders','place','companion','done'];
+const WELCOME_STEPS = ['hello','name','why','therapy','reminders','place','companion','done'];
 
 function startWelcome(){
   welcomeStep=0;
@@ -10462,8 +10489,8 @@ function renderWelcome(){
   if(step==='name') return b.innerHTML=`
     <h3 class="wch">What should I call you?</h3>
     <p class="wcp">Only used to talk to you. You can leave it blank.</p>
-    <input class="toolinput" id="wcName" placeholder="Your name, or a nickname" value="${attr(profile().name||'')}">
-    <button class="btn" style="margin-top:18px" onclick="saveProfile({name:(document.getElementById('wcName')||{}).value||''});store.set('presentName',(document.getElementById('wcName')||{}).value||'');welcomeNext()">Continue</button>
+    <input class="toolinput" id="wcName" placeholder="Your name, or a nickname" value="${attr(preferredName())}">
+    <button class="btn" style="margin-top:18px" onclick="setPreferredName((document.getElementById('wcName')||{}).value||'');welcomeNext()">Continue</button>
     <button class="btn quiet" onclick="welcomeNext()">Skip</button>`;
 
   if(step==='why') return b.innerHTML=`
@@ -12343,7 +12370,7 @@ applyTheme(themeId);
 goals=lget('presentGoals', goals);
 mergeBreathLessons(); refreshCompanion();
 // First run gets the welcome; everyone else lands on Home.
-if(!onboarded()) setTimeout(startWelcome, 0); renderForYou(); initTrackers(); renderFeelTags(); renderJournal(); renderAlbumStrip(); renderLookBack(); renderMeds(); renderSession(); renderProgressStrip(); migrateSanctuary(); loadModelSettings();
+if(!onboarded()) setTimeout(startWelcome, 0); renderForYou(); renderHomeGreeting(); initTrackers(); renderFeelTags(); renderJournal(); renderAlbumStrip(); renderLookBack(); renderMeds(); renderSession(); renderProgressStrip(); migrateSanctuary(); loadModelSettings();
 renderDaily();
 buildTabs(); renderHome(); renderForYou(); renderHelps(); refreshNeeds();
 const _go=go;
