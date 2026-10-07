@@ -1195,6 +1195,13 @@ details.deeper[open] summary::after{content:'−'}
 .playbar .btn{width:auto;padding-left:22px;padding-right:22px;margin:0}
 .playkeep{display:flex;gap:8px;align-items:center;font-size:13.5px;min-height:44px}
 .playkeep input{width:22px;height:22px;accent-color:var(--plum)}
+.playtaplayer{position:absolute;inset:0;z-index:2;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:default;display:block}
+.playswitch{position:absolute;left:0;top:0;width:2px;height:2px;margin:0;opacity:.01;pointer-events:none}
+.playtestvib{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--lav-pale);color:var(--plum-soft);font-size:13.5px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none}
+.playdone{z-index:3}
+.circbtn.mic.listening{background:var(--rose);color:#fff;box-shadow:0 0 0 0 rgba(224,160,180,.7);animation:micpulse 1.6s ease-out infinite}
+@keyframes micpulse{0%{box-shadow:0 0 0 0 rgba(224,160,180,.7)}100%{box-shadow:0 0 0 14px rgba(224,160,180,0)}}
+@media (prefers-reduced-motion:reduce){.circbtn.mic.listening{animation:none;box-shadow:0 0 0 4px rgba(224,160,180,.6)}}
 .emocard{background:var(--cream);border-radius:22px;padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
 .emobody{margin-top:12px}
 .emowheel{display:block;width:100%;max-width:320px;margin:0 auto}
@@ -1383,7 +1390,7 @@ window.addEventListener('error', function(e){
   <div id="chatExtra"></div>
   <div id="modePill" class="modepillwrap"></div>
 <div class="composer">
-    <button class="circbtn mic" onclick="alert('Full-screen voice conversation — planned for a later release. Dictation into the text field ships first.')" aria-label="Talk">🎙</button>
+    <button class="circbtn mic" id="micBtn" onclick="micToggle()" aria-label="Speak instead of typing" aria-pressed="false" title="Voice is turned into text by your phone or browser, which may use Apple's or Google's servers.">🎙</button>
     <input id="msg" placeholder="Say anything…" onkeydown="if(event.key==='Enter')send()">
     <button class="circbtn send" onclick="send()" aria-label="Send">↑</button>
   </div>
@@ -1781,6 +1788,7 @@ window.addEventListener('error', function(e){
       <button class="act" onclick="go('onboard')"><i>🏡</i><div>Rebuild my Sanctuary<small>Change your scene, sounds, or seat</small></div></button>
       <button class="act" id="signOutAct" onclick="presentSignOut()"><i>🚪</i><div>Sign out<small>Your data stays on this device</small></div></button>
     </div>
+    <p class="note">If you use the microphone, voice is turned into text by your phone or browser, which may use Apple's or Google's servers.</p>
     <p class="note">Check-ins, journal and the rest stay on this device. Conversation messages are sent to our server and on to Anthropic to write replies, and we don't store them.</p>
     <p class="note">Present contains no third-party analytics, advertising, or tracking SDKs. Not one.</p>
   </div>
@@ -7786,32 +7794,35 @@ const PLAY_PREVIEW = {
   draw:`<svg viewBox="0 0 120 80"><path d="M14 56 q20 -40 40 -10 t40 -16" fill="none" stroke="#E0A0B4" stroke-width="6" stroke-linecap="round"/><path d="M20 30 q30 20 70 26" fill="none" stroke="#A78BC4" stroke-width="6" stroke-linecap="round" opacity=".45"/></svg>`
 };
 /* ---- haptics ----
-   Android: navigator.vibrate with short pulses. iOS Safari 17.4+: toggling a
-   hidden <input type=checkbox switch> through its label gives a system tick,
-   but only inside a user gesture. Throttled to one every 80ms. If neither
-   exists, the toggle is hidden. */
-const playHap = { last:0, label:null };
-function playHapticsAvailable(){
-  return (typeof navigator!=='undefined' && typeof navigator.vibrate==='function') ||
-         (typeof HTMLInputElement!=='undefined' && 'switch' in HTMLInputElement.prototype);
-}
+   Android/Chrome: navigator.vibrate with short pulses.
+   iOS Safari 17.4+: the only haptic the web can reach is the native tick of
+   <input type=checkbox switch> when it toggles. Since iOS 18.4 that needs a
+   user gesture, and current WebKit also needs a *trusted* event: a script
+   .click() on a hidden label no longer works. So on iOS a transparent
+   <label> wrapping a tiny switch covers the activity canvas; the person's own
+   tap lands on it and toggles the switch. Activities ask for a tick during
+   pointerdown (playHaptic sets `want`); the label's click (at touchend) is
+   cancelled unless a tick was wanted. Honest limit: iOS only produces a
+   click — and so a tick — for a discrete tap, not during a drag. */
+const playHap = { last:0, want:false };
+function playHapticsVibrate(){ return typeof navigator!=='undefined' && typeof navigator.vibrate==='function'; }
+function playHapticsSwitch(){ return !playHapticsVibrate() && typeof HTMLInputElement!=='undefined' && 'switch' in HTMLInputElement.prototype; }
+function playHapticsAvailable(){ return playHapticsVibrate() || playHapticsSwitch(); }
 function playHapticsOn(){ return store.get('presentPlayHaptics')!=='0'; }
-function playSetHaptics(on){ store.set('presentPlayHaptics', on?'1':'0'); if(on) playHaptic(14); }
+function playSetHaptics(on){ store.set('presentPlayHaptics', on?'1':'0'); }
 function playHaptic(ms){
   if(!playHapticsOn()) return;
   const now=performance.now(); if(now-playHap.last<80) return; playHap.last=now;
   try{
-    if(typeof navigator.vibrate==='function'){ navigator.vibrate(Math.max(8,Math.min(20,ms||10))); return; }
-    if('switch' in HTMLInputElement.prototype){
-      if(!playHap.label){
-        const l=document.createElement('label'); l.setAttribute('aria-hidden','true');
-        l.style.cssText='position:fixed;left:-9999px;width:1px;height:1px;overflow:hidden;opacity:0';
-        const i=document.createElement('input'); i.type='checkbox'; i.setAttribute('switch',''); i.tabIndex=-1;
-        l.appendChild(i); document.body.appendChild(l); playHap.label=l;
-      }
-      playHap.label.click();
-    }
+    if(playHapticsVibrate()){ navigator.vibrate(Math.max(8,Math.min(20,ms||10))); return; }
+    playHap.want=true;            // iOS: delivered by the tap layer's own click
   }catch(e){}
+}
+/* The 'Test vibration' button: a real label around a real switch, so a real
+   tap toggles it (iOS tick); on Android it also vibrates. */
+function playTestVibration(e){
+  if(playHapticsVibrate()){ try{ navigator.vibrate(20); }catch(_){} }
+  playHap.tested=(playHap.tested||0)+1;
 }
 
 /* ---- sound for activities: through Present's master volume, off at 0 ---- */
@@ -8004,18 +8015,22 @@ function playMount(){
   w.innerHTML=`<div class="playhead"><div><b id="playTitle"></b><small id="playHint"></small></div>
       <button class="playclose" id="playClose" onclick="closePlay()" aria-label="Close and go back">✕ Close</button></div>
     <div class="playstage" id="playStage"><canvas id="playCanvas"></canvas>
+      ${playHapticsSwitch()?'<label class="playtaplayer" id="playTapLayer"><input type="checkbox" switch tabindex="-1" aria-hidden="true" class="playswitch" id="playTapSwitch"></label>':''}
       <div class="playdone" id="playDone"></div></div>
     <div class="playprog" id="playProg" aria-live="polite"></div>
     <div class="playbar" id="playBar"></div>`;
   document.getElementById('app').appendChild(w);
   const c=document.getElementById('playCanvas');
+  const layer=document.getElementById('playTapLayer');
+  const surf=layer||c;     // on iOS the tap layer receives the pointer, the canvas draws
   const pt=e=>{ const r=c.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
-  c.addEventListener('pointerdown',e=>{ if(!playEng.act) return; e.preventDefault(); try{c.setPointerCapture(e.pointerId);}catch(_){}
-    playEng.active=e.pointerId; playEng.act.down && playEng.act.down(pt(e), performance.now()); playUI(); });
-  c.addEventListener('pointermove',e=>{ if(playEng.active!==e.pointerId||!playEng.act) return; e.preventDefault();
+  if(layer) layer.addEventListener('click',e=>{ if(!playHap.want || !playHapticsOn()) e.preventDefault(); else playHap.fired=(playHap.fired||0)+1; playHap.want=false; });
+  surf.addEventListener('pointerdown',e=>{ if(!playEng.act) return; e.preventDefault(); try{surf.setPointerCapture(e.pointerId);}catch(_){}
+    playHap.want=false; playEng.active=e.pointerId; playEng.act.down && playEng.act.down(pt(e), performance.now()); playUI(); });
+  surf.addEventListener('pointermove',e=>{ if(playEng.active!==e.pointerId||!playEng.act) return; e.preventDefault();
     const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e]; (evs.length?evs:[e]).forEach(ev=>playEng.act.move && playEng.act.move(pt(ev), performance.now())); playUI(); });
   const end=e=>{ if(playEng.active!==e.pointerId) return; playEng.active=null; playEng.act && playEng.act.up && playEng.act.up(); };
-  c.addEventListener('pointerup',end); c.addEventListener('pointercancel',end); c.addEventListener('lostpointercapture',end);
+  surf.addEventListener('pointerup',end); surf.addEventListener('pointercancel',end); surf.addEventListener('lostpointercapture',end);
   window.addEventListener('resize',()=>{ if(playEng.key) playResize(); });
   window.addEventListener('orientationchange',()=>{ if(playEng.key) setTimeout(playResize,250); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape' && playEng.key) closePlay(); });
@@ -8050,7 +8065,8 @@ function playUI(){
   else h=`<button class="btn line sm" onclick="playRestart()">${a.resetLabel||'Restart'}</button>`;
   if(a.extraBar) h=a.extraBar()+h;
   if(k==='bubbles') h+=`<label class="playkeep"><input type="checkbox" id="playSnd" ${store.get('presentPlaySound')!=='0'?'checked':''} onchange="store.set('presentPlaySound',this.checked?'1':'0')"> Pop sound</label>`;
-  if(playHapticsAvailable()) h+=`<label class="playkeep"><input type="checkbox" id="playHapt" ${playHapticsOn()?'checked':''} onchange="playSetHaptics(this.checked)"> Vibration</label>`;
+  if(playHapticsAvailable()) h+=`<label class="playkeep"><input type="checkbox" id="playHapt" ${playHapticsOn()?'checked':''} onchange="playSetHaptics(this.checked)"> Vibration</label>
+    <label class="playtestvib" onclick="playTestVibration(event)"><input type="checkbox" switch class="playswitch" aria-hidden="true" tabindex="-1">Test vibration</label>`;
   bar.innerHTML=h; bar.dataset.k=k;
 }
 function playFinished(msg){
@@ -13111,6 +13127,40 @@ window.__presentBoot='ready';
     document.documentElement.style.setProperty('--vv-bottom', (gap<200?gap:0)+'px'); };
   vv.addEventListener('resize',fit); vv.addEventListener('scroll',fit); window.addEventListener('orientationchange',fit); fit();
 })();
+
+/* ===================== VOICE INPUT (dictation) =====================
+   Speech becomes text in the message box; nothing is sent until the person
+   taps send, so the words take exactly the same path as typing — including
+   local crisis detection before any network call. */
+const dictation = { rec:null, on:false, base:'' };
+function dictationCtor(){ return window.SpeechRecognition || window.webkitSpeechRecognition || null; }
+function dictationLang(){ const l=(store.get('presentLang')||'').toLowerCase(); return l.startsWith('es') ? 'es-US' : 'en-US'; }
+function micUI(){
+  const b=document.getElementById('micBtn'), inp=document.getElementById('msg'); if(!b) return;
+  b.classList.toggle('listening', dictation.on); b.setAttribute('aria-pressed', dictation.on?'true':'false');
+  b.setAttribute('aria-label', dictation.on ? 'Stop listening' : 'Speak instead of typing');
+  if(inp) inp.placeholder = dictation.on ? 'Listening…' : 'Say anything…';
+}
+function micToggle(){
+  if(dictation.on){ try{ dictation.rec && dictation.rec.stop(); }catch(e){} return; }
+  const C=dictationCtor(); if(!C){ toast('Voice input isn\u2019t available in this browser'); return; }
+  const inp=document.getElementById('msg'); if(!inp) return;
+  if(!store.get('presentVoiceNoted')){ store.set('presentVoiceNoted','1');
+    toast('Voice is turned into text by your phone or browser, which may use Apple\u2019s or Google\u2019s servers.'); }
+  const rec=new C(); dictation.rec=rec;
+  rec.lang=dictationLang(); rec.interimResults=true; rec.continuous=false; rec.maxAlternatives=1;
+  dictation.base = inp.value ? inp.value.replace(/\s*$/,' ') : '';
+  rec.onresult=e=>{ let txt=''; for(let i=0;i<e.results.length;i++) txt+=e.results[i][0].transcript;
+    inp.value=(dictation.base+txt).replace(/\s+/g,' ').trimStart(); };
+  rec.onerror=e=>{
+    if(e.error==='not-allowed' || e.error==='service-not-allowed') toast('Microphone is off for Present. You can turn it on in your browser settings.');
+    else if(e.error==='no-speech') toast('I didn\u2019t catch anything. Tap the mic to try again.');
+    else if(e.error!=='aborted') toast('Voice input stopped. You can type instead.');
+  };
+  rec.onend=()=>{ dictation.on=false; dictation.rec=null; micUI(); const i=document.getElementById('msg'); if(i){ i.focus({preventScroll:true}); } };
+  try{ rec.start(); dictation.on=true; micUI(); }catch(e){ dictation.on=false; micUI(); toast('Voice input stopped. You can type instead.'); }
+}
+(function(){ const b=document.getElementById('micBtn'); if(b && !dictationCtor()) b.style.display='none'; })();
 </script>
 </body>
 </html>
