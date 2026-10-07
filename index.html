@@ -1173,6 +1173,15 @@ details.deeper[open] summary::after{content:'−'}
 .mdrow input{width:20px;height:20px}
 .banner{background:var(--gold);color:#4A3308;font-size:12px;font-weight:700;text-align:center;padding:9px 16px;line-height:1.4}
 
+.emocard{background:var(--cream);border-radius:22px;padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.emobody{margin-top:12px}
+.emowheel{display:block;width:100%;max-width:320px;margin:0 auto}
+.emoseg{cursor:pointer}.emoseg:focus path,.emoseg:hover path{filter:brightness(.95)}
+.emocentre{cursor:pointer}
+.emoresult{margin-top:14px;padding-top:14px;border-top:1px solid var(--cream-2)}
+.emoword{font-family:var(--serif);font-size:30px;color:var(--plum);line-height:1.1}
+.emoacts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.emoacts .btn{margin:0}
 /* ===== REAL DEVICE LAYOUT =====
    On phones Present is the whole screen: no fake status bar, no frame.
    Only a wide desktop with a mouse keeps the phone-mockup look. The page
@@ -1442,6 +1451,7 @@ window.addEventListener('error', function(e){
   </div>
   <div style="padding-top:14px"><div class="pills" id="fyPills"></div></div>
   <div class="pad" style="padding-top:12px">
+    <div id="emoCard"></div>
     <div id="fyFeed"></div>
     <div class="eyebrow">Explore Present</div>
     <div class="prompt">
@@ -3506,7 +3516,7 @@ function go(id, isBack){
   if(id==='helps') setTimeout(renderHelps,0);
   if(id==='trends') setTimeout(()=>{renderTrends();renderManageTrackers();},0);
   if(id==='checkin') setTimeout(initTrackers,0);
-  if(id==='foryou') setTimeout(renderForYou,0);
+  if(id==='foryou') setTimeout(()=>{renderEmoFinder();renderForYou();},0);
   if(id==='therapy') setTimeout(()=>{therapyNotes=lget('presentTherapyNotes',therapyNotes);renderNotes();renderSession();},0);
   if(id==='myaffirms') setTimeout(renderMyAffirms,0);
   if(id==='explore') setTimeout(()=>{ if(!ex.cat) renderExplore(); },0);
@@ -7326,6 +7336,11 @@ function cardReason(item){
 }
 
 function todaysCards(){
+  // A feeling they just chose on the wheel re-sorts the feed.
+  if(typeof emoChosen!=='undefined' && emoChosen){
+    const m=emoMatchingCards();
+    if(m.length) return {personal:true, byFeeling:true, items:m.slice(0,3)};
+  }
   const hidden=hiddenCards();
   const c=latestCheckin();
   const pool=LEARN.filter(l=>!hidden.includes(l.id));
@@ -7348,8 +7363,8 @@ function renderForYou(){
 
   el.innerHTML = `
     <div class="fyband">
-      <div class="eyebrow" style="margin-top:0">For you today</div>
-      <p class="sub" style="margin:0 0 12px">${today.personal
+      <div class="eyebrow" style="margin-top:0">${today.byFeeling?"Based on what you're feeling":'For you today'}</div>
+      <p class="sub" style="margin:0 0 12px">${today.byFeeling ? 'You can change the feeling above any time.' : today.personal
         ? 'Little things that might help you understand what you\'re feeling.'
         : 'A place to start. These will fit better once you\'ve checked in a few times.'}</p>
       ${today.items.map(l=>learnCard(l, today.personal)).join('')}
@@ -7369,6 +7384,193 @@ function renderForYou(){
       ${saved.map(id=>learnById(id)).filter(Boolean).map(l=>learnCard(l,false)).join('')}` : ''}
 
     <p class="note">That's everything for today. You can stop here.</p>`;
+}
+
+/* ===================== FEELINGS WHEEL =====================
+   Original vocabulary (published wheels are copyrighted). Six broad
+   feelings → 36 → 144 words, one ring on screen at a time; the centre
+   steps back a level. Nothing is stored: the choice lives for this session,
+   only shapes what's shown, and is never treated as a diagnosis. */
+const EMO = [
+ {k:'anger', name:'Anger', col:'#E9B7A6', deep:'#F4D8CE', mode:'activated',
+  about:"Anger often shows up when something feels unfair, blocked, or like a line was crossed. It can carry useful information about what matters to you.",
+  needs:['To be heard','Some space to cool down','Fairness','A clear boundary'],
+  tags:['angry','frustrated','conflict','resentful','hurt'],
+  mids:{Frustrated:['Blocked','Fed up','Irritated','Impatient'], Resentful:['Bitter','Wronged','Grudging','Cheated'],
+        Annoyed:['Prickly','Bothered','Edgy','Short-tempered'], Defensive:['Guarded','Cornered','Bristling','Judged'],
+        Furious:['Seething','Boiling','Livid','Explosive'], Disrespected:['Dismissed','Belittled','Overlooked','Used']}},
+ {k:'sadness', name:'Sadness', col:'#B9C9DE', deep:'#D9E3EF', mode:'heavy',
+  about:"Sadness often follows a loss, a let-down, or a gap between how things are and how you hoped they'd be. It tends to ask for slowing down.",
+  needs:['Comfort','Rest','Someone to sit with you','Gentleness with yourself'],
+  tags:['sad','low','lonely','empty','numb','tired','guilty'],
+  mids:{Lonely:['Left out','Unseen','Isolated','Homesick'], Disappointed:['Let down','Deflated','Discouraged','Crestfallen'],
+        Grieving:['Missing someone','Heartbroken','Mourning','Aching'], Low:['Flat','Heavy','Drained','Numb'],
+        Defeated:['Stuck','Worn down','Resigned','Powerless'], Guilty:['Regretful','Ashamed','Remorseful','Sorry']}},
+ {k:'fear', name:'Fear', col:'#CDBFE0', deep:'#E6DEF0', mode:'activated',
+  about:"Fear and worry are often the mind trying to protect you from something that might go wrong. They can feel bigger than the actual risk.",
+  needs:['Feeling safe','Reassurance','One small next step','A slower breath'],
+  tags:['anxious','worried','scared','stressed','overwhelmed','tense','restless','panic'],
+  mids:{Anxious:['On edge','Restless','Uneasy','Anticipating the worst'], Overwhelmed:['Swamped','Frazzled','Pulled apart','Too much at once'],
+        Insecure:['Not enough','Self-doubting','Exposed','Inadequate'], Scared:['Frightened','Alarmed','Shaky','Panicky'],
+        Worried:['Preoccupied','Nervous','Second-guessing','Dreading'], Vulnerable:['Fragile','Unprotected','Raw','Easily hurt']}},
+ {k:'joy', name:'Joy', col:'#EED9A4', deep:'#F6EBCD', mode:'settled',
+  about:"Joy can be loud or quiet. Noticing it, even briefly, can help it land.",
+  needs:['To savour it','To share it','To remember it later'],
+  tags:['okay','motivated','curious'],
+  mids:{Content:['Settled','Satisfied','At ease','Comfortable'], Hopeful:['Optimistic','Encouraged','Looking forward','Open'],
+        Proud:['Accomplished','Capable','Confident','Worthy'], Playful:['Silly','Lighthearted','Cheeky','Free'],
+        Grateful:['Thankful','Appreciative','Lucky','Touched'], Calm:['Peaceful','Steady','Unhurried','Grounded']}},
+ {k:'love', name:'Love', col:'#E8BCCB', deep:'#F3DCE4', mode:'settled',
+  about:"Feelings like this are often about connection: toward someone, or wanting to be closer.",
+  needs:['Closeness','A way to express it','Reassurance','Time together'],
+  tags:['relationships','lonely','hurt'],
+  mids:{Close:['Connected','Understood','Included','Seen'], Caring:['Tender','Protective','Warm','Kind'],
+        Affectionate:['Fond','Adoring','Sweet','Drawn to someone'], Trusting:['Safe with someone','Relaxed','Open-hearted','Secure'],
+        Longing:['Yearning','Missing','Wistful','Pining'], Compassionate:['Sympathetic','Moved','Gentle','Forgiving']}},
+ {k:'surprise', name:'Surprise', col:'#BFD8C6', deep:'#DDEBE1', mode:'activated',
+  about:"Surprise is what happens when something doesn't match what you expected. It often passes quickly, or turns into another feeling.",
+  needs:['A moment to catch up','More information','Something steady'],
+  tags:['curious','overthinking','stuck'],
+  mids:{Startled:['Jumpy','Caught off guard','Shocked','Jolted'], Confused:['Puzzled','Unsure','Mixed up','Lost'],
+        Amazed:['Awed','Wonderstruck','Impressed','Dazzled'], Curious:['Intrigued','Interested','Inquisitive','Wondering'],
+        Disoriented:['Thrown','Unsteady','Scattered','Foggy'], Stirred:['Touched deeply','Overcome','Speechless','Shaken up']}}
+];
+
+/* Body first: six options, each narrowing to two or three possibilities. */
+const BODY_ROUTES = [
+  {t:'Tight or tense',     opts:[['anger','Frustrated'],['fear','Anxious'],['fear','Overwhelmed']]},
+  {t:'Racing or buzzing',  opts:[['fear','Anxious'],['surprise','Startled'],['fear','Scared']]},
+  {t:'Heavy or slow',      opts:[['sadness','Low'],['sadness','Disappointed'],['sadness','Lonely']]},
+  {t:'Hot or pressured',   opts:[['anger','Furious'],['anger','Annoyed'],['anger','Defensive']]},
+  {t:'Light or warm',      opts:[['joy','Content'],['love','Close'],['joy','Calm']]},
+  {t:"I don't know",       opts:[['sadness','Low'],['surprise','Confused'],['fear','Overwhelmed']]}
+];
+
+let emoView='wheel', emoFam=null, emoMid=null, emoBodyIdx=null;
+let emoChosen=null;                     // {fam, mid, word} for this session only
+const emoFamOf = k => EMO.find(e=>e.k===k) || null;
+
+/* SVG ring segments for one level. */
+function emoSegments(items, colour){
+  const W=300, cx=150, cy=150, R=146, r0=56, n=items.length, out=[];
+  items.forEach((it,i)=>{
+    const a0=-Math.PI/2+i*2*Math.PI/n, a1=a0+2*Math.PI/n, large=(a1-a0)>Math.PI?1:0;
+    const p=(rad,a)=>`${(cx+rad*Math.cos(a)).toFixed(1)} ${(cy+rad*Math.sin(a)).toFixed(1)}`;
+    const d=`M${p(r0,a0)} L${p(R,a0)} A${R} ${R} 0 ${large} 1 ${p(R,a1)} L${p(r0,a1)} A${r0} ${r0} 0 ${large} 0 ${p(r0,a0)}Z`;
+    const am=(a0+a1)/2, lr=(R+r0)/2, lx=cx+lr*Math.cos(am), ly=cy+lr*Math.sin(am);
+    const maxW = Math.min(R-r0-14, 2*lr*Math.sin(Math.PI/n)-14);
+    const longest=Math.max(...it.label.split(/\s+/).map(w=>w.length));
+    const fs=Math.min(12.5, Math.floor(maxW/(longest*0.58)*10)/10);   // shrink only if one word can't fit
+    const lines=wrapLabel(it.label, maxW, fs), lh=Math.round(fs*1.2), y0=ly-(lines.length-1)*lh/2+4;
+    out.push(`<g class="emoseg" role="button" tabindex="0" aria-label="${attr(it.label)}" onclick="${it.on}">
+      <path d="${d}" fill="${it.col||colour}" stroke="#FDF7F0" stroke-width="3"/>
+      <text text-anchor="middle" font-size="${fs}" font-weight="700" fill="#3D3348">${
+        lines.map((l,j)=>`<tspan x="${lx.toFixed(1)}" y="${(y0+j*lh).toFixed(1)}">${l.replace(/&/g,'&amp;')}</tspan>`).join('')}</text></g>`);
+  });
+  return `<svg class="emowheel" viewBox="0 0 ${W} ${W}" role="group" aria-label="Feelings wheel">${out.join('')}`;
+}
+function emoWrap(svgOpen, centre, onBack){
+  return `${svgOpen}<g class="emocentre" ${onBack?`role="button" tabindex="0" aria-label="Back one level" onclick="${onBack}"`:''}>
+    <circle cx="150" cy="150" r="52" fill="#FDF7F0"/>
+    <text x="150" y="${onBack?146:154}" text-anchor="middle" font-size="13" font-weight="700" fill="#4A3560">${centre.replace(/&/g,'&amp;')}</text>
+    ${onBack?'<text x="150" y="164" text-anchor="middle" font-size="11" fill="#8B7BA3">‹ back</text>':''}</g></svg>`;
+}
+function renderEmoWheel(){
+  if(!emoFam) return emoWrap(emoSegments(EMO.map(e=>({label:e.name, col:e.col, on:`emoPick1('${e.k}')`}))), 'How are you?', null);
+  const f=emoFamOf(emoFam);
+  if(!emoMid) return emoWrap(emoSegments(Object.keys(f.mids).map(m=>({label:m, col:f.col, on:`emoPick2('${attr(m)}')`}))), f.name, 'emoBack()');
+  return emoWrap(emoSegments(f.mids[emoMid].map(w=>({label:w, col:f.deep, on:`emoPick3('${attr(w)}')`}))), emoMid, 'emoBack()');
+}
+function emoPick1(k){ emoFam=k; emoMid=null; renderEmoFinder(); }
+function emoPick2(m){ emoMid=m; renderEmoFinder(); }
+function emoPick3(w){ emoChosen={fam:emoFam, mid:emoMid, word:w}; renderEmoFinder(); renderForYou(); }
+function emoBack(){ if(emoMid) emoMid=null; else emoFam=null; renderEmoFinder(); }
+function emoBodyPick(i){ emoBodyIdx=i; renderEmoFinder(); }
+function emoBodyChoose(fam, mid){ emoFam=fam; emoMid=mid; emoChosen={fam, mid, word:mid}; emoView='wheel'; emoBodyIdx=null; renderEmoFinder(); renderForYou(); }
+function emoSetView(v){ emoView=v; emoBodyIdx=null; renderEmoFinder(); }
+function emoReset(){ emoChosen=null; emoFam=null; emoMid=null; renderEmoFinder(); renderForYou(); }
+
+function renderEmoResult(){
+  if(!emoChosen) return '';
+  const f=emoFamOf(emoChosen.fam);
+  const sub = emoChosen.word!==emoChosen.mid ? `Close to ${emoChosen.mid.toLowerCase()}, within ${f.name.toLowerCase()}.` : `One shade of ${f.name.toLowerCase()}.`;
+  return `<div class="emoresult" id="emoResult">
+    <div class="eyebrow" style="margin:0 0 4px">You might be feeling</div>
+    <div class="emoword">${emoChosen.word}</div>
+    <p class="muted" style="margin:4px 0 8px;line-height:1.55">${sub} ${f.about}</p>
+    <div class="eyebrow" style="margin:10px 0 6px">What might you need?</div>
+    <div class="tagwrap">${f.needs.slice(0,4).map(n=>`<span class="tag" style="cursor:default">${n}</span>`).join('')}</div>
+    <div class="emoacts">
+      <button class="btn sm" onclick="emoUnderstand()">Understand this feeling</button>
+      <button class="btn line sm" onclick="emoGround()">Ground me</button>
+      <button class="btn line sm" onclick="emoTalk()">Talk it through</button>
+    </div>
+    <button class="link" style="margin-top:8px" onclick="emoReset()">Not quite, start again</button>
+  </div>`;
+}
+function renderEmoFinder(){
+  const el=document.getElementById('emoCard'); if(!el) return;
+  let body='';
+  if(emoView==='body'){
+    if(emoBodyIdx===null){
+      body=`<p class="prompttext" style="font-size:18px;margin:4px 0 12px">How does it feel in your body?</p>
+        <div class="tagwrap">${BODY_ROUTES.map((r,i)=>`<button class="tag" onclick="emoBodyPick(${i})">${r.t}</button>`).join('')}</div>`;
+    } else {
+      const r=BODY_ROUTES[emoBodyIdx];
+      body=`<p class="muted" style="margin:4px 0 10px;line-height:1.55">${emoBodyIdx===BODY_ROUTES.length-1?"That's common. ":''}It might be one of these, or none of them.</p>
+        <div class="tagwrap">${r.opts.map(([fam,mid])=>`<button class="tag" onclick="emoBodyChoose('${fam}','${attr(mid)}')">${mid}</button>`).join('')}</div>
+        <button class="link" style="margin-top:8px" onclick="emoBodyPick(null)">‹ Back</button>`;
+    }
+  } else body=renderEmoWheel();
+  el.innerHTML=`<div class="emocard">
+    <div class="between" style="align-items:flex-start">
+      <div><b style="font-size:16px">Name what you're feeling</b>
+        <small class="muted" style="display:block;margin-top:2px">${emoView==='body'?'Start with your body':'Tap a feeling, then narrow it down'}</small></div>
+      <button class="link" onclick="emoSetView('${emoView==='body'?'wheel':'body'}')">${emoView==='body'?'Use the wheel':'Start with my body'}</button>
+    </div>
+    <div class="emobody">${body}</div>
+    ${renderEmoResult()}
+  </div>`;
+}
+
+/* The three actions carry the feeling with them. */
+function emoMatchingCards(){
+  if(!emoChosen) return [];
+  const f=emoFamOf(emoChosen.fam), words=[emoChosen.word, emoChosen.mid].map(w=>w.toLowerCase());
+  const hidden=hiddenCards();
+  return LEARN.filter(l=>!hidden.includes(l.id)).map(l=>{
+    const tags=(l.tags||[]).map(t=>t.toLowerCase());
+    const n=tags.filter(t=>words.includes(t)).length*3 + tags.filter(t=>f.tags.includes(t)).length;
+    return {l,n};
+  }).filter(x=>x.n>0).sort((a,b)=>b.n-a.n).map(x=>x.l);
+}
+function emoUnderstand(){
+  const m=emoMatchingCards();
+  if(m.length){ openLearn(m[0].id); return; }
+  const f=emoFamOf(emoChosen.fam);
+  $('#toolWrap').classList.add('on');
+  $('#toolBody').innerHTML=`<div class="promptcat">Understanding a feeling</div>
+    <p class="prompttext" style="font-size:22px">${emoChosen.word}</p>
+    <p class="muted" style="line-height:1.65">${f.about} Feelings aren't instructions and they aren't facts about you. They usually pass, and naming one can make it a little easier to hold.</p>
+    <p class="muted" style="line-height:1.65">Some things people find helpful: ${f.needs.map(n=>n.toLowerCase()).join(', ')}.</p>
+    <button class="btn quiet" onclick="closeTool()">Close</button>`;
+}
+function emoGround(){
+  const f=emoFamOf(emoChosen.fam);
+  go('sanctuary');
+  // activated → a slower breath; heavy or settled → just sit
+  setTimeout(()=>{ if(f.mode==='activated') tapBreath(); else enterSitting(); }, 450);
+}
+function emoTalk(){
+  if(typeof picked!=='undefined') picked=[];
+  go('chat'); startChat();
+}
+/* Private context for the model: never shown, and it says not to make them explain again. */
+function emoPromptBlock(){
+  if(!emoChosen) return '';
+  const f=emoFamOf(emoChosen.fam);
+  return `Feeling they picked themselves on the feelings wheel: "${emoChosen.word}" (${f.name.toLowerCase()} / ${emoChosen.mid.toLowerCase()}). `
+    + `They've already named it — don't ask them to explain or label it again. Hold it lightly; it's their word, not a diagnosis.`;
 }
 
 /* The card itself: illustration first, one line under it, controls quiet. */
@@ -8171,7 +8373,8 @@ function buildPresentContext(opts){
 
 /* What Present actually knows about this person, pulled from real stores. */
 function currentPresentContext(){
-  return buildPresentContext({
+  const feel=(typeof emoPromptBlock==='function') ? emoPromptBlock() : '';
+  return (feel ? feel+'\n' : '') + buildPresentContext({
     supportMode: (typeof convo!=='undefined' && convo.mode) || 'talk',
     userName: preferredName() || null,
     relevantProfileContext: (typeof vals!=='undefined' && vals.core && vals.core.length)
@@ -12370,7 +12573,7 @@ applyTheme(themeId);
 goals=lget('presentGoals', goals);
 mergeBreathLessons(); refreshCompanion();
 // First run gets the welcome; everyone else lands on Home.
-if(!onboarded()) setTimeout(startWelcome, 0); renderForYou(); renderHomeGreeting(); initTrackers(); renderFeelTags(); renderJournal(); renderAlbumStrip(); renderLookBack(); renderMeds(); renderSession(); renderProgressStrip(); migrateSanctuary(); loadModelSettings();
+if(!onboarded()) setTimeout(startWelcome, 0); renderEmoFinder(); renderForYou(); renderHomeGreeting(); initTrackers(); renderFeelTags(); renderJournal(); renderAlbumStrip(); renderLookBack(); renderMeds(); renderSession(); renderProgressStrip(); migrateSanctuary(); loadModelSettings();
 renderDaily();
 buildTabs(); renderHome(); renderForYou(); renderHelps(); refreshNeeds();
 const _go=go;
