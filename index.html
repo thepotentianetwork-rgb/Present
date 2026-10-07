@@ -7638,7 +7638,7 @@ const PLAY_ACTS = {
     progress(){ return playCount(this.covered)/this.covered.length; },
     down(p,now){ this.trail.push({...p,t:now,brk:true}); this.move(p,now); },
     move(p,now){ this.trail.push({...p,t:now}); if(this.trail.length>400) this.trail.shift();
-      playCover(this.pts,this.covered,p,this.tol); if(!this.done && this.progress()>=0.9){ this.done=true; playFinished('You followed the whole loop.'); } },
+      playCover(this.pts,this.covered,p,this.tol); if(!this.done && this.progress()>=0.9){ this.done=true; playHaptic(18); playFinished('You followed the whole loop.'); } },
     draw(ctx,W,H,now){
       ctx.lineCap='round'; ctx.lineJoin='round';
       ctx.strokeStyle='#EAE1F4'; ctx.lineWidth=this.tol*1.1; ctx.beginPath();
@@ -7692,7 +7692,7 @@ const PLAY_ACTS = {
         else if(!this.hits(this.dot.x+sx,this.dot.y)){ this.dot.x+=sx; blocked=true; }
         else if(!this.hits(this.dot.x,this.dot.y+sy)){ this.dot.y+=sy; blocked=true; }
         else blocked=true; }
-      if(blocked) this.stops++;
+      if(blocked){ this.stops++; if(!this.wasBlocked) playHaptic(10); } this.wasBlocked=blocked;
       this.dotCell={u:(this.dot.x-this.ox)/this.cell, v:(this.dot.y-this.oy)/this.cell};
       this.trail.push({x:this.dot.x,y:this.dot.y,t:now}); if(this.trail.length>120) this.trail.shift();
       if(!this.done && Math.hypot(this.dot.x-this.end.x,this.dot.y-this.end.y)<this.cell*0.3){ this.done=true; playFinished('You found your way through.'); } },
@@ -7724,7 +7724,7 @@ const PLAY_ACTS = {
       let best=-1,bd=1e9; this.petals.forEach((pt,k)=>pt.pts.forEach(q=>{const d=Math.hypot(q.x-p.x,q.y-p.y); if(d<bd){bd=d;best=k;}}));
       if(best<0||this.filled[best]) return;
       playCover(this.petals[best].pts,this.cov[best],p,this.tol);
-      if(playCount(this.cov[best])/60>=0.85){ this.filled[best]=now;
+      if(playCount(this.cov[best])/60>=0.85){ this.filled[best]=now; playHaptic(14);
         if(!this.done && this.filled.every(f=>f>0)){ this.done=true; playFinished('Every petal is coloured in.'); } } },
     draw(ctx,W,H,now){
       this.petals.forEach((pt,k)=>{ const f=this.filled[k];
@@ -7744,7 +7744,7 @@ const PLAY_ACTS = {
     layout(){}, reset(){ this.rs=[]; this.lastAdd=null; },
     progress(){ return null; },
     add(p,now){ this.rs.push({x:p.x,y:p.y,t:now}); if(this.rs.length>60) this.rs.shift(); this.lastAdd=p; this.count=(this.count||0)+1; },
-    down(p,now){ this.add(p,now); },
+    down(p,now){ this.add(p,now); playHaptic(10); },
     move(p,now){ if(!this.lastAdd||Math.hypot(p.x-this.lastAdd.x,p.y-this.lastAdd.y)>28) this.add(p,now); },
     up(){ this.lastAdd=null; },
     draw(ctx,W,H,now){
@@ -7785,6 +7785,208 @@ const PLAY_PREVIEW = {
   ripples:`<svg viewBox="0 0 120 80"><rect width="120" height="80" rx="10" fill="#DCE7F2"/><ellipse cx="60" cy="40" rx="14" ry="11" fill="none" stroke="#fff" stroke-width="2"/><ellipse cx="60" cy="40" rx="30" ry="24" fill="none" stroke="#A78BC4" stroke-width="1.5" opacity=".6"/><ellipse cx="60" cy="40" rx="46" ry="36" fill="none" stroke="#fff" stroke-width="1.2" opacity=".4"/></svg>`,
   draw:`<svg viewBox="0 0 120 80"><path d="M14 56 q20 -40 40 -10 t40 -16" fill="none" stroke="#E0A0B4" stroke-width="6" stroke-linecap="round"/><path d="M20 30 q30 20 70 26" fill="none" stroke="#A78BC4" stroke-width="6" stroke-linecap="round" opacity=".45"/></svg>`
 };
+/* ---- haptics ----
+   Android: navigator.vibrate with short pulses. iOS Safari 17.4+: toggling a
+   hidden <input type=checkbox switch> through its label gives a system tick,
+   but only inside a user gesture. Throttled to one every 80ms. If neither
+   exists, the toggle is hidden. */
+const playHap = { last:0, label:null };
+function playHapticsAvailable(){
+  return (typeof navigator!=='undefined' && typeof navigator.vibrate==='function') ||
+         (typeof HTMLInputElement!=='undefined' && 'switch' in HTMLInputElement.prototype);
+}
+function playHapticsOn(){ return store.get('presentPlayHaptics')!=='0'; }
+function playSetHaptics(on){ store.set('presentPlayHaptics', on?'1':'0'); if(on) playHaptic(14); }
+function playHaptic(ms){
+  if(!playHapticsOn()) return;
+  const now=performance.now(); if(now-playHap.last<80) return; playHap.last=now;
+  try{
+    if(typeof navigator.vibrate==='function'){ navigator.vibrate(Math.max(8,Math.min(20,ms||10))); return; }
+    if('switch' in HTMLInputElement.prototype){
+      if(!playHap.label){
+        const l=document.createElement('label'); l.setAttribute('aria-hidden','true');
+        l.style.cssText='position:fixed;left:-9999px;width:1px;height:1px;overflow:hidden;opacity:0';
+        const i=document.createElement('input'); i.type='checkbox'; i.setAttribute('switch',''); i.tabIndex=-1;
+        l.appendChild(i); document.body.appendChild(l); playHap.label=l;
+      }
+      playHap.label.click();
+    }
+  }catch(e){}
+}
+
+/* ---- sound for activities: through Present's master volume, off at 0 ---- */
+function playSoundOn(){ return store.get('presentPlaySound')!=='0' && sliderPos()>0; }
+function playPop(){
+  if(!playSoundOn() || !Audio_.init()) return;
+  Audio_.resume();
+  const ctx=Audio_.ctx, t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain();
+  const f=sndRand(520,780); o.type='sine'; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*0.55,t+0.12);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.12,t+0.008); g.gain.exponentialRampToValueAtTime(0.0001,t+0.16);
+  o.connect(g); g.connect(Audio_.comp); o.start(t); o.stop(t+0.2);
+}
+
+/* An offscreen canvas at the stage's pixel size. */
+function playOff(W,H,dpr){ const c=document.createElement('canvas'); c.width=Math.round(W*dpr); c.height=Math.round(H*dpr);
+  const x=c.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0); return {c,x}; }
+function playGlowSprite(colour, r){ const c=document.createElement('canvas'); c.width=c.height=r*2; const x=c.getContext('2d');
+  const g=x.createRadialGradient(r,r,0,r,r,r); g.addColorStop(0,colour); g.addColorStop(0.25,colour.replace(/[\d.]+\)$/,'0.5)')); g.addColorStop(1,'rgba(255,255,255,0)');
+  x.fillStyle=g; x.fillRect(0,0,r*2,r*2); return c; }
+
+Object.assign(PLAY_ACTS, {
+  sand:{
+    title:'Sand garden', desc:'Rake slow lines through soft sand that gently smooths over.',
+    hint:'Drag to rake. The sand smooths itself over time, or tap Smooth.', ends:false, dprCap:2, resetLabel:'Smooth',
+    base(x,W,H){ const g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#F1E4CF'); g.addColorStop(1,'#E8D6BC'); x.fillStyle=g; x.fillRect(0,0,W,H);
+      if(!this.grain){ this.grain=[]; for(let i=0;i<500;i++) this.grain.push([Math.random(),Math.random(),Math.random()]); }
+      this.grain.forEach(([a,b,c])=>{ x.fillStyle=c>.5?'rgba(255,255,255,.35)':'rgba(150,120,90,.12)'; x.fillRect(a*W,b*H,1.5,1.5); }); },
+    layout(W,H){ const dpr=Math.min(2,window.devicePixelRatio||1); this.off=playOff(W,H,dpr); this.base(this.off.x,W,H);
+      this.flat=playOff(W,H,dpr); this.base(this.flat.x,W,H); this.W=W; this.H=H; },
+    reset(){ this.last=null; if(this.off) this.base(this.off.x,this.W,this.H); },
+    progress(){ return null; },
+    down(p){ this.last=p; playHaptic(8); },
+    move(p){ if(!this.last){ this.last=p; return; } const a=this.last, dx=p.x-a.x, dy=p.y-a.y, L=Math.hypot(dx,dy); if(L<2) return;
+      const nx=-dy/L, ny=dx/L, x=this.off.x; x.lineCap='round';
+      for(let k=-2;k<=2;k++){ const o=k*9;
+        x.strokeStyle='rgba(140,108,78,.22)'; x.lineWidth=3.2; x.beginPath(); x.moveTo(a.x+nx*o,a.y+ny*o); x.lineTo(p.x+nx*o,p.y+ny*o); x.stroke();
+        x.strokeStyle='rgba(255,250,240,.55)'; x.lineWidth=1.6; x.beginPath(); x.moveTo(a.x+nx*(o+2.2),a.y+ny*(o+2.2)); x.lineTo(p.x+nx*(o+2.2),p.y+ny*(o+2.2)); x.stroke(); }
+      this.last=p; this.dirty=1; },
+    up(){ this.last=null; },
+    draw(ctx,W,H,now){ // smoothing: blend the flat sand back in very slowly
+      if(now-(this.lastSmooth||0)>300){ this.lastSmooth=now; const x=this.off.x; x.globalAlpha=0.035; x.drawImage(this.flat.c,0,0,W,H); x.globalAlpha=1; }
+      ctx.drawImage(this.off.c,0,0,W,H); }
+  },
+
+  bubbles:{
+    title:'Bubble pop', desc:'Soft bubbles drift up. Pop them, or just watch them go.',
+    hint:'Tap a bubble to pop it. They keep coming; there\u2019s nothing to count.', ends:false,
+    layout(W,H){ this.W=W; this.H=H; }, reset(){ this.bs=[]; this.pops=[]; this.next=0; },
+    progress(){ return null; },
+    spawn(now){ const r=sndRand(18,38); this.bs.push({x:sndRand(r,this.W-r), y:this.H+r, r, vy:sndRand(18,34), ph:Math.random()*6, hue:PLAY_SOFT[Math.floor(Math.random()*4)]}); },
+    down(p,now){ for(let i=this.bs.length-1;i>=0;i--){ const b=this.bs[i]; if(Math.hypot(p.x-(b.dx!==undefined?b.dx:b.x),p.y-b.y)<b.r+14){
+        this.bs.splice(i,1); this.pops.push({x:(b.dx!==undefined?b.dx:b.x),y:b.y,r:b.r,t:now,c:b.hue}); this.popped=(this.popped||0)+1; playPop(); playHaptic(12); return; } } },
+    move(){},
+    draw(ctx,W,H,now){ const dt=Math.min(0.05,(now-(this.lt||now))/1000); this.lt=now;
+      const cap=playReduced()?7:16;
+      if(now>this.next && this.bs.length<cap){ this.spawn(now); this.next=now+sndRand(500,1100); }
+      const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#FDF7F0'); g.addColorStop(1,'#F3E3EC'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+      this.bs.forEach(b=>{ b.y-=b.vy*dt; b.ph+=dt; const x=b.x+(playReduced()?0:Math.sin(b.ph*1.3)*8);
+        b.dx=x; const rg=ctx.createRadialGradient(x-b.r*.35,b.y-b.r*.35,b.r*.1,x,b.y,b.r);
+        rg.addColorStop(0,'rgba(255,255,255,.95)'); rg.addColorStop(.7,'rgba(255,255,255,.15)'); rg.addColorStop(1,b.hue+'88');
+        ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(x,b.y,b.r,0,7); ctx.fill();
+        ctx.strokeStyle=b.hue+'aa'; ctx.lineWidth=1.4; ctx.stroke(); });
+      this.bs=this.bs.filter(b=>b.y>-b.r-10);
+      this.pops=this.pops.filter(q=>now-q.t<450);
+      this.pops.forEach(q=>{ const a=(now-q.t)/450; ctx.strokeStyle=q.c; ctx.globalAlpha=1-a; ctx.lineWidth=2;
+        for(let k=0;k<(playReduced()?4:8);k++){ const an=k*Math.PI/4, r1=q.r*(0.6+a*0.6), r2=r1+6;
+          ctx.beginPath(); ctx.moveTo(q.x+Math.cos(an)*r1,q.y+Math.sin(an)*r1); ctx.lineTo(q.x+Math.cos(an)*r2,q.y+Math.sin(an)*r2); ctx.stroke(); } });
+      ctx.globalAlpha=1; }
+  },
+
+  fireflies:{
+    title:'Fireflies', desc:'Calm lights drift in the dusk. Hold still and they come close.',
+    hint:'Hold your finger anywhere and the lights drift toward it. Let go and they wander off.', ends:false,
+    layout(W,H){ const first=!this.W; this.W=W; this.H=H; if(first||!this.fs) this.reset(); },
+    reset(){ const n=playReduced()?14:36; this.fs=[...Array(n)].map(()=>({x:Math.random()*(this.W||300), y:Math.random()*(this.H||500), vx:0, vy:0, ph:Math.random()*6, s:sndRand(.6,1.1)}));
+      this.hold=null; if(!this.spr) this.spr=playGlowSprite('rgba(255,226,150,1)',24); },
+    progress(){ return null; },
+    down(p){ this.hold=p; playHaptic(8); }, move(p){ if(this.hold) this.hold=p; },
+    up(){ if(this.hold){ const h=this.hold; this.fs.forEach(f=>{ const dx=f.x-h.x, dy=f.y-h.y, d=Math.hypot(dx,dy)||1; f.vx+=dx/d*sndRand(120,220); f.vy+=dy/d*sndRand(120,220); }); } this.hold=null; },
+    near(){ if(!this.hold) return 0; return this.fs.filter(f=>Math.hypot(f.x-this.hold.x,f.y-this.hold.y)<90).length; },
+    draw(ctx,W,H,now){ const dt=Math.min(0.05,(now-(this.lt||now))/1000); this.lt=now;
+      const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#3B2A4D'); g.addColorStop(1,'#6B4A80'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+      this.fs.forEach(f=>{ f.ph+=dt*f.s;
+        f.vx+=Math.cos(f.ph*1.7+f.s*9)*12*dt; f.vy+=Math.sin(f.ph*1.3+f.s*5)*12*dt;
+        if(this.hold){ const dx=this.hold.x-f.x, dy=this.hold.y-f.y, d=Math.hypot(dx,dy)||1; const pull=Math.min(140,d)*0.9; f.vx+=dx/d*pull*dt; f.vy+=dy/d*pull*dt; }
+        f.vx*=0.985; f.vy*=0.985; f.x+=f.vx*dt; f.y+=f.vy*dt;
+        if(f.x<-20) f.x=W+20; if(f.x>W+20) f.x=-20; if(f.y<-20) f.y=H+20; if(f.y>H+20) f.y=-20;
+        const tw=playReduced()?0.8:0.55+0.45*Math.sin(f.ph*2.2); ctx.globalAlpha=tw; ctx.drawImage(this.spr,f.x-24,f.y-24); });
+      ctx.globalAlpha=1; }
+  },
+
+  rain:{
+    title:'Rain on glass', desc:'Wipe a foggy window clear while raindrops trickle down.',
+    hint:'Wipe the glass with your finger. It slowly fogs up again.', ends:false, dprCap:2, resetLabel:'Fog it up',
+    layout(W,H){ const dpr=Math.min(2,window.devicePixelRatio||1); this.W=W; this.H=H;
+      this.scene=playOff(W,H,dpr); const s=this.scene.x; const g=s.createLinearGradient(0,0,0,H); g.addColorStop(0,'#BCD3E8'); g.addColorStop(.6,'#D8CCEA'); g.addColorStop(1,'#8FA98A'); s.fillStyle=g; s.fillRect(0,0,W,H);
+      try{ s.filter='blur(14px)'; }catch(e){}
+      [[.25,.75,60,'#6E5F82'],[.7,.7,80,'#8FA98A'],[.5,.35,40,'#F5CDB4'],[.85,.3,30,'#FBF7F2']].forEach(([a,b,r,c])=>{ s.fillStyle=c; s.beginPath(); s.arc(a*W,b*H,r,0,7); s.fill(); });
+      s.filter='none';
+      this.fog=playOff(W,H,dpr); this.fogFill(1); },
+    fogFill(a){ const x=this.fog.x; x.globalCompositeOperation='source-over'; x.globalAlpha=a; x.fillStyle='rgba(246,240,236,.88)'; x.fillRect(0,0,this.W,this.H); x.globalAlpha=1; },
+    reset(){ this.drops=[]; this.last=null; if(this.fog) this.fogFill(1); },
+    progress(){ return null; },
+    clearAt(p,r){ const x=this.fog.x; x.globalCompositeOperation='destination-out'; const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,r);
+      g.addColorStop(0,'rgba(0,0,0,1)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=g; x.beginPath(); x.arc(p.x,p.y,r,0,7); x.fill(); x.globalCompositeOperation='source-over'; },
+    down(p){ this.last=p; this.clearAt(p,34); playHaptic(8); },
+    move(p){ const a=this.last||p, L=Math.hypot(p.x-a.x,p.y-a.y), n=Math.max(1,Math.ceil(L/10));
+      for(let i=1;i<=n;i++) this.clearAt({x:a.x+(p.x-a.x)*i/n, y:a.y+(p.y-a.y)*i/n},34); this.last=p; },
+    up(){ this.last=null; },
+    fogAt(x,y){ const d=this.fog.x.getImageData(Math.round(x*this.fog.c.width/this.W),Math.round(y*this.fog.c.height/this.H),1,1).data; return d[3]/255; },
+    draw(ctx,W,H,now){ const dt=Math.min(0.05,(now-(this.lt||now))/1000); this.lt=now;
+      if(now-(this.lastFog||0)>250){ this.lastFog=now; this.fogFill(0.03); }   // fogs back over ~10–20s
+      const cap=playReduced()?14:34;
+      if(this.drops.length<cap && Math.random()<(playReduced()?0.04:0.1)) this.drops.push({x:Math.random()*W, y:Math.random()*H*0.7, r:sndRand(2,4.5), vy:0});
+      this.drops.forEach(d=>{ if(d.r>4.2){ d.vy=Math.min(90,d.vy+40*dt); d.y+=d.vy*dt; d.x+=Math.sin(d.y*0.05)*0.3; this.clearAt({x:d.x,y:d.y-d.r},d.r*1.4); } });
+      for(let i=0;i<this.drops.length;i++) for(let j=i+1;j<this.drops.length;j++){ const a=this.drops[i], b=this.drops[j];
+        if(!a.gone&&!b.gone&&Math.hypot(a.x-b.x,a.y-b.y)<a.r+b.r){ a.r=Math.min(9,Math.sqrt(a.r*a.r+b.r*b.r)); b.gone=1; } }
+      this.drops=this.drops.filter(d=>!d.gone && d.y<H+20);
+      ctx.drawImage(this.scene.c,0,0,W,H); ctx.drawImage(this.fog.c,0,0,W,H);
+      this.drops.forEach(d=>{ ctx.fillStyle='rgba(255,255,255,.35)'; ctx.beginPath(); ctx.ellipse(d.x,d.y,d.r,d.r*1.15,0,0,7); ctx.fill();
+        ctx.strokeStyle='rgba(110,95,130,.35)'; ctx.lineWidth=1; ctx.stroke(); ctx.fillStyle='rgba(255,255,255,.9)'; ctx.beginPath(); ctx.arc(d.x-d.r*.35,d.y-d.r*.4,d.r*.28,0,7); ctx.fill(); }); },
+    open(){ if(store.get('presentPlayRain')==='1') this.rainSound(true); },
+    close(){ this.rainSound(false); },
+    rainSound(on){ if(on){ if(sliderPos()>0 && !Audio_.isOn('distant-rain')) { Audio_.start('distant-rain'); this.ownsRain=true; } }
+      else if(this.ownsRain){ Audio_.stop('distant-rain'); this.ownsRain=false; } },
+    extraBar(){ return `<label class="playkeep"><input type="checkbox" id="playRainSnd" ${store.get('presentPlayRain')==='1'?'checked':''}
+      onchange="store.set('presentPlayRain',this.checked?'1':'0');PLAY_ACTS.rain.rainSound(this.checked)"> Rain sound</label>`; }
+  },
+
+  blob:{
+    title:'Soft sand', desc:'A squishy blob to press, poke and stretch. It always wobbles back.',
+    hint:'Press, poke or pull the blob. Let go and it settles back.', ends:false, N:28,
+    layout(W,H){ const cx=W/2, cy=H/2, R=Math.min(W,H)*0.28; const old=this.pts; this.cx=cx; this.cy=cy; this.R=R;
+      this.rest=[...Array(this.N)].map((_,i)=>{ const a=i*2*Math.PI/this.N; return {x:cx+R*Math.cos(a), y:cy+R*Math.sin(a)}; });
+      if(!old || old.length!==this.N) this.pts=this.rest.map(q=>({x:q.x,y:q.y,vx:0,vy:0})); else this.pts.forEach((q,i)=>{ q.x=this.rest[i].x; q.y=this.rest[i].y; }); },
+    reset(){ this.grab=null; this.press=null; if(this.rest) this.pts=this.rest.map(q=>({x:q.x,y:q.y,vx:0,vy:0})); },
+    progress(){ return null; },
+    deform(){ return this.pts.reduce((s,q,i)=>s+Math.hypot(q.x-this.rest[i].x,q.y-this.rest[i].y),0)/this.N; },
+    down(p){ const d=Math.hypot(p.x-this.cx,p.y-this.cy);
+      // near the edge: grab and stretch; inside: press down
+      let bi=0,bd=1e9; this.pts.forEach((q,i)=>{ const e=Math.hypot(q.x-p.x,q.y-p.y); if(e<bd){bd=e;bi=i;} });
+      if(bd<44 && d>this.R*0.6) this.grab={i:bi}; else this.press=p;
+      playHaptic(14); this.lastTick=performance.now(); },
+    move(p,now){ if(this.grab){ const q=this.pts[this.grab.i]; q.x=p.x; q.y=p.y; q.vx=q.vy=0; } else if(this.press) this.press=p;
+      if(now-this.lastTick>260 && this.deform()>this.R*0.12){ playHaptic(8); this.lastTick=now; } },
+    up(){ this.grab=null; this.press=null; },
+    draw(ctx,W,H,now){ const dt=Math.min(0.033,(now-(this.lt||now))/1000); this.lt=now; const N=this.N;
+      const k=playReduced()?60:38, damp=playReduced()?0.8:0.9;
+      for(let s=0;s<2;s++) this.pts.forEach((q,i)=>{ if(this.grab&&this.grab.i===i) return;
+        const r=this.rest[i]; let tx=r.x, ty=r.y;
+        if(this.press){ const dx=r.x-this.press.x, dy=r.y-this.press.y, d=Math.hypot(dx,dy)||1, reach=this.R*1.7;
+          if(d<reach){ const sq=this.R*0.32*(1-d/reach)+this.R*0.08; tx+=dx/d*sq; ty+=dy/d*sq*0.6; } }
+        let fx=(tx-q.x)*k, fy=(ty-q.y)*k;
+        const a=this.pts[(i+N-1)%N], b=this.pts[(i+1)%N], ra=this.rest[(i+N-1)%N], rb=this.rest[(i+1)%N];
+        fx+=(((a.x+b.x)/2-q.x)-((ra.x+rb.x)/2-r.x))*30; fy+=(((a.y+b.y)/2-q.y)-((ra.y+rb.y)/2-r.y))*30;
+        if(this.grab){ const g=this.pts[this.grab.i], di=Math.min(Math.abs(i-this.grab.i),N-Math.abs(i-this.grab.i)); if(di<5){ fx+=(g.x-q.x)*(5-di)*4; fy+=(g.y-q.y)*(5-di)*4; } }
+        q.vx=(q.vx+fx*dt/2)*damp; q.vy=(q.vy+fy*dt/2)*damp; q.x+=q.vx*dt/2; q.y+=q.vy*dt/2; });
+      ctx.fillStyle='#FDF7F0'; ctx.fillRect(0,0,W,H);
+      const c=this.pts.reduce((s,q)=>({x:s.x+q.x/N,y:s.y+q.y/N}),{x:0,y:0});
+      ctx.fillStyle='rgba(74,53,96,.10)'; ctx.beginPath(); ctx.ellipse(c.x,this.cy+this.R*1.08,this.R*0.95,this.R*0.16,0,0,7); ctx.fill();
+      const g=ctx.createRadialGradient(c.x-this.R*.35,c.y-this.R*.4,this.R*.1,c.x,c.y,this.R*1.3); g.addColorStop(0,'#F7D9E2'); g.addColorStop(.6,'#E0A0B4'); g.addColorStop(1,'#B96C8C');
+      ctx.fillStyle=g; ctx.beginPath();
+      for(let i=0;i<=N;i++){ const a=this.pts[i%N], b=this.pts[(i+1)%N], mx=(a.x+b.x)/2, my=(a.y+b.y)/2; if(i===0) ctx.moveTo(mx,my); else ctx.quadraticCurveTo(a.x,a.y,mx,my); }
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.45)'; ctx.beginPath(); ctx.ellipse(c.x-this.R*.3,c.y-this.R*.38,this.R*.22,this.R*.12,-0.5,0,7); ctx.fill(); }
+  }
+});
+Object.assign(PLAY_PREVIEW, {
+  sand:`<svg viewBox="0 0 120 80"><rect width="120" height="80" rx="10" fill="#F1E4CF"/>${[0,1,2,3].map(k=>`<path d="M8 ${26+k*8} q30 -14 56 0 t52 0" fill="none" stroke="#C9AE8C" stroke-width="2" stroke-linecap="round"/>`).join('')}<circle cx="88" cy="58" r="8" fill="#B9A58C"/></svg>`,
+  bubbles:`<svg viewBox="0 0 120 80"><rect width="120" height="80" rx="10" fill="#F6E9EF"/><circle cx="40" cy="48" r="16" fill="#fff" fill-opacity=".6" stroke="#E0A0B4"/><circle cx="76" cy="28" r="11" fill="#fff" fill-opacity=".6" stroke="#A78BC4"/><circle cx="92" cy="58" r="7" fill="#fff" fill-opacity=".6" stroke="#E8956B"/></svg>`,
+  fireflies:`<svg viewBox="0 0 120 80"><rect width="120" height="80" rx="10" fill="#4A3560"/>${[[30,30],[52,50],[70,22],[88,46],[60,62],[96,24]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="7" fill="#FFE296" opacity=".25"/><circle cx="${x}" cy="${y}" r="2.4" fill="#FFE296"/>`).join('')}</svg>`,
+  rain:`<svg viewBox="0 0 120 80"><rect width="120" height="80" rx="10" fill="#C9D7E6"/><rect width="120" height="80" rx="10" fill="#F4EEEA" opacity=".8"/><path d="M30 40 q20 -18 50 -4" stroke="#C9D7E6" stroke-width="14" stroke-linecap="round" fill="none"/>${[[20,20],[96,30],[84,60]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="3" ry="3.6" fill="#fff" stroke="#A78BC4" stroke-width=".8"/>`).join('')}</svg>`,
+  blob:`<svg viewBox="0 0 120 80"><ellipse cx="60" cy="68" rx="30" ry="5" fill="#4A3560" opacity=".1"/><path d="M34 46 q-4 -26 26 -28 q32 -2 28 26 q-2 20 -28 20 q-24 0 -26 -18z" fill="#E0A0B4"/><ellipse cx="50" cy="32" rx="8" ry="4" fill="#fff" opacity=".5"/></svg>`
+});
+
 function playCards(){
   return `<div class="eyebrow">Interactive activities</div>
     <p class="sub" style="margin:0 0 12px">Something to do with your hands for a minute. No goals you have to hit.</p>
@@ -7821,7 +8023,7 @@ function playMount(){
 }
 function playResize(){
   const st=document.getElementById('playStage'), c=document.getElementById('playCanvas'); if(!st||!c) return;
-  const r=st.getBoundingClientRect(), dpr=Math.min(3, window.devicePixelRatio||1);
+  const r=st.getBoundingClientRect(), dpr=Math.min((playEng.act&&playEng.act.dprCap)||2, window.devicePixelRatio||1);
   playEng.W=Math.max(1,Math.floor(r.width)); playEng.H=Math.max(1,Math.floor(r.height));
   c.width=Math.round(playEng.W*dpr); c.height=Math.round(playEng.H*dpr);
   c.style.width=playEng.W+'px'; c.style.height=playEng.H+'px';
@@ -7831,7 +8033,7 @@ function playResize(){
 }
 function playFrame(){
   const e=playEng; if(!e.ctx||!e.act) return;
-  e.ctx.clearRect(0,0,e.W,e.H); e.act.draw(e.ctx,e.W,e.H,performance.now());
+  const t0=performance.now(); e.ctx.clearRect(0,0,e.W,e.H); e.act.draw(e.ctx,e.W,e.H,t0); e.cost=performance.now()-t0;
 }
 function playLoop(){ playStop(); const tick=()=>{ playFrame(); playEng.raf=requestAnimationFrame(tick); }; playEng.raf=requestAnimationFrame(tick); }
 function playStop(){ if(playEng.raf) cancelAnimationFrame(playEng.raf); playEng.raf=0; }
@@ -7839,12 +8041,17 @@ function playUI(){
   const a=playEng.act; if(!a) return;
   const prog=document.getElementById('playProg'), p=a.progress();
   if(prog) prog.textContent = p===null ? '' : (a.done ? '' : (p>0 ? (playEng.key==='flower' ? `${a.filled.filter(f=>f).length} of ${a.N} petals` : 'Keep going, at your own pace') : ''));
-  const bar=document.getElementById('playBar'); if(!bar) return;
-  if(playEng.key==='draw') bar.innerHTML=`<label class="playkeep"><input type="checkbox" id="playKeep" ${a.keep?'checked':''} onchange="PLAY_ACTS.draw.setKeep(this.checked, performance.now())"> Keep my drawing until I clear it</label>
+  const bar=document.getElementById('playBar'); if(!bar || bar.dataset.k===playEng.key) return;
+  const k=playEng.key; let h='';
+  if(k==='draw') h=`<label class="playkeep"><input type="checkbox" id="playKeep" ${a.keep?'checked':''} onchange="PLAY_ACTS.draw.setKeep(this.checked, performance.now())"> Keep my drawing until I clear it</label>
       <button class="btn line sm" onclick="playRestart()">Clear</button>`;
-  else if(playEng.key==='ripples') bar.innerHTML=`<button class="btn line sm" onclick="playRestart()">Calm the water</button>`;
-  else if(!bar.dataset.k || bar.dataset.k!==playEng.key) bar.innerHTML=`<button class="btn line sm" onclick="playRestart()">Restart</button>`;
-  bar.dataset.k=playEng.key;
+  else if(k==='ripples') h=`<button class="btn line sm" onclick="playRestart()">Calm the water</button>`;
+  else if(k==='bubbles' || k==='fireflies') h='';
+  else h=`<button class="btn line sm" onclick="playRestart()">${a.resetLabel||'Restart'}</button>`;
+  if(a.extraBar) h=a.extraBar()+h;
+  if(k==='bubbles') h+=`<label class="playkeep"><input type="checkbox" id="playSnd" ${store.get('presentPlaySound')!=='0'?'checked':''} onchange="store.set('presentPlaySound',this.checked?'1':'0')"> Pop sound</label>`;
+  if(playHapticsAvailable()) h+=`<label class="playkeep"><input type="checkbox" id="playHapt" ${playHapticsOn()?'checked':''} onchange="playSetHaptics(this.checked)"> Vibration</label>`;
+  bar.innerHTML=h; bar.dataset.k=k;
 }
 function playFinished(msg){
   const d=document.getElementById('playDone'); if(!d) return;
@@ -7870,10 +8077,12 @@ function openPlay(key){
   const bar=document.getElementById('playBar'); bar.dataset.k='';
   const d=document.getElementById('playDone'); d.classList.remove('on'); d.innerHTML='';
   document.getElementById('playWrap').classList.add('on');
+  if(a.open) a.open();
   requestAnimationFrame(()=>{ playResize(); playUI(); playLoop(); document.getElementById('playClose').focus({preventScroll:true}); });
 }
 function closePlay(){
   playStop(); playEng.active=null;
+  if(playEng.act && playEng.act.close) playEng.act.close();
   const w=document.getElementById('playWrap'); if(w) w.classList.remove('on');
   playEng.key=null; playEng.act=null;
   if(playEng.scrollEl) playEng.scrollEl.scrollTop=playEng.scrollY;
