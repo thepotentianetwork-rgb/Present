@@ -3483,6 +3483,7 @@ function toast(t){
   const d=document.createElement('div');
   d.textContent=t;
   d.style.cssText='position:fixed;left:50%;bottom:calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 34px);transform:translateX(-50%);z-index:95;background:var(--plum);color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:700;box-shadow:var(--lift)';
+  if(t.length>40) d.style.cssText+=';border-radius:18px;width:min(86vw,340px);text-align:center;font-weight:600;line-height:1.35';
   document.getElementById('app').appendChild(d);
   setTimeout(()=>d.remove(),1900);
 }
