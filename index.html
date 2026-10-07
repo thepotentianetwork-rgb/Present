@@ -7820,7 +7820,7 @@ function playHaptic(ms){
 }
 /* The 'Test vibration' button: a real label around a real switch, so a real
    tap toggles it (iOS tick); on Android it also vibrates. */
-function playTestVibration(e){
+function playTestVibration(e){ if(e&&e.target&&e.target.tagName==='INPUT') return;
   if(playHapticsVibrate()){ try{ navigator.vibrate(20); }catch(_){} }
   playHap.tested=(playHap.tested||0)+1;
 }
@@ -8024,8 +8024,8 @@ function playMount(){
   const layer=document.getElementById('playTapLayer');
   const surf=layer||c;     // on iOS the tap layer receives the pointer, the canvas draws
   const pt=e=>{ const r=c.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
-  if(layer) layer.addEventListener('click',e=>{ if(!playHap.want || !playHapticsOn()) e.preventDefault(); else playHap.fired=(playHap.fired||0)+1; playHap.want=false; });
-  surf.addEventListener('pointerdown',e=>{ if(!playEng.act) return; e.preventDefault(); try{surf.setPointerCapture(e.pointerId);}catch(_){}
+  if(layer) layer.addEventListener('click',e=>{ if(e.target!==layer) return; if(!playHap.want || !playHapticsOn()) e.preventDefault(); else playHap.fired=(playHap.fired||0)+1; playHap.want=false; });
+  surf.addEventListener('pointerdown',e=>{ if(!playEng.act) return; if(!layer) e.preventDefault(); try{surf.setPointerCapture(e.pointerId);}catch(_){}
     playHap.want=false; playEng.active=e.pointerId; playEng.act.down && playEng.act.down(pt(e), performance.now()); playUI(); });
   surf.addEventListener('pointermove',e=>{ if(playEng.active!==e.pointerId||!playEng.act) return; e.preventDefault();
     const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e]; (evs.length?evs:[e]).forEach(ev=>playEng.act.move && playEng.act.move(pt(ev), performance.now())); playUI(); });
