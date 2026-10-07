@@ -3960,22 +3960,22 @@ const AUDIO_CATEGORIES = ['Nature','Ambient','Soft Lofi','Acoustic','My Sounds']
 /* trim = perceived-loudness compensation, applied before master.
    Lower numbers for brighter sounds; they carry further to the ear. */
 const SOUND_LIBRARY = [
-  {id:'gentle-rain',  cat:'Nature', name:'Gentle Rain',      desc:'Light rain · soft + steady', icon:'🌧', trim:0.55},
-  {id:'distant-rain', cat:'Nature', name:'Distant Rain',     desc:'Distant rain · quiet',       icon:'🌦', trim:0.80},
-  {id:'quiet-creek',  cat:'Nature', name:'Quiet Creek',      desc:'Flowing water · gentle',     icon:'💧', trim:0.52},
-  {id:'soft-ocean',   cat:'Nature', name:'Soft Ocean',       desc:'Slow waves · spacious',      icon:'🌊', trim:0.95},
-  {id:'forest-rain',  cat:'Nature', name:'Forest After Rain',desc:'Forest ambience · peaceful', icon:'🌲', trim:0.62},
-  {id:'fireplace',    cat:'Nature', name:'Soft Fireplace',   desc:'Warm fire · cozy',           icon:'🔥', trim:0.90},
-  {id:'crickets',     cat:'Nature', name:'Evening Crickets', desc:'Night ambience · still',     icon:'🌙', trim:0.58},
-  {id:'light-wind',   cat:'Nature', name:'Light Wind',       desc:'Soft breeze · open',         icon:'🍃', trim:0.82},
+  {id:'gentle-rain',  cat:'Nature', name:'Gentle Rain',      desc:'Light rain · soft + steady', icon:'🌧', trim:0.42},
+  {id:'distant-rain', cat:'Nature', name:'Distant Rain',     desc:'Distant rain · quiet',       icon:'🌦', trim:0.45},
+  {id:'quiet-creek',  cat:'Nature', name:'Quiet Creek',      desc:'Flowing water · gentle',     icon:'💧', trim:0.51},
+  {id:'soft-ocean',   cat:'Nature', name:'Soft Ocean',       desc:'Slow waves · spacious',      icon:'🌊', trim:0.57},
+  {id:'forest-rain',  cat:'Nature', name:'Forest After Rain',desc:'Forest ambience · peaceful', icon:'🌲', trim:0.63},
+  {id:'fireplace',    cat:'Nature', name:'Soft Fireplace',   desc:'Warm fire · cozy',           icon:'🔥', trim:0.42},
+  {id:'crickets',     cat:'Nature', name:'Evening Crickets', desc:'Night ambience · still',     icon:'🌙', trim:1.6},
+  {id:'light-wind',   cat:'Nature', name:'Light Wind',       desc:'Soft breeze · open',         icon:'🍃', trim:0.53},
 
   /* Ambient tracks are generated the same way the nature sounds are —
      nothing sampled, nothing imitated, no rights question. */
-  {id:'floating',     cat:'Ambient', name:'Floating',        desc:'Ambient · weightless',       icon:'✧', trim:0.70, music:true},
-  {id:'night-window', cat:'Ambient', name:'Night Window',    desc:'Ambient · late + safe',      icon:'◗', trim:0.70, music:true},
-  {id:'after-rain',   cat:'Ambient', name:'After the Rain',  desc:'Ambient · relief',           icon:'◍', trim:0.70, music:true},
-  {id:'open-sky',     cat:'Ambient', name:'Open Sky',        desc:'Ambient · spacious',         icon:'◯', trim:0.68, music:true},
-  {id:'still-here',   cat:'Ambient', name:'Still Here',      desc:'Meditative · minimal',       icon:'◦', trim:0.72, music:true},
+  {id:'floating',     cat:'Ambient', name:'Floating',        desc:'Ambient · weightless',       icon:'✧', trim:1.0, music:true},
+  {id:'night-window', cat:'Ambient', name:'Night Window',    desc:'Ambient · late + safe',      icon:'◗', trim:1.27, music:true},
+  {id:'after-rain',   cat:'Ambient', name:'After the Rain',  desc:'Ambient · relief',           icon:'◍', trim:1.6, music:true},
+  {id:'open-sky',     cat:'Ambient', name:'Open Sky',        desc:'Ambient · spacious',         icon:'◯', trim:1.6, music:true},
+  {id:'still-here',   cat:'Ambient', name:'Still Here',      desc:'Meditative · minimal',       icon:'◦', trim:1.44, music:true},
 
   /* These need real instruments — felt piano, nylon guitar, Rhodes. They are
      placeholders until licensed original recordings exist. Nothing plays. */
@@ -4020,122 +4020,254 @@ function syncVolumeUI(){
 const FADE_IN=2.2, FADE_OUT=1.8;
 
 /* ===================== VOICES =====================
-   Every voice is broadband, slow-moving and predictable. No scheduled
-   events, no pops, no chirps, nothing that arrives suddenly. Where the
-   previous versions had randomised incidents — thunder rolls, fire cracks,
-   cricket pulses — those are gone, replaced by continuous texture. */
+   Each sound has its own recognisable character, but everything stays
+   gentle: soft attacks (no clicks), low event levels, nothing loud or
+   sudden. Events (droplets, crackles, chirps, notes) are scheduled a
+   little ahead on the audio clock; in an OfflineAudioContext they are all
+   scheduled up front so the sounds can be rendered and measured. */
+
+/* Schedule events: gap() → seconds to the next one, fire(t) builds it. */
+function sndEvents(A, gap, fire, startDelay){
+  const ctx=A.ctx;
+  let next=ctx.currentTime+(startDelay||0.3);
+  if(typeof OfflineAudioContext!=='undefined' && ctx instanceof OfflineAudioContext){
+    const end=ctx.length/ctx.sampleRate;
+    while(next<end){ fire(next); next+=Math.max(0.02, gap()); }
+    return {stop(){}};
+  }
+  const pump=()=>{ const horizon=ctx.currentTime+0.6;
+    while(next<horizon){ if(next>=ctx.currentTime) fire(next); next+=Math.max(0.02, gap()); } };
+  pump();
+  const id=setInterval(pump, 200);
+  return {stop(){ clearInterval(id); }};
+}
+const sndRand=(a,b)=>a+Math.random()*(b-a);
+
+/* A short filtered noise burst — droplets, crackles, leaf ticks. */
+function sndBurst(A, dest, t, {type='bandpass', freq=3000, q=1, level=.1, attack=.002, decay=.04, color='white'}){
+  const s=A.ctx.createBufferSource(); s.buffer=A.buf(color);
+  const f=A.filter(type, freq, q), g=A.gain(0);
+  s.connect(f); f.connect(g); g.connect(dest);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(level, t+attack);
+  g.gain.exponentialRampToValueAtTime(.0001, t+attack+decay);
+  s.start(t, Math.random()*3); s.stop(t+attack+decay+.02);
+}
+
+/* A soft tone: sine/triangle with a gentle envelope and optional glide. */
+function sndNote(A, dest, t, {freq, to, type='sine', level=.05, attack=.02, hold=0, decay=1, partials}){
+  const g=A.gain(0); g.connect(dest);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(level, t+attack);
+  if(hold) g.gain.setValueAtTime(level, t+attack+hold);
+  g.gain.exponentialRampToValueAtTime(.0001, t+attack+hold+decay);
+  const end=t+attack+hold+decay+.05;
+  (partials||[[1,1]]).forEach(([mult,amp])=>{
+    const o=A.ctx.createOscillator(); o.type=type;
+    o.frequency.setValueAtTime(freq*mult, t);
+    if(to) o.frequency.exponentialRampToValueAtTime(to*mult, t+attack+hold+decay*.5);
+    const pg=A.gain(amp); o.connect(pg); pg.connect(g);
+    o.start(t); o.stop(end);
+  });
+}
+
+/* A bird call: two to four quick sine sweeps. */
+function sndChirp(A, dest, t, level){
+  const base=sndRand(2400,4200), n=2+Math.floor(Math.random()*3), up=Math.random()<.5;
+  for(let i=0;i<n;i++){
+    const f=base*(1+ (up?i:-i)*.06);
+    sndNote(A, dest, t+i*sndRand(.09,.16), {freq:f, to:f*sndRand(1.15,1.45), level, attack:.01, decay:.08});
+  }
+}
 
 const SANCTUARY_VOICES = {
 
-  /* Rain heard through glass, not rain landing on you. The old version ran
-     white noise from 700Hz to 5.2kHz, which is where the ear is most
-     sensitive — that brightness is why it felt loud. This sits much lower
-     and rolls off hard. */
+  /* Close, soft rain: a mid-band hiss plus many tiny, quiet droplets. */
   'gentle-rain'(A){
-    const s=A.src('white'), hp=A.filter('highpass',260), lp=A.filter('lowpass',1900), g=A.gain(0);
-    s.connect(hp); hp.connect(lp); lp.connect(g);
-    const bed=A.src('brown'), blp=A.filter('lowpass',300), bg=A.gain(.35);
+    const g=A.gain(0);
+    const s=A.src('white'), hp=A.filter('highpass',500), lp=A.filter('lowpass',4200), sg=A.gain(.32);
+    s.connect(hp); hp.connect(lp); lp.connect(sg); sg.connect(g);
+    const bed=A.src('brown'), blp=A.filter('lowpass',350), bg=A.gain(.25);
     bed.connect(blp); blp.connect(bg); bg.connect(g);
-    const vary=A.lfo(0.05, 90, lp.frequency);      // slow, never a swell
-    return {out:g, stop(){vary.stop();try{s.stop();bed.stop()}catch(e){}}};
+    const vary=A.lfo(0.07, 300, lp.frequency);
+    const drops=sndEvents(A, ()=>sndRand(.03,.16), t=>
+      sndBurst(A, g, t, {freq:sndRand(2500,6500), q:sndRand(4,9), level:sndRand(.05,.16), decay:sndRand(.015,.04)}));
+    return {out:g, stop(){drops.stop();vary.stop();try{s.stop();bed.stop()}catch(e){}}};
   },
 
-  /* The same rain, further away and more diffuse. Genuinely a different
-     filter and mix, not the same sound turned down. */
+  /* Rain on a roof down the road: dark, diffuse, with slow muffled taps. */
   'distant-rain'(A){
-    const s=A.src('white'), hp=A.filter('highpass',180), lp=A.filter('lowpass',1000), g=A.gain(0);
-    s.connect(hp); hp.connect(lp); lp.connect(g);
-    const bed=A.src('brown'), blp=A.filter('lowpass',220), bg=A.gain(.5);
+    const g=A.gain(0);
+    const s=A.src('white'), lp=A.filter('lowpass',800), lp2=A.filter('lowpass',1100), sg=A.gain(.38);
+    s.connect(lp); lp.connect(lp2); lp2.connect(sg); sg.connect(g);
+    const bed=A.src('brown'), blp=A.filter('lowpass',200), bg=A.gain(.6);
     bed.connect(blp); blp.connect(bg); bg.connect(g);
-    const vary=A.lfo(0.03, 60, lp.frequency);
-    return {out:g, stop(){vary.stop();try{s.stop();bed.stop()}catch(e){}}};
+    const vary=A.lfo(0.025, 120, lp.frequency);
+    const taps=sndEvents(A, ()=>sndRand(.15,.5), t=>
+      sndBurst(A, g, t, {type:'lowpass', freq:sndRand(600,1100), q:2, level:sndRand(.06,.14), attack:.004, decay:sndRand(.05,.1)}));
+    return {out:g, stop(){taps.stop();vary.stop();try{s.stop();bed.stop()}catch(e){}}};
   },
 
-  /* Small water over stones. Narrow band, gently wandering — not a torrent. */
+  /* Water over stones: brighter bands that burble, plus small bubbles. */
   'quiet-creek'(A){
-    const s=A.src('white'), bp=A.filter('bandpass',760,.7), lp=A.filter('lowpass',2000), g=A.gain(0);
-    s.connect(bp); bp.connect(lp); lp.connect(g);
-    const wander=A.lfo(0.28, 70, bp.frequency);
-    return {out:g, stop(){wander.stop();try{s.stop()}catch(e){}}};
+    const g=A.gain(0), mods=[];
+    const s=A.src('white');
+    [[900,2.2,.5],[1700,3,.4],[2900,4,.25]].forEach(([f,q,lvl],i)=>{
+      const bp=A.filter('bandpass',f,q), bg=A.gain(lvl);
+      s.connect(bp); bp.connect(bg); bg.connect(g);
+      mods.push(A.lfo(3.1+i*1.7, f*.25, bp.frequency));      // burble
+      mods.push(A.lfo(0.9+i*.63, lvl*.45, bg.gain));
+    });
+    const bubbles=sndEvents(A, ()=>sndRand(.08,.45), t=>{
+      const f=sndRand(350,900);
+      sndNote(A, g, t, {freq:f, to:f*sndRand(1.6,2.4), level:sndRand(.02,.05), attack:.005, decay:.05});
+    });
+    return {out:g, stop(){bubbles.stop();mods.forEach(m=>m.stop());try{s.stop()}catch(e){}}};
   },
 
-  /* Waves from a distance. The swell is slow and shallow, so no wave ever
-     arrives as an event. */
+  /* Waves: each one swells over 4–5s and draws back over 5–7s. */
   'soft-ocean'(A){
-    const s=A.src('brown'), lp=A.filter('lowpass',420), g=A.gain(0);
-    s.connect(lp); lp.connect(g);
-    const swell=A.lfo(0.045, 0.16, g.gain);        // shallow: no crash
-    const drift=A.lfo(0.018, 60, lp.frequency);
-    return {out:g, stop(){swell.stop();drift.stop();try{s.stop()}catch(e){}}};
+    const g=A.gain(0), wave=A.gain(.15);
+    const s=A.src('brown'), lp=A.filter('lowpass',500);
+    s.connect(lp); lp.connect(wave); wave.connect(g);
+    const foam=A.src('white'), fbp=A.filter('bandpass',1800,.6), fg=A.gain(0);
+    foam.connect(fbp); fbp.connect(fg); fg.connect(g);
+    const waves=sndEvents(A, ()=>sndRand(8,12), t=>{
+      const up=sndRand(3.5,5), down=sndRand(4.5,6.5), peak=sndRand(.85,1.1);
+      wave.gain.setValueAtTime(.15,t); wave.gain.linearRampToValueAtTime(peak,t+up);
+      wave.gain.linearRampToValueAtTime(.15,t+up+down);
+      lp.frequency.setValueAtTime(380,t); lp.frequency.linearRampToValueAtTime(1100,t+up);
+      lp.frequency.linearRampToValueAtTime(380,t+up+down);
+      fg.gain.setValueAtTime(0,t+up*.7); fg.gain.linearRampToValueAtTime(.05*peak,t+up+.4);
+      fg.gain.linearRampToValueAtTime(0,t+up+down*.8);
+    }, 0.05);
+    return {out:g, stop(){waves.stop();try{s.stop();foam.stop()}catch(e){}}};
   },
 
-  /* Wet forest. Air, leaves, and a suggestion of dripping — no bird calls,
-     which were the sharpest thing in the old library. */
+  /* Wet forest: a soft bed, slow leaf drips, and an occasional bird. */
   'forest-rain'(A){
-    const air=A.src('brown'), alp=A.filter('lowpass',520), ag=A.gain(.6);
-    air.connect(alp); alp.connect(ag);
-    const g=A.gain(0); ag.connect(g);
-    const drip=A.src('white'), dbp=A.filter('bandpass',1400,1.4), dg=A.gain(.06);
-    drip.connect(dbp); dbp.connect(dg); dg.connect(g);
-    const breeze=A.lfo(0.035, 140, alp.frequency);
-    const shimmer=A.lfo(0.12, 0.03, dg.gain);      // texture, not droplets
-    return {out:g, stop(){breeze.stop();shimmer.stop();try{air.stop();drip.stop()}catch(e){}}};
+    const g=A.gain(0);
+    const air=A.src('brown'), alp=A.filter('lowpass',650), ag=A.gain(.55);
+    air.connect(alp); alp.connect(ag); ag.connect(g);
+    const leaves=A.src('white'), lbp=A.filter('bandpass',2200,.8), lg=A.gain(.03);
+    leaves.connect(lbp); lbp.connect(lg); lg.connect(g);
+    const breeze=A.lfo(0.04, 160, alp.frequency);
+    const drips=sndEvents(A, ()=>sndRand(.4,1.4), t=>{
+      const f=sndRand(900,1600);
+      sndNote(A, g, t, {freq:f, to:f*1.5, level:sndRand(.025,.05), attack:.004, decay:.07});
+    });
+    const birds=sndEvents(A, ()=>sndRand(2.5,7), t=>sndChirp(A, g, t, sndRand(.02,.04)), 1.2);
+    return {out:g, stop(){drips.stop();birds.stop();breeze.stop();try{air.stop();leaves.stop()}catch(e){}}};
   },
 
-  /* Continuous burn. The old version scheduled random crackles with a sharp
-     attack; this keeps the body of the fire and drops the incidents. */
+  /* A fire: warm brown-noise body, a low flicker, and soft crackles. */
   'fireplace'(A){
-    const s=A.src('brown'), lp=A.filter('lowpass',340), g=A.gain(0);
-    s.connect(lp); lp.connect(g);
-    const body=A.src('white'), bbp=A.filter('bandpass',520,.9), bg=A.gain(.05);
-    body.connect(bbp); bbp.connect(bg); bg.connect(g);
-    const flicker=A.lfo(0.32, 0.05, g.gain);       // gentle, never a pop
-    const ember=A.lfo(0.7, 0.018, bg.gain);
-    return {out:g, stop(){flicker.stop();ember.stop();try{s.stop();body.stop()}catch(e){}}};
+    const g=A.gain(0);
+    const s=A.src('brown'), lp=A.filter('lowpass',420), sg=A.gain(.8);
+    s.connect(lp); lp.connect(sg); sg.connect(g);
+    const flicker=A.lfo(0.45, 0.2, sg.gain);
+    const roar=A.lfo(0.11, 120, lp.frequency);
+    const crackles=sndEvents(A, ()=>Math.random()<.3 ? sndRand(.02,.08) : sndRand(.15,.7), t=>
+      sndBurst(A, g, t, {type:'highpass', freq:sndRand(1200,3000), q:.7, level:sndRand(.06,.2), attack:.001, decay:sndRand(.006,.02)}));
+    return {out:g, stop(){crackles.stop();flicker.stop();roar.stop();try{s.stop()}catch(e){}}};
   },
 
-  /* Distant, blurred, continuous. No pulsing chirp. */
+  /* A summer night: two crickets at different pitches and rates. */
   'crickets'(A){
-    const s=A.src('brown'), lp=A.filter('lowpass',480), g=A.gain(0);
-    s.connect(lp); lp.connect(g);
-    const night=A.src('white'), nbp=A.filter('bandpass',3100,3.5), ng=A.gain(.012);
-    night.connect(nbp); nbp.connect(ng); ng.connect(g);
-    const air=A.lfo(0.028, 120, lp.frequency);
-    const far=A.lfo(0.16, 0.004, ng.gain);         // barely moving
-    return {out:g, stop(){air.stop();far.stop();try{s.stop();night.stop()}catch(e){}}};
+    const g=A.gain(0);
+    const s=A.src('brown'), lp=A.filter('lowpass',300), sg=A.gain(.1);
+    s.connect(lp); lp.connect(sg); sg.connect(g);
+    const cricket=(freq, period, pulses, lvl)=>sndEvents(A, ()=>period*sndRand(.9,1.15), t=>{
+      for(let i=0;i<pulses;i++) sndNote(A, g, t+i*.045, {freq, level:lvl, attack:.006, hold:.012, decay:.02, partials:[[1,1],[2,.15]]});
+    });
+    const c1=cricket(4400, .85, 3, .05), c2=cricket(3900, 1.3, 4, .03);
+    return {out:g, stop(){c1.stop();c2.stop();try{s.stop()}catch(e){}}};
   },
 
-  /* Air moving, no gusts and no low roar. */
+  /* Wind: band-passed noise whose band and level rise and fall in gusts. */
   'light-wind'(A){
-    const s=A.src('brown'), lp=A.filter('lowpass',600), hp=A.filter('highpass',120), g=A.gain(0);
-    s.connect(hp); hp.connect(lp); lp.connect(g);
-    const move=A.lfo(0.022, 150, lp.frequency);
-    const breath=A.lfo(0.033, 0.10, g.gain);       // shallower than before
-    return {out:g, stop(){move.stop();breath.stop();try{s.stop()}catch(e){}}};
+    const g=A.gain(0), gust=A.gain(.25);
+    const s=A.src('white'), bp=A.filter('bandpass',400,1.6), bp2=A.filter('lowpass',1800);
+    s.connect(bp); bp.connect(bp2); bp2.connect(gust); gust.connect(g);
+    const low=A.src('brown'), llp=A.filter('lowpass',250), lg=A.gain(.25);
+    low.connect(llp); llp.connect(lg); lg.connect(g);
+    const gusts=sndEvents(A, ()=>sndRand(4,8), t=>{
+      const up=sndRand(1.5,3), down=sndRand(2.5,4), peak=sndRand(.6,1);
+      bp.frequency.setValueAtTime(350,t); bp.frequency.exponentialRampToValueAtTime(sndRand(900,1500),t+up);
+      bp.frequency.exponentialRampToValueAtTime(350,t+up+down);
+      gust.gain.setValueAtTime(.2,t); gust.gain.linearRampToValueAtTime(peak,t+up);
+      gust.gain.linearRampToValueAtTime(.2,t+up+down);
+    }, 0.05);
+    return {out:g, stop(){gusts.stop();try{s.stop();low.stop()}catch(e){}}};
   },
 
   /* ---- ambient pieces ----
-     Generated, not recorded: slow pads with sparse tones. Nothing sampled,
-     no melody a listener starts anticipating. */
-  'floating'(A){ return pad(A, [174.6, 220, 261.6], 0.055, 12); },
+     Each has its own key, tempo, timbre and pattern. All generated — no
+     samples, no melody to anticipate, nothing loud. */
+
+  /* Floating — F lydian, ~50 bpm, soft sine bells drifting over a pad. */
+  'floating'(A){
+    const v=pad(A, [174.6, 261.6, 349.2], 0.035, 12);
+    const scale=[349.2, 392, 440, 493.9, 523.3, 587.3, 698.5];
+    const bells=sndEvents(A, ()=>[1.2,1.2,2.4][Math.floor(Math.random()*3)], t=>
+      sndNote(A, v.out, t, {freq:scale[Math.floor(Math.random()*scale.length)], level:.09, attack:.01, decay:2.6, partials:[[1,1],[2.76,.12],[5.4,.04]]}), .8);
+    const s=v.stop; v.stop=()=>{ bells.stop(); s(); }; return v;
+  },
+
+  /* Night Window — C minor, slow Rhodes-like chords every 6s, rain outside. */
   'night-window'(A){
-    const v=pad(A, [130.8, 164.8, 196], 0.04, 16);
+    const out=A.gain(0);
+    const chords=[[130.8,155.6,196,233.1],[103.8,130.8,155.6,196],[116.5,146.8,174.6,220],[98,123.5,146.8,174.6]];
+    let ci=0;
+    const keys=sndEvents(A, ()=>6, t=>{
+      chords[ci++%chords.length].forEach((f,i)=>
+        sndNote(A, out, t+i*.06, {freq:f, type:'triangle', level:.035, attack:.03, decay:5, partials:[[1,1],[2,.25]]}));
+    }, .2);
     const rain=SANCTUARY_VOICES['distant-rain'](A);
-    const rg=A.gain(.5); rain.out.connect(rg); rg.connect(v.out);
-    const stopPad=v.stop;
-    v.stop=()=>{ stopPad(); rain.stop(); };
-    return v;
+    const rg=A.gain(.35); rain.out.connect(rg); rg.connect(out); rain.out.gain.value=1;
+    return {out, stop(){ keys.stop(); rain.stop(); }};
   },
+
+  /* After the Rain — G major pentatonic, 84 bpm, harp-like plucked arpeggios. */
   'after-rain'(A){
-    const v=pad(A, [196, 246.9, 293.7], 0.05, 14);
-    const water=SANCTUARY_VOICES['quiet-creek'](A);
-    const wg=A.gain(.28); water.out.connect(wg); wg.connect(v.out);
-    const stopPad=v.stop;
-    v.stop=()=>{ stopPad(); water.stop(); };
-    return v;
+    const out=A.gain(0);
+    const lp=A.filter('lowpass',2200); lp.connect(out);
+    const pat=[196,246.9,293.7,392,329.6,293.7,246.9,220];
+    let i=0; const beat=60/84;
+    const harp=sndEvents(A, ()=> (i%8===0 ? beat*3 : beat), t=>{
+      const f=pat[i++%pat.length];
+      sndNote(A, lp, t, {freq:f, type:'sawtooth', level:.025, attack:.004, decay:1.4, partials:[[1,1]]});
+      sndNote(A, lp, t, {freq:f, level:.03, attack:.004, decay:1.8});
+    }, .3);
+    const drip=SANCTUARY_VOICES['quiet-creek'](A);
+    const dg=A.gain(.18); drip.out.connect(dg); dg.connect(out); drip.out.gain.value=1;
+    return {out, stop(){ harp.stop(); drip.stop(); }};
   },
-  'open-sky'(A){ return pad(A, [220, 293.7, 370], 0.038, 20); },
-  'still-here'(A){ return pad(A, [146.8, 220], 0.045, 24); }
+
+  /* Open Sky — D, open fifths with a slow filter sweep and a breathy flute line. */
+  'open-sky'(A){
+    const out=A.gain(0), lp=A.filter('lowpass',600); lp.connect(out);
+    const drones=[73.4,110,146.8,220].map((f,k)=>{ const o=A.ctx.createOscillator(); o.type='sawtooth';
+      o.frequency.value=f*(1+(k%2?.0008:-.0008)); const og=A.gain(.025); o.connect(og); og.connect(lp); o.start(); return o; });
+    const sweep=A.lfo(1/20, 450, lp.frequency);
+    const flute=[587.3,659.3,740,880,987.8];
+    const line=sndEvents(A, ()=>sndRand(3,6), t=>{
+      const f=flute[Math.floor(Math.random()*flute.length)];
+      sndNote(A, out, t, {freq:f, level:.03, attack:.4, hold:.8, decay:1.2});
+      const n=A.src('white'), nb=A.filter('bandpass',f*2,6), ng=A.gain(0);
+      n.connect(nb); nb.connect(ng); ng.connect(out);
+      ng.gain.setValueAtTime(0,t); ng.gain.linearRampToValueAtTime(.015,t+.4); ng.gain.linearRampToValueAtTime(0,t+2.2);
+    }, 1);
+    return {out, stop(){ line.stop(); sweep.stop(); drones.forEach(o=>{try{o.stop()}catch(e){}}); }};
+  },
+
+  /* Still Here — A, very slow: a low hum and a singing bowl every ~9s. */
+  'still-here'(A){
+    const v=pad(A, [110, 164.8], 0.03, 24);
+    const bowl=sndEvents(A, ()=>sndRand(8,10), t=>
+      sndNote(A, v.out, t, {freq:sndRand(218,222), level:.07, attack:.02, decay:7, partials:[[1,1],[2.71,.35],[5.15,.12],[8.4,.04]]}), .5);
+    const s=v.stop; v.stop=()=>{ bowl.stop(); s(); }; return v;
+  }
 };
 
 /* A slow warm pad: a few detuned sines through a low-pass, each breathing on
@@ -4152,7 +4284,6 @@ function pad(A, freqs, level, periodSec){
       o.frequency.value=f*Math.pow(2,cents/1200);
       const og=A.gain(level*(k===0?1:0.5));
       o.connect(og); og.connect(lp);
-      // Each voice swells on a different, slow, non-multiple period.
       const l=A.lfo(1/(periodSec+i*3.5+k*1.7), level*0.4, og.gain);
       o.start(); parts.push({o,l});
     });
@@ -4162,6 +4293,7 @@ function pad(A, freqs, level, periodSec){
   return {out:g, stop(){ parts.forEach(p=>{p.l.stop(); try{p.o.stop()}catch(e){}});
                          try{air.stop()}catch(e){} }};
 }
+
 
 /* ===================== AMBIENT AUDIO =====================
    Everything here is synthesised in the browser — no audio files, no
@@ -4256,6 +4388,21 @@ const Audio_ = {
     setSanctuaryVolume(pos);
   }
 };
+
+/* iOS: Web Audio only starts from a tap, and the ringer switch mutes it
+   unless the page declares itself as playback audio (Safari 17+). Unlock
+   on the first touch, and resume when the page comes back. */
+try{ if(navigator.audioSession) navigator.audioSession.type='playback'; }catch(e){}
+function sndUnlock(){
+  if(!Audio_.ctx) return;            // nothing created yet: the first sound tap creates it
+  if(Audio_.ctx.state!=='running'){
+    Audio_.ctx.resume();
+    try{ const b=Audio_.ctx.createBuffer(1,1,22050), s=Audio_.ctx.createBufferSource();
+         s.buffer=b; s.connect(Audio_.ctx.destination); s.start(0); }catch(e){}
+  }
+}
+['touchend','pointerdown','keydown'].forEach(ev=>document.addEventListener(ev, sndUnlock, {passive:true}));
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) sndUnlock(); });
 
 /* preview in the builder — one at a time */
 function previewSound(name, btn){
