@@ -158,6 +158,8 @@ export default {
       return new Response(null, { status: 303, headers: { location: '/login', 'set-cookie': cookie('', 0), 'cache-control': 'no-store' } });
     }
     if (p === '/favicon.ico') return new Response(null, { status: 204, headers: { 'cache-control': 'public, max-age=86400' } });
+    // Home-screen install files carry nothing private and are fetched without cookies.
+    if (/^\/(manifest\.webmanifest|icon-(180|192|512)\.png)$/.test(p)) return env.ASSETS.fetch(request);
     const authed = await validSession(request, env);
     if (p === '/api/generate') {
       if (!authed) return json({ error: 'Not signed in' }, 401);

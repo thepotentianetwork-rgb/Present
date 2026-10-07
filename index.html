@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#4A3560">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Present">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icon-180.png">
 <title>present. — v2 prototype (the loop)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1166,6 +1172,29 @@ details.deeper[open] summary::after{content:'−'}
 .mdrow{display:flex;align-items:center;gap:10px;font-size:14px}
 .mdrow input{width:20px;height:20px}
 .banner{background:var(--gold);color:#4A3308;font-size:12px;font-weight:700;text-align:center;padding:9px 16px;line-height:1.4}
+
+/* ===== REAL DEVICE LAYOUT =====
+   On phones Present is the whole screen: no fake status bar, no frame.
+   Only a wide desktop with a mouse keeps the phone-mockup look. The page
+   itself never scrolls (each .scroll does), so Safari's toolbar stays put
+   and 100dvh is the visible area. --vv-bottom is set from visualViewport
+   for browsers whose toolbar overlaps fixed content. */
+html,body{height:100%;height:-webkit-fill-available}
+html{background:#241A2E}
+body{overflow:hidden;overscroll-behavior:none;min-height:100%;min-height:-webkit-fill-available}
+#app{height:100vh;height:-webkit-fill-available;height:100dvh;min-height:0}
+.scroll{height:100vh;height:-webkit-fill-available;height:100dvh;
+  padding-bottom:calc(var(--bottom-safe) + var(--vv-bottom,0px));scroll-padding-bottom:calc(var(--bottom-safe) + var(--vv-bottom,0px))}
+.scroll.no-tabbar{padding-bottom:calc(24px + env(safe-area-inset-bottom) + var(--vv-bottom,0px))}
+.tabbar{left:50%;transform:translateX(-50%);bottom:var(--vv-bottom,0px)}
+.sanc{height:100vh;height:100dvh;bottom:auto}
+@media not all and (min-width:760px) and (hover:hover) and (pointer:fine){
+  #app{max-width:none;box-shadow:none}
+  .tabbar{max-width:none;left:0;transform:none}
+  .sanc{max-width:none}
+  /* the fake 9:41 bar becomes the real safe-area spacer */
+  .statusbar{visibility:hidden;height:env(safe-area-inset-top);padding:0!important;margin:0!important;overflow:hidden}
+}
 </style>
 </head>
 <body>
@@ -12416,5 +12445,14 @@ if(savedSanctuary){ go('home'); } else { $('#tabbar').style.display='none'; rend
 window.__presentBoot='ready';
 </script>
 </div>
+<script>
+/* Keep the tab bar above any browser toolbar that overlaps the layout viewport. */
+(function(){
+  const vv=window.visualViewport; if(!vv) return;
+  const fit=()=>{ const gap=Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+    document.documentElement.style.setProperty('--vv-bottom', (gap<200?gap:0)+'px'); };
+  vv.addEventListener('resize',fit); vv.addEventListener('scroll',fit); window.addEventListener('orientationchange',fit); fit();
+})();
+</script>
 </body>
 </html>

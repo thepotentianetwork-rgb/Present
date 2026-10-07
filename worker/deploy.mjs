@@ -22,7 +22,7 @@ async function cf(path, init = {}, token = TOKEN) {
 }
 
 // Static assets: index.html + every image at repo root.
-const files = readdirSync(root).filter(f => f === 'index.html' || /\.(jpe?g|png|webp|svg|ico)$/i.test(f));
+const files = readdirSync(root).filter(f => f === 'index.html' || f === 'manifest.webmanifest' || /\.(jpe?g|png|webp|svg|ico)$/i.test(f));
 const manifest = {}; const byHash = {};
 for (const f of files) {
   const buf = readFileSync(join(root, f)); const b64 = buf.toString('base64');
@@ -36,7 +36,7 @@ for (const bucket of sess.result.buckets || []) {
   const fd = new FormData();
   for (const h of bucket) {
     const ext = extname(byHash[h].f).slice(1).toLowerCase();
-    const type = ext === 'html' ? 'text/html' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : `image/${ext}`;
+    const type = ext === 'webmanifest' ? 'application/manifest+json' : ext === 'html' ? 'text/html' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : `image/${ext}`;
     fd.append(h, new Blob([byHash[h].b64], { type }), h);
   }
   const up = await cf(`/workers/assets/upload?base64=true`, { method: 'POST', body: fd }, jwt);
