@@ -857,6 +857,15 @@ details.deeper[open] summary::after{content:'−'}
 .pinbtn span{line-height:1}
 .pinbtn.on{background:var(--plum);border-color:var(--plum);color:#fff}
 .pinbtn:active{transform:scale(.97)}
+/* check-in tracker cards: name + pin on top, the rating below, kept apart */
+.trkhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.trkname{font-size:14px;font-weight:700;min-width:0}
+.trkhead .pinbtn{padding:6px 12px;font-size:12px}
+.trkscale{display:flex;align-items:center;gap:14px}
+.trkscale input[type=range]{flex:1;min-width:0}
+.trkval{flex:0 0 auto;min-width:34px;text-align:center;font-size:15px;font-weight:700;color:var(--lav);
+  background:var(--cream-2);border-radius:10px;padding:4px 6px}
+.trkcard.unpinned{opacity:.82}
 
 
 /* ===== JOURNAL ALBUMS ===== */
@@ -1401,11 +1410,6 @@ window.addEventListener('error', function(e){
     <div class="fade" style="z-index:7"></div>
   </div>
 
-  <div class="needs">
-    <div class="between"><h3>What do you need from me?</h3><button class="link" onclick="go('needs')">Customize ›</button></div>
-    <div class="needscroll" id="homeNeeds"></div>
-  </div>
-
   <div class="pad">
     <div class="grid3">
       <div class="tile">
@@ -1431,7 +1435,6 @@ window.addEventListener('error', function(e){
       </div>
     </div>
 
-    <div id="dailyPrompt" style="margin-top:20px"></div>
     <div id="therapyNudge" style="margin-top:16px"></div>
     <div id="todayInsight" style="margin-top:16px"></div>
     <div id="gentleCard" style="margin-top:16px"></div>
@@ -1514,10 +1517,6 @@ window.addEventListener('error', function(e){
 
     <div id="pinnedTrackers"></div>
     <div id="pinNudge"></div>
-    <div class="card" style="margin-top:12px">
-      <button class="link" onclick="toggleContext()" id="ctxToggle">Want to add a little more?</button>
-      <div class="ctxwrap" id="ctxWrap"><div id="ctxTags" style="padding-top:12px"></div></div>
-    </div>
 
     <details class="deeper">
       <summary>What do you want to track?</summary>
@@ -1721,6 +1720,7 @@ window.addEventListener('error', function(e){
       <button class="btn line sm" onclick="openTalk()">🎙 Talk</button>
       <button class="btn line sm" onclick="go('guided')">✨ Guided</button>
     </div>
+    <div id="dailyPrompt"></div>
     <div id="albumStrip" style="margin-top:18px"></div>
     <div class="eyebrow">All entries</div>
     <div id="entries"></div>
@@ -1977,7 +1977,6 @@ window.addEventListener('error', function(e){
       <button onclick="tapBreath()">Breathe</button>
       <button onclick="openTray('sound')">Play a sound</button>
       <button onclick="enterSitting()">Just sit here</button>
-      <button class="wide" onclick="closeSanctuary();go('needs')">Talk to Present</button>
     </div>
   </div>
 </div>
@@ -3645,7 +3644,7 @@ function go(id, isBack){
   if(id==='chat') setTimeout(refreshCompanion,0);
   if(id==='helps') setTimeout(renderHelps,0);
   if(id==='trends') setTimeout(()=>{renderTrends();renderManageTrackers();},0);
-  if(id==='checkin') setTimeout(initTrackers,0);
+  if(id==='checkin') setTimeout(()=>{ ciUnpinnedNow=[]; initTrackers(); },0);   // a fresh check-in asks only what's pinned
   if(id==='foryou') setTimeout(()=>{renderEmoFinder();renderForYou();},0);
   if(id==='therapy') setTimeout(()=>{therapyNotes=lget('presentTherapyNotes',therapyNotes);renderNotes();renderSession();},0);
   if(id==='myaffirms') setTimeout(renderMyAffirms,0);
@@ -5523,17 +5522,21 @@ function renderReflections(){
          </div></div>` : '';
 }
 
-/* ---------- daily prompt on Home ---------- */
+/* ---------- the daily question, inside Journal ----------
+   Optional: "Not today" hides it until tomorrow, and answering it is just a
+   journal entry with the question as its prompt (which can be dropped). */
 let dailyPick=null;
 function renderDaily(){
   const el=$('#dailyPrompt'); if(!el) return;
-  if(store.get('presentDailyDismissed')===new Date().toDateString()){ el.innerHTML=''; return; }
+  const today=new Date().toDateString();
+  if(store.get('presentDailyDismissed')===today || store.get('presentDailyAnswered')===today){ el.innerHTML=''; return; }
   const all=Object.entries(PROMPTS).flatMap(([c,l])=>l.map(p=>({c,p})));
   dailyPick=all[new Date().getDate() % all.length];
   // The prompt text is written into the DOM as text, never into an attribute —
   // apostrophes and quotes in a question would otherwise break the handler.
-  el.innerHTML=`<div class="card daily">
-      <div class="muted" style="font-weight:700;color:var(--lav);font-size:12.5px">Question for today</div>
+  el.innerHTML=`<div class="card daily" style="margin-top:18px">
+      <div class="muted" style="font-weight:700;color:var(--lav);font-size:12.5px">Question for today
+        <span style="font-weight:400;color:var(--ink-soft)">· optional</span></div>
       <p style="margin:9px 0 14px;font-family:var(--serif);font-size:20px;line-height:1.35" id="dailyText"></p>
       <div class="rowbtns">
         <button class="btn sm" onclick="answerDaily()">Answer</button>
@@ -5543,8 +5546,7 @@ function renderDaily(){
 }
 function answerDaily(){
   if(!dailyPick) return;
-  ex.cat=dailyPick.c; ex.prompt=dailyPick.p;
-  go('explore'); renderExplore(); answerPrompt();
+  openWriter(dailyPick.p, 'daily');
 }
 function dismissDaily(){
   store.set('presentDailyDismissed', new Date().toDateString());
@@ -6031,8 +6033,12 @@ function openWriter(prompt, method){
   editingEntry={q:prompt||'', a:store.get('presentDraft')||'', method:method||(prompt?'guided':'write')};
   draftAlbums=[];
   $('#toolWrap').classList.add('on');
+  const daily = editingEntry.method==='daily';
   $('#toolBody').innerHTML=`
-    ${prompt?`<div class="promptcat">${prompt}</div>`:'<div class="promptcat">New entry</div>'}
+    ${daily?`<div class="promptcat">Question for today</div>
+      <div id="writerQWrap"><p class="prompttext" id="writerQ" style="font-size:20px;margin:6px 0 4px"></p>
+      <button class="link" style="font-size:12.5px;margin:0 0 10px" onclick="dropWriterPrompt()">Write without the question</button></div>`
+      : prompt?`<div class="promptcat">${prompt}</div>`:'<div class="promptcat">New entry</div>'}
     <textarea class="answerbox" id="writeBox" placeholder="Start wherever you are.">${editingEntry.a}</textarea>
     ${editingEntry.a?'':`<div id="startPrompt"></div>
       <button class="link" style="margin-top:10px" onclick="givePrompt()">Not sure where to start? Give me a prompt</button>`}
@@ -6044,7 +6050,13 @@ function openWriter(prompt, method){
       <button class="btn line sm" onclick="stashDraft();closeTool()">Finish later</button>
     </div>
     <p class="note" style="text-align:left">Private by default. You can share it with therapy afterwards.</p>`;
+  const q=$('#writerQ'); if(q) q.textContent=prompt;   // as text, never markup
   setTimeout(()=>{const w=$('#writeBox'); w&&w.focus&&w.focus();},60);
+}
+function dropWriterPrompt(){
+  editingEntry.q=''; editingEntry.method='write';
+  const w=$('#writerQWrap'); if(w) w.remove();
+  const c=document.querySelector('#toolBody .promptcat'); if(c) c.textContent='New entry';
 }
 function stashDraft(){ const w=$('#writeBox'); if(w) store.set('presentDraft', w.value||''); }
 function saveEntry(){
@@ -6066,6 +6078,7 @@ function saveEntry(){
     shared:false
   });
   lset('presentJournal', list);
+  if(editingEntry.method==='daily') store.set('presentDailyAnswered', new Date().toDateString());
   draftAlbums=[];
   store.set('presentDraft','');
   const risky=scanWritten(v);
@@ -6080,6 +6093,7 @@ function renderJournal(){
   el.innerHTML = list.length
     ? groupByDay(list.map((e,i)=>({e,i})), null)
     : `<div class="card"><p class="muted" style="margin:0">Nothing written yet. Start wherever you are.</p></div>`;
+  try{ renderDaily(); }catch(e){}
 }
 function entryMenu(i){
   const list=lget('presentJournal',[]);
@@ -9524,14 +9538,25 @@ function pinnedIds(){
 }
 function setPinnedIds(list){ store.set('presentPinnedTrackers', JSON.stringify(list)); }
 function isTrackerPinned(id){ return pinnedIds().includes(id); }
+/* Trackers unpinned during this check-in stay on screen (showing "Unpinned")
+   so the change can be undone right there; the next check-in leaves them out. */
+let ciUnpinnedNow=[];
 function toggleTrackerPin(id){
   const list=pinnedIds(), i=list.indexOf(id);
   if(i>-1) list.splice(i,1); else list.push(id);
   const order=allTrackers().map(t=>t.id);
   setPinnedIds(order.filter(x=>list.includes(x)));
+  if(i>-1){ if(document.querySelector(`#pinnedTrackers [data-tracker="${id}"]`) && !ciUnpinnedNow.includes(id)) ciUnpinnedNow.push(id); }
   renderPinnedTrackers(); renderTrackerLibrary(); renderManageTrackers();
   const t=trackerById(id);
-  toast(i>-1 ? `${t.name} won't be asked any more` : `${t.name} added to your check-in`);
+  toast(i>-1 ? `${t.name} unpinned. Past entries are kept, and you can pin it again any time.` : `${t.name} pinned to your check-in`);
+}
+/* One pin control, used on the check-in cards, in "What do you want to
+   track?" and in Manage trackers, so they always look and read the same. */
+function pinButton(t, on){
+  return `<button class="pinbtn${on?' on':''}" data-pin="${t.id}" onclick="toggleTrackerPin('${t.id}')"
+      aria-pressed="${on}" aria-label="${on?'Pinned':'Unpinned'}: ${attr(t.name)}. ${on?'Tap to unpin':'Tap to pin'}"
+      title="${on?'Pinned to your check-in. Tap to unpin.':'Not in your check-in. Tap to pin.'}">${on?'📌 <span>Pinned</span>':'<span>Unpinned</span>'}</button>`;
 }
 
 function createCustomTracker(name, type, options){
@@ -9577,27 +9602,44 @@ function readTrackers(){
 }
 
 /* ---- the pinned cards in the check-in ---- */
-function trackerCard(t){
+function trackerCard(t, on){
+  const head=`<div class="trkhead"><span class="trkname" id="trkname_${t.id}">${t.name}</span>${pinButton(t, on)}</div>`;
   if(t.type==='scale-10') return `
-    <div class="card" style="margin-top:12px" data-tracker="${t.id}">
-      <div class="minirow">
-        <label>${t.name} <span id="out_${t.id}">–</span></label>
-        <input type="range" min="1" max="10" value="5" id="trk_${t.id}"
+    <div class="card trkcard${on?'':' unpinned'}" style="margin-top:12px" data-tracker="${t.id}">
+      ${head}
+      <div class="trkscale">
+        <input type="range" min="1" max="10" value="5" id="trk_${t.id}" aria-labelledby="trkname_${t.id}"
                oninput="this.dataset.touched='1';document.getElementById('out_${t.id}').textContent=this.value">
+        <output class="trkval" id="out_${t.id}" for="trk_${t.id}">–</output>
       </div>
     </div>`;
   const opts=t.options||['No','Yes'];
   return `
-    <div class="card" style="margin-top:12px" data-tracker="${t.id}">
-      <div style="font-size:13.5px;font-weight:700;margin-bottom:8px">${t.name}</div>
-      <div class="tagwrap">${opts.map(o=>
+    <div class="card trkcard${on?'':' unpinned'}" style="margin-top:12px" data-tracker="${t.id}">
+      ${head}
+      <div class="tagwrap" role="group" aria-labelledby="trkname_${t.id}">${opts.map(o=>
         `<button class="tag" onclick="pickOne(this)">${o}</button>`).join('')}</div>
     </div>`;
 }
 function renderPinnedTrackers(){
   const el=$('#pinnedTrackers'); if(!el) return;
   const pinned=pinnedIds();
-  el.innerHTML=allTrackers().filter(t=>pinned.includes(t.id)).map(trackerCard).join('');
+  // keep anything already answered on screen while pins change
+  const keep={};
+  el.querySelectorAll('[data-tracker]').forEach(c=>{
+    const id=c.dataset.tracker, r=c.querySelector('input[type=range]');
+    if(r){ if(r.dataset.touched==='1') keep[id]={v:r.value}; }
+    else { const on=c.querySelector('.tag.on'); if(on) keep[id]={o:on.textContent.trim()}; }
+  });
+  ciUnpinnedNow=ciUnpinnedNow.filter(id=>!pinned.includes(id));
+  el.innerHTML=allTrackers().filter(t=>pinned.includes(t.id)||ciUnpinnedNow.includes(t.id))
+    .map(t=>trackerCard(t, pinned.includes(t.id))).join('');
+  Object.entries(keep).forEach(([id,k])=>{
+    const c=el.querySelector(`[data-tracker="${id}"]`); if(!c) return;
+    if(k.v!=null){ const r=c.querySelector('input[type=range]'); r.value=k.v; r.dataset.touched='1';
+      const o=document.getElementById('out_'+id); if(o) o.textContent=k.v; }
+    if(k.o!=null){ const b=[...c.querySelectorAll('.tag')].find(b=>b.textContent.trim()===k.o); if(b) b.classList.add('on'); }
+  });
   const many=$('#pinNudge');
   if(many) many.innerHTML = pinned.length>=8
     ? `<div class="card" style="margin-top:12px"><p style="margin:0;font-size:14px;line-height:1.5">
@@ -9619,9 +9661,7 @@ function renderTrackerLibrary(){
       const sub = t.type==='scale-10' ? '1–10' : (t.options||[]).join(' · ');
       return `<div class="trkrow">
         <span class="trklabel">${t.name}${t.custom?' <em class="mine">yours</em>':''}<small>${sub}</small></span>
-        <button class="pinbtn${on?' on':''}" onclick="toggleTrackerPin('${t.id}')"
-                aria-pressed="${on}" aria-label="${on?'Unpin':'Pin'} ${attr(t.name)}">
-          📌 <span>${on?'Pinned':'Pin'}</span></button>
+        ${pinButton(t, on)}
       </div>`;
     }).join('')
     + `<button class="btn line sm" style="margin-top:14px" onclick="newTrackerSheet()">＋ Create my own tracker</button>`;
@@ -9929,7 +9969,7 @@ function renderManageTrackers(){
         <small>${t.type==='scale-10'?'1–10':(t.options||[]).join(' · ')}${n?` · ${n} recorded`:''}</small></span>
       <span style="display:flex;gap:6px;align-items:center">
         ${t.custom?`<button class="albumedit" onclick="editCustomSheet('${t.id}')">Edit</button>`:''}
-        <button class="pinbtn${on?' on':''}" onclick="toggleTrackerPin('${t.id}')">📌 <span>${on?'Pinned':'Pin'}</span></button>
+        ${pinButton(t, on)}
       </span>
     </div>`;
   }).join('')
@@ -10163,7 +10203,7 @@ function groupByDay(idx, albumId){
           <span class="entrytime">${stampTime(entryTime(e))}${e.updatedAt&&e.updatedAt!==entryTime(e)?` · edited ${stampTime(e.updatedAt)}`:''}</span>
           <button class="dots" style="position:static" onclick="entryMenu(${i})">•••</button>
         </div>
-        ${e.q?`<div class="muted" style="font-size:12.5px;margin-top:6px">${e.q}</div>`:''}
+        ${e.q?`<div class="muted" style="font-size:12.5px;margin-top:6px">${String(e.q).replace(/</g,'&lt;')}</div>`:''}
         <p style="margin:8px 0 0;font-size:14.5px;line-height:1.55">${String(e.a||'').replace(/</g,'&lt;')}</p>
         ${(tags.length||(e.emotionTags||[]).length)?`<div class="entryalbums">${
           (e.emotionTags||[]).map(t=>`<span class="albumtag">${t}</span>`).join('')}${
@@ -13308,10 +13348,8 @@ $('#quizHistory').innerHTML=QUIZHISTORY.map(r=>
 
 /* v1 home: the circular support chips and the tool strip */
 const CHIPBG=['#EAE1F4','#EDE4F7','#FDF0DC','#FBE4EC','#E7F0E5','#E4EDF6','#F2E8DE','#E8EEF2'];
-$('#homeNeeds').innerHTML=needs.map((n,i)=>
- `<button class="chip${i===0?' sel':''}" onclick="lastPicked=[${i}];picked=[${i}];go('needs')">
-   <span class="bub" style="background:${CHIPBG[i%CHIPBG.length]}">${n.i}</span>
-   <span>${n.t.replace(/^A /,'').replace(/^a /,'')}</span></button>`).join('');
+/* The Home "What do you need from me?" strip was removed: the same choices
+   live behind "Let's talk" (the support picker), so there's one place for them. */
 
 /* The Home shortcut row was removed — Sanctuary has its own permanent tab and
    still holds breathing, grounding, sounds and the rest. */
