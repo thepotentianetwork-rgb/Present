@@ -1468,6 +1468,23 @@ body{height:100%;overflow:hidden;overscroll-behavior:none}
 .acctcard .who small{display:block;font-size:12.5px;color:var(--ink-soft,#6D6079);overflow:hidden;text-overflow:ellipsis}
 .wx.softrain{background:repeating-linear-gradient(100deg,transparent 0 15px,rgba(226,236,250,.12) 16px,transparent 18px);animation:rainMove 1.6s linear infinite;opacity:.8}
 @media (prefers-reduced-motion:reduce){.wx.softrain{animation:none;opacity:.5}}
+/* ---- polish: breathing circle readable over photos ---- */
+.sanc .bstage::before{content:'';position:absolute;left:50%;top:50%;width:230px;height:230px;margin:-115px 0 0 -115px;
+  border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(26,18,38,.40) 0%,rgba(26,18,38,.34) 55%,rgba(26,18,38,.16) 68%,rgba(26,18,38,0) 72%);
+  -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+  -webkit-mask-image:radial-gradient(circle,#000 0%,#000 60%,transparent 71%);mask-image:radial-gradient(circle,#000 0%,#000 60%,transparent 71%)}
+.sanc .bcircle{z-index:1;border:1.5px solid rgba(255,255,255,.88);
+  box-shadow:0 0 0 1px rgba(26,18,38,.22),0 0 22px rgba(26,18,38,.28),inset 0 0 18px rgba(255,255,255,.08)}
+.sanc .blabel{text-shadow:0 1px 3px rgba(20,14,30,.75),0 2px 16px rgba(20,14,30,.7)}
+.sanc .bsublabel{opacity:.95;text-shadow:0 1px 3px rgba(20,14,30,.8),0 2px 16px rgba(20,14,30,.7)}
+.sanc .bmeta{position:relative;z-index:1;color:rgba(255,255,255,.92);background:rgba(26,18,38,.42);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:6px 14px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);text-shadow:0 1px 3px rgba(20,14,30,.6)}
+.sanc .bmeta button{border-bottom-color:rgba(255,255,255,.7)}
+/* sound tray: subtitle wraps instead of being cut off */
+.sancplayer .spname{white-space:normal}
+.sancplayer .spname small{white-space:normal;line-height:1.3;margin-top:1px}
 
 </style>
 </head>
@@ -14362,7 +14379,7 @@ function renderSancPlayer(){
   const el=$('#sancPlayer'); if(!el) return;
   const id=sancSelected(), def=id?soundById(id):null, on=id&&Audio_.isOn(id), m=sancMuted();
   el.innerHTML=`<div class="sprow">
-      <span class="spname">${def?`${def.icon} ${esc8(def.name)}`:'No sound chosen'}<small>${def?(on?(m?'Playing · muted':'Playing'):'Paused — nothing plays until you press play'):'Pick one to play while you\u2019re here'}</small></span>
+      <span class="spname">${def?`${def.icon} ${esc8(def.name)}`:'No sound chosen'}<small>${def?(on?(m?'Playing · muted':'Playing'):'Paused · press play to listen'):'Choose a sound to play here'}</small></span>
       <button onclick="sancPlayPause()" aria-label="${on?'Pause':'Play'}" ${def?'':'disabled'}>${on?'❚❚':'▶'}</button>
       <button onclick="sancToggleMute()" aria-pressed="${m}" aria-label="${m?'Unmute':'Mute'}">${m?'🔇':'🔈'}</button>
       <button onclick="openTray('sound')">${def?'Change':'Choose'}</button></div>
