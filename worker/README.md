@@ -6,7 +6,8 @@ Separate from the CRM worker `potentia-assistant`. It only touches its own D1 da
 for the preview), never the ShedPro/Potentia databases.
 
 - Preview: https://present-app-preview.thepotentianetwork.workers.dev (script `present-app-preview`, D1 `present-data`)
-- Testers today: https://present-app.thepotentianetwork.workers.dev (script `present-app`, still the old shared-password build)
+- Testers: https://present-app.thepotentianetwork.workers.dev (script `present-app`, D1 `present-prod` 6d79bc6b-d30b-449f-9a0b-16e350db2b83).
+  Round 3 (accounts build) promoted Oct 10 2026, worker version 67cbf68d-57fb-4858-8f23-32d9ab1ce448.
 
 ## Accounts
 - `GET/POST /signup`: name, email, password (at least 8 characters) and an **invite code**. The invite code is the
@@ -55,7 +56,7 @@ PRESENT_SCRIPT=present-app-preview node worker/set-secret.mjs ANTHROPIC_API_KEY 
 ```
 Deploying `present-app` (the testers' URL) also needs `PRESENT_CONFIRM_PROD=yes`, so it can't happen by accident.
 
-## Promotion to the testers' URL (needs Nando's approval; not done)
+## Promotion to the testers' URL (done Oct 10 2026 with Nando's approval; steps kept for next time)
 1. Merge `present-v2` into the branch the testers' build comes from.
 2. Pick the database. Either reuse `present-data` (it still holds preview test data; run
    `DELETE FROM sessions; DELETE FROM messages; DELETE FROM conversations; DELETE FROM memories; DELETE FROM prefs; DELETE FROM users;`
@@ -69,5 +70,11 @@ Deploying `present-app` (the testers' URL) also needs `PRESENT_CONFIRM_PROD=yes`
    **Bring this device's data into my account** (check-ins, journal, settings saved in that browser),
    **Start fresh** or **Decide later**.
 6. Smoke test: sign up, send one message, check Chats and Memory, sign out and in again.
-7. Optional: delete the unused `SESSION_SECRET` secret. Roll back by redeploying the previous commit
-   (D1 data stays put).
+7. Optional: delete the unused `SESSION_SECRET` secret.
+
+## Rollback
+`PRESENT_SCRIPT=present-app node worker/rollback.mjs --list` shows uploaded versions. To go back:
+`PRESENT_CONFIRM_PROD=yes PRESENT_SCRIPT=present-app node worker/rollback.mjs <version_id>`.
+The pre-accounts shared-password build (v7) is version `93ba353b-54f9-45e7-9a9a-4cacbbca4d38`. Rolling back
+leaves D1 untouched; data people imported into their accounts stays in D1, and their browsers keep the
+namespaced copy, but the v7 build only reads un-namespaced keys, so it would look empty until they return.

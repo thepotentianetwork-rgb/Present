@@ -15539,7 +15539,9 @@ function mantra(){
   // Carry over a daily intention someone had written themselves.
   let f=null; try{ f=getFocus(); }catch(e){}
   const own = f && f.intent && f.intent!==FOCUS_DEFAULT.intent ? f.intent : null;
-  return {text: own || 'I choose peace over pressure.', preset: !own, carried: !!own};
+  // Save a carried-over intention once, so it follows the account to other devices.
+  if(own){ const c={text:String(own).slice(0,140), preset:false, at:Date.now(), carried:true}; try{ store.set('presentMantra', JSON.stringify(c)); }catch(e){} return c; }
+  return {text:'I choose peace over pressure.', preset:true, carried:false};
 }
 function mantraArt(size){
   const s=size||40;
