@@ -1487,6 +1487,190 @@ body{height:100%;overflow:hidden;overscroll-behavior:none}
 .sancplayer .spname small{white-space:normal;line-height:1.3;margin-top:1px}
 
 </style>
+<style id="r3css">
+/* ===================== PRESENT v9 (round 3) ===================== */
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2.5px solid var(--lav);outline-offset:2px}
+
+/* settings gear on Home */
+.gearbtn{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 14px;border-radius:999px;border:0;background:rgba(255,255,255,.22);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;text-shadow:0 1px 4px rgba(0,0,0,.35)}
+.gearbtn svg{width:18px;height:18px}
+.navrow .wordmark{flex:1;text-align:center;min-width:0}
+
+/* Settings / How I use Present */
+.fieldlabel{display:block;font-size:13.5px;font-weight:700;color:var(--ink);margin:0 2px 6px}
+.nameerr{margin:8px 2px 0;font-size:13px;color:#8A3B35;line-height:1.45}
+.toolinput[aria-invalid="true"]{outline:2px solid #C9776F}
+.wcexplore{margin:12px 2px 0;font-size:13.5px}
+.fxrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--lav-pale)}
+.fxrow:last-of-type{border-bottom:0}
+.fxrow b{display:block;font-size:14.5px}.fxrow small{display:block;font-size:12.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px}
+.fxbtn{min-height:36px}
+.fxna{cursor:default;opacity:.7;border-style:dashed}
+.fxvol{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--plum)}
+.fxvol input{width:110px;accent-color:var(--plum)}
+.fxvol output{font-size:11.5px;color:var(--ink-soft);min-width:34px}
+
+/* Me */
+.mevalues{display:block;width:100%;text-align:left;border:0;cursor:pointer;font-family:inherit;color:var(--ink);
+  background:linear-gradient(135deg,#FBE4EC,#F3E9F7);border-radius:24px;padding:16px;box-shadow:var(--lift);margin-top:4px}
+.mvhead{display:flex;align-items:center;gap:12px}
+.mvhead .bub{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;color:var(--plum);padding:0}
+.mvhead b{font-size:18px;color:var(--plum);flex:1}
+.mvhead .chev{color:var(--lav)}
+.mvsub{display:block;margin:10px 2px 0;font-size:14px;line-height:1.5;color:var(--ink)}
+.mvmantra{display:flex;gap:10px;align-items:center;margin-top:12px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.65);font-size:14px;line-height:1.4}
+.mvmantra small{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--lav)}
+
+/* Home: edit mode and cards */
+.hchead{display:flex;justify-content:flex-end;margin:2px 0 10px}
+.hceditbtn{border:1.5px solid var(--lav-pale);background:var(--cream);color:var(--plum);border-radius:999px;padding:8px 14px;min-height:40px;
+  font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.homeeditbar{position:sticky;top:0;z-index:20;background:var(--cream-2);border-radius:18px;padding:12px;margin:0 0 12px;box-shadow:var(--shadow)}
+.homeeditbar p{margin:0 0 10px;font-size:13px;line-height:1.5;color:var(--ink-soft)}
+.hebtns{display:flex;gap:8px;flex-wrap:wrap}.hebtns .btn{width:auto;flex:1 1 auto}
+.homecards{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.homecards > [data-hc]{grid-column:1 / -1;min-width:0;margin:0!important;position:relative}
+.homecards > .hc-compact{grid-column:auto}
+.homecards > [data-hc="suggest"].hc-empty{display:none}
+.homecards.editing > [data-hc="suggest"].hc-empty{display:block}
+.hcph{padding:14px;border-radius:18px;border:1.5px dashed var(--lav-pale);color:var(--ink-soft);font-size:13px;text-align:center}
+.homecards > [data-hc] > *:not(.hcedit){margin-top:0}
+.homecards .tile{min-height:0;height:auto}
+.homecards.editing > [data-hc]{outline:2px dashed var(--lav);outline-offset:3px;border-radius:20px}
+.homecards.editing > [data-hc] > *:not(.hcedit){opacity:.6;pointer-events:none}
+.homecards > .dragging{opacity:.85;box-shadow:var(--lift);z-index:5}
+.hcedit{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px;margin:0 0 8px;border-radius:14px;background:var(--lav-pale)}
+.hcname{flex:1;font-size:13.5px;color:var(--plum);min-width:70px}
+.hcminus{width:32px;height:32px;border-radius:50%;border:0;background:#A5453F;color:#fff;font-size:20px;line-height:1;cursor:pointer;flex:0 0 auto}
+.hchandle{width:32px;height:36px;display:grid;place-items:center;font-size:18px;color:var(--plum);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.hcmv,.hcsize{min-width:36px;height:36px;border-radius:12px;border:1.5px solid var(--lav);background:var(--cream);color:var(--plum);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;padding:0 8px}
+.hcmv:disabled{opacity:.35;cursor:default}
+.hcrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--lav-pale)}
+.hcrow:last-child{border-bottom:0}.hcrow b{display:block;font-size:14.5px}.hcrow small{display:block;font-size:12.5px;color:var(--ink-soft)}
+.hcstatus{display:flex;gap:10px;justify-content:center;align-items:center;font-size:12.5px;color:var(--ink-soft);margin-top:12px}
+.hcstatus:empty{display:none}
+.homecards > .hc-compact[data-hc="journal"] .entrypreview,.homecards > .hc-compact[data-hc="therapy"] #homeTherapyLines{display:none}
+@media (min-width:1000px){ .homecards{grid-template-columns:repeat(4,1fr)} .homecards > .hc-compact{grid-column:span 1} .homecards > .hc-full{grid-column:span 2} .homecards > [data-hc="tasks"].hc-full,.homecards > [data-hc="understand"],.homecards > [data-hc="suggest"]{grid-column:1 / -1} }
+
+/* mantra */
+.mantra{display:flex;align-items:center;gap:12px;background:var(--cream);border-radius:20px;padding:14px 16px;box-shadow:var(--shadow)}
+.mantra .mtext{flex:1;min-width:0}
+.mantra small{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--lav)}
+.mantra p{margin:3px 0 0;font-family:'Cormorant Garamond',serif;font-size:21px;line-height:1.25;color:var(--plum)}
+.hc-compact .mantra p{font-size:17px}
+.medit{font-size:13px;padding:8px 4px;min-height:36px}
+.mantralist{display:flex;flex-wrap:wrap;gap:8px}
+.mantraart{flex:0 0 auto}
+
+/* tasks */
+.taskrow{position:relative}
+.taskpic{flex:0 0 auto;width:34px;height:34px;border-radius:11px;background:#F4EEF8;display:grid;place-items:center}
+.tasktitle{text-align:left;background:0;border:0;font-family:inherit;color:var(--ink);cursor:pointer;padding:6px 0;min-height:36px}
+.taskbox{min-width:28px;min-height:28px;cursor:pointer;display:grid;place-items:center;color:#fff;font-weight:700}
+.taskx{min-width:36px;min-height:36px}
+.taskdone{margin-top:12px}
+.taskdone summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--plum-soft);padding:8px 4px;list-style:revert}
+.taskcele{min-height:0;text-align:center;font-size:13.5px;font-weight:700;color:var(--plum);opacity:0;transition:opacity .3s}
+.taskcele.on{opacity:1;min-height:22px;margin:0 0 6px}
+.viewall{display:block;margin:6px 4px 0;font-size:13px}
+.taskrow.justdone .taskbox{animation:r3check .5s ease}
+@keyframes r3check{0%{transform:scale(.6)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+.sparkles{position:absolute;left:18px;top:50%;width:0;height:0;pointer-events:none}
+.sparkles i{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:0;animation:r3spark 1s ease-out forwards}
+.sparkles i:nth-child(2){background:var(--rose);animation-delay:.05s;--dx:22px;--dy:-18px}
+.sparkles i:nth-child(3){background:var(--lav);animation-delay:.1s;--dx:-16px;--dy:-22px}
+.sparkles i:nth-child(4){background:var(--sage);animation-delay:.08s;--dx:26px;--dy:12px}
+.sparkles i:nth-child(5){background:var(--rose);animation-delay:.12s;--dx:-20px;--dy:14px}
+.sparkles i:nth-child(1){--dx:4px;--dy:-28px}
+@keyframes r3spark{0%{opacity:0;transform:translate(0,0) scale(.4)}30%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1)}}
+.tkicon{display:flex;align-items:center;gap:12px;margin-top:14px;padding:10px 12px;border-radius:16px;background:var(--cream-2)}
+.tkicon b{display:block;font-size:14px}.tkicon small{display:block;font-size:12.5px;color:var(--ink-soft)}
+.tkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px;margin-top:10px}
+.tkpick{height:48px;border-radius:14px;border:1.5px solid var(--lav-pale);background:var(--cream);cursor:pointer;display:grid;place-items:center;font-family:inherit;font-size:12px;font-weight:700;color:var(--plum)}
+.tkpick[aria-selected="true"]{border-color:var(--plum);background:var(--lav-pale)}
+.noicon{color:var(--ink-soft)}
+.sugglist{display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow:auto;padding:2px}
+.suggrow{display:flex;align-items:center;gap:12px;text-align:left;border:0;background:var(--cream-2);border-radius:14px;padding:10px 12px;font-family:inherit;color:var(--ink);cursor:pointer;min-height:48px}
+.suggrow b{display:block;font-size:14px}.suggrow small{display:block;font-size:12.5px;color:var(--ink-soft)}
+
+/* chat composer */
+.composer2{display:flex;align-items:flex-end;gap:8px;padding:8px 14px calc(14px + env(safe-area-inset-bottom,0px))}
+.composerbox{flex:1;display:flex;align-items:flex-end;background:var(--cream);border-radius:26px;box-shadow:var(--shadow);padding:4px 4px 4px 16px;min-width:0}
+.composerbox:focus-within{outline:2px solid var(--lav)}
+.composerbox textarea{flex:1;border:0;background:transparent;resize:none;font-family:inherit;font-size:16px;line-height:1.4;padding:10px 0;max-height:140px;min-height:24px;color:var(--ink);outline:0;min-width:0}
+.composerbox .micin{width:42px;height:42px;border-radius:50%;border:0;background:transparent;color:var(--plum);cursor:pointer;display:grid;place-items:center;flex:0 0 auto}
+.composerbox .micin svg{width:22px;height:22px}
+.composerbox .micin.listening{background:var(--rose);color:#fff;animation:micpulse 1.6s ease-out infinite}
+.sendbtn{width:48px;height:48px;border-radius:50%;border:0;background:var(--plum);color:#fff;cursor:pointer;display:grid;place-items:center;flex:0 0 auto}
+.sendbtn svg{width:20px;height:20px}
+.sendbtn:disabled{opacity:.5}
+.dictbar{display:flex;align-items:center;gap:10px;margin:0 14px 6px;padding:8px 12px;border-radius:16px;background:#FBE4EC;color:var(--plum);font-size:13px}
+.dictbar .dot{width:10px;height:10px;border-radius:50%;background:#C2557A;animation:pulse 1.4s ease-in-out infinite}
+.dictbar span{flex:1}
+.dictbar button{border:0;border-radius:999px;padding:8px 12px;min-height:36px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.dictbar .stop{background:var(--plum);color:#fff}.dictbar .cancel{background:transparent;color:var(--plum)}
+.dictnote{margin:0 14px 6px;padding:9px 12px;border-radius:14px;background:var(--cream-2);font-size:12.5px;line-height:1.45;color:var(--ink-soft)}
+.failbub{background:#FDF0DC!important;color:#5a4636}
+.retrybtn{display:inline-block;width:auto;margin:8px 0 0}
+.msg.ai.pending .bub.thinking{animation:fadeq .25s ease}
+.thinktext{margin-left:10px;font-size:13.5px;color:var(--ink-soft)}
+#app.kbopen .tabbar{display:none}
+@media (prefers-reduced-motion: reduce){ .thinkorb{animation:none!important} .composerbox .micin.listening,.dictbar .dot{animation:none} }
+
+/* Sanctuary: steady background, gentle fade */
+.sanc.on{animation:fadeq .45s ease}
+.breathemode,.sitmode{background:transparent!important}
+.sanc.immersive .scene-mount .svgwrap,.sanc.immersive .scene-mount .wx,.sanc.immersive .scene-mount .wx *,
+.sanc.sitting .scene-mount .svgwrap{animation-play-state:paused!important}
+.breathstill{margin-bottom:6px}
+@media (prefers-reduced-motion: reduce){ .sanc.on,.sitmode.on,.breathemode.on{animation:none} }
+
+/* activities */
+.playrow{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.playrow .playstage{flex:1}
+.playside{display:none}
+.playwrap.drawside .playside{display:flex}
+.playside .palette{display:flex;flex-direction:column;gap:8px;width:100%}
+.palgrp small{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 4px}
+.palrow{display:flex;gap:6px;flex-wrap:wrap}
+.swatch{width:34px;height:34px;border-radius:50%;border:2px solid rgba(74,53,96,.18);background:var(--c);cursor:pointer;flex:0 0 auto}
+.swatch.on{box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--plum)}
+.palcustom{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--plum)}
+.palcustom input{width:40px;height:34px;border:0;background:0;padding:0;cursor:pointer}
+.sizeb{min-width:40px;height:38px;border-radius:12px;border:1.5px solid var(--lav-pale);background:var(--cream);cursor:pointer;display:grid;place-items:center;font-family:inherit;font-weight:700;color:var(--plum);padding:0 10px}
+.sizeb i{display:block;border-radius:50%;background:var(--plum)}
+.sizeb.on{border-color:var(--plum);background:var(--lav-pale)}
+.sizeb.erase{width:100%}
+@media (max-width:899px){ .playside .palette{flex-direction:row;flex-wrap:wrap;gap:8px 14px;align-items:flex-end} .playside{flex:0 0 auto} .swatch{width:30px;height:30px} .sizeb.erase{width:auto} }
+@media (min-width:900px){ .playrow{flex-direction:row} .playside{width:176px;flex:0 0 176px;overflow:auto} }
+.seg{display:inline-flex;border:1.5px solid var(--lav-pale);border-radius:999px;overflow:hidden}
+.segb{border:0;background:transparent;padding:8px 12px;min-height:38px;font-family:inherit;font-size:13px;font-weight:700;color:var(--plum-soft);cursor:pointer}
+.segb.on{background:var(--plum);color:#fff}
+.playwrap .undotoast{z-index:200}
+.undotoast{z-index:220}
+
+/* feelings wheel */
+.emoseg:focus-visible path{stroke:var(--plum);stroke-width:4}
+.emoseg{cursor:pointer}.emoseg:focus{outline:none}
+.emodefline{margin:10px 2px 0;padding:12px 14px;border-radius:16px;background:var(--cream-2);font-size:13.5px;line-height:1.5}
+.emodefline b{display:block;color:var(--plum);font-size:15px}
+.emodefline span{display:block;margin:2px 0 6px;color:var(--ink)}
+.emodef{margin:6px 0 2px;font-size:15px;line-height:1.55;color:var(--ink)}
+.emoword:focus{outline:none}
+.needchips{display:flex;flex-direction:column;gap:8px}
+.needchip{display:flex;flex-direction:column;align-items:flex-start;text-align:left;width:100%;border:1.5px solid var(--lav);background:var(--cream);border-radius:16px;
+  padding:10px 14px;font-family:inherit;color:var(--ink);cursor:pointer;min-height:48px;position:relative;padding-right:34px}
+.needchip::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--lav);font-size:20px}
+.needchip:hover{background:var(--lav-pale)}
+.needchip b{font-size:14px}.needchip small{font-size:12.5px;color:var(--ink-soft);margin-top:1px}
+.emomore{margin-top:10px;padding:12px 14px;border-radius:16px;background:#F7F1FA;font-size:14px;line-height:1.6}
+.emomore p{margin:0 0 8px}
+@media (prefers-reduced-motion: reduce){ .sparkles{display:none} .taskrow.justdone .taskbox{animation:none} .taskcele{transition:none} }
+
+</style>
 </head>
 <body>
 <script>
@@ -1540,74 +1724,66 @@ window.addEventListener('error', function(e){
     <div class="topbar">
       <div class="statusbar"><span>9:41</span><span>▮▮▮ ᯤ ▰</span></div>
       <div class="navrow" style="display:flex;align-items:center;justify-content:space-between">
-        <button class="iconbtn" aria-label="Menu" onclick="go('me')">☰</button>
-        <div class="wordmark"><h1>present.</h1><p>come, be present with me.</p></div>
         <button class="iconbtn" aria-label="Saved" onclick="go('helps')">♡<span class="dot"></span></button>
+        <div class="wordmark"><h1>present.</h1><p>come, be present with me.</p></div>
+        <button class="gearbtn" id="settingsBtn" onclick="go('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="7.2" stroke-width="3.2" stroke-dasharray="2.9 2.75"/><circle cx="12" cy="12" r="5.6" stroke-width="2"/><circle cx="12" cy="12" r="2" stroke-width="2"/></svg><span>Settings</span></button>
       </div>
     </div>
     <button class="bepresent" onclick="openSanctuary()">◉ Be Present</button>
     <div class="greetcard">
       <div class="hb">♥</div>
       <h2><span id="homeGreet">Hey, I'm here.</span><br>How are you feeling right now?</h2>
-      <button class="btn" onclick="go('needs')">Let's talk</button>
+      <button class="btn" onclick="letsTalk()">Let's talk</button>
     </div>
     <div id="homeSceneLabel" style="position:absolute;right:16px;bottom:16px;z-index:9;color:rgba(255,255,255,.75);font-size:11px;font-weight:600"></div>
     <div class="fade" style="z-index:7"></div>
   </div>
 
   <div class="pad">
-    <div class="grid3">
-      <div class="tile">
+    <div class="hchead"><button class="hceditbtn" id="homeEditBtn" onclick="homeEdit(true)">✎ Edit Home</button></div>
+    <div class="homeeditbar" id="homeEditBar" hidden></div>
+    <div id="homeLive" class="sr" aria-live="polite"></div>
+    <div class="homecards" id="homeCards">
+      <section data-hc="mantra" aria-label="My mantra"><div id="mantraCard"></div></section>
+      <section class="tile" data-hc="checkin" aria-label="Check-in">
         <h4>Check-in</h4><div class="tiny">How are you feeling?</div>
         <div class="face" id="homeFace" style="font-size:34px;margin:0">🙂</div>
         <div class="big" id="homeScore" style="font-size:22px">—<em>/10</em></div>
         <div class="tiny" id="homeWhen" style="text-align:center;margin:3px 0 10px">Not yet today</div>
         <button class="btn sm" style="margin-top:auto" onclick="go('checkin')">Check in</button>
-      </div>
-
-      <div class="tile" data-hc="focus">
-        <div class="between"><h4>Today's focus</h4><button class="link" style="font-size:12px" onclick="editFocus()">Edit</button></div>
-        <div class="focusbox" style="margin-top:10px"><span>⭐</span><span id="focusText">Be gentle with myself today.</span></div>
-        <div class="tiny" style="margin:12px 0 0;color:var(--lav);font-weight:700">Daily intention</div>
-        <div class="intent" id="intentText">I choose peace over pressure.</div>
-        <div class="lotus">✿</div>
-      </div>
-
-      <div class="tile" data-hc="progress">
+      </section>
+      <section class="tile" data-hc="progress" aria-label="My progress">
         <h4>My progress</h4>
         <div id="progressRing"></div>
         <button class="btn sm" style="margin-top:auto" onclick="go('insights')">View progress</button>
-      </div>
-    </div>
-
-    <div data-hc="suggest">
-    <div id="therapyNudge" style="margin-top:16px"></div>
-    <div id="todayInsight" style="margin-top:16px"></div>
-    <div id="gentleCard" style="margin-top:16px"></div>
-    </div>
-    <div id="taskList" style="margin-top:18px"></div>
-    <div id="homeForYouWrap" data-hc="understand" style="margin-top:22px"></div>
-
-    <div class="grid2">
-      <div class="card" style="padding:16px" data-hc="journal">
+      </section>
+      <section data-hc="suggest" aria-label="Gentle suggestions">
+        <div class="hcph" hidden>Gentle suggestions show up here when there’s something that might help.</div>
+        <div id="therapyNudge"></div>
+        <div id="todayInsight"></div>
+        <div id="gentleCard"></div>
+      </section>
+      <section data-hc="tasks" aria-label="Today’s list"><div id="taskList"></div></section>
+      <section class="card" style="padding:16px" data-hc="journal" aria-label="Journal">
         <h3 style="font-size:17px">Journal</h3>
         <div id="homeJournalCard"><div class="muted" style="margin:2px 0 11px;font-weight:700;color:var(--lav);font-size:13px">Last entry: Yesterday</div>
         <div class="entrypreview"><div class="thumb"></div><p>I felt overwhelmed today, but I'm proud of how I handled it.</p></div></div>
         <button class="btn sm" style="margin-top:13px" onclick="go('journal')">Open journal</button>
-      </div>
-      <div class="card" style="padding:16px" data-hc="therapy">
+      </section>
+      <section class="card" style="padding:16px" data-hc="therapy" aria-label="My therapy">
         <h3 style="font-size:17px">My therapy</h3>
         <div class="muted" id="homeSession" style="margin:2px 0 9px;font-weight:700;color:var(--lav);font-size:13px"></div>
         <div id="homeTherapyLines"><div class="listline"><i>📌</i>3 notes saved</div>
         <div class="listline"><i>◎</i>2 goals we're on</div></div>
         <button class="btn sm" style="margin-top:13px" onclick="go('therapy')">Open</button>
-      </div>
-      <div class="card" style="padding:16px" data-hc="tracking">
-        <h3 style="font-size:17px">Tracking</h3>
-        <div class="muted" style="margin:2px 0 6px;font-weight:700;color:var(--lav);font-size:13px">Pinned to your check-in</div>
+      </section>
+      <section class="card" style="padding:16px" data-hc="tracking" aria-label="Sleep, energy and stress">
+        <h3 style="font-size:17px">Sleep, energy &amp; stress</h3>
+        <div class="muted" style="margin:2px 0 6px;font-weight:700;color:var(--lav);font-size:13px">From your check-ins</div>
         <div class="hctrack" id="homeTrackers"></div>
         <button class="btn sm" style="margin-top:10px" onclick="go('trends')">Manage what I track</button>
-      </div>
+      </section>
+      <section data-hc="understand" aria-label="Understand"><div id="homeForYouWrap"></div></section>
     </div>
     <div class="hcstatus" id="hcStatus"></div>
 
@@ -1645,10 +1821,15 @@ window.addEventListener('error', function(e){
   <button class="newmsg" id="newMsg" onclick="jumpToLatest()">New response ↓</button>
   <div id="chatExtra"></div>
   <div id="modePill" class="modepillwrap"></div>
-<div class="composer">
-    <button class="circbtn mic" id="micBtn" onclick="micToggle()" aria-label="Speak instead of typing" aria-pressed="false" title="Voice is turned into text by your phone or browser, which may use Apple's or Google's servers.">🎙</button>
-    <input id="msg" placeholder="Say anything…" onkeydown="if(event.key==='Enter')send()">
-    <button class="circbtn send" onclick="send()" aria-label="Send">↑</button>
+<div class="dictnote" id="dictNote" role="status" hidden></div>
+  <div class="dictbar" id="dictBar" role="status" hidden><i class="dot" aria-hidden="true"></i><span>Listening… your words appear in the box. Nothing is sent until you press Send.</span>
+    <button class="stop" onclick="micStop(true)">Stop</button><button class="cancel" onclick="micStop(false)">Cancel</button></div>
+  <div class="composer2" id="composer">
+    <div class="composerbox">
+      <textarea id="msg" rows="1" placeholder="Message Present…" aria-label="Message Present" oninput="updateComposer()" onkeydown="composerKey(event)"></textarea>
+      <button class="micin" id="micBtn" onclick="micToggle()" aria-label="Dictate a message" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
+    </div>
+    <button class="sendbtn" id="sendBtn" onclick="send()" aria-label="Send" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
   </div>
 </div></section>
 
@@ -1813,19 +1994,18 @@ window.addEventListener('error', function(e){
 <section class="screen" id="s-me"><div class="scroll">
   <div class="subhead">
     <div class="statusbar"><span>9:41</span><span>▮▮▮ ᯤ ▰</span></div>
-    <h2>Me</h2><p>Everything I've learned about you, in your hands.</p>
+    <h2>Me</h2><p>Your values, reflections, and progress—all in one place.</p>
   </div>
   <div class="pad" style="padding-top:14px">
 
-    <button class="mehero" onclick="editSanctuary('me')">
+    <button class="mehero" hidden onclick="editSanctuary('me')">
       <div class="scene-mount" id="meScene"></div>
       <span class="edit">Edit</span>
       <div class="cap"><b>My Sanctuary</b><small id="meSanctuarySub">Beach · Sunset · Clear</small></div>
     </button>
 
-    <div class="mestats" id="meStats"></div>
-
     <div id="meGroups"></div>
+    <div class="mestats" id="meStats" style="margin-top:18px"></div>
   </div>
 </div></section>
 
@@ -1840,9 +2020,10 @@ window.addEventListener('error', function(e){
       <button class="btn sm" onclick="startNewChat()">＋ New chat</button>
       <button class="btn line sm" onclick="startTemporaryChat()">Temporary chat</button>
     </div>
+    <div id="histSaveNote" class="muted" style="font-size:13px;line-height:1.5;margin:12px 2px 0"></div>
     <div id="histList"></div>
     <div id="histFoot" style="margin-top:8px"></div>
-    <p class="note">Temporary chats aren't saved and don't use memory. Deleting a chat removes it from your account.</p>
+    <p class="note">Temporary chats are never saved and don't use memory. Deleting a saved chat removes it from your account; it doesn't delete anything saved to memory.</p>
   </div>
 </div></section>
 
@@ -2002,7 +2183,7 @@ window.addEventListener('error', function(e){
     <div class="statusbar"><span>9:41</span><span>▮▮▮ ᯤ ▰</span></div>
     <div class="backrow"><button class="iconbtn" onclick="back()" aria-label="Back">‹</button><div><h2>My values</h2><p>What you want your life to point at.</p></div></div>
   </div>
-  <div class="pad" style="padding-top:14px"><div id="valuesBody"></div></div>
+  <div class="pad" style="padding-top:14px"><div id="valuesMantra"></div><div id="valuesBody"></div></div>
 </div></section>
 
 <!-- ================= GOALS ================= -->
@@ -2045,7 +2226,8 @@ window.addEventListener('error', function(e){
     <div class="backrow"><button class="iconbtn" onclick="back()" aria-label="Back">‹</button><div><h2>Privacy</h2><p>Your call, every time.</p></div></div>
   </div>
   <div class="pad" style="padding-top:18px">
-    <div class="card" id="privToggles"></div>
+    <div class="card" id="privSave"></div>
+    <div class="card" id="privToggles" style="margin-top:12px"></div>
     <div class="eyebrow">Your data</div>
     <div class="actions">
       <button class="act" onclick="go('knows')"><i>🧠</i><div>What Present remembers<small>View, edit, or forget anything</small></div></button>
@@ -2056,9 +2238,33 @@ window.addEventListener('error', function(e){
       <button class="act" id="signOutAct" onclick="presentSignOut()"><i>🚪</i><div>Sign out<small>Your data stays on this device</small></div></button>
     </div>
     <p class="note">If you use the microphone, voice is turned into text by your phone or browser, which may use Apple's or Google's servers.</p>
-    <p class="note">Check-ins, journal and the rest stay on this device. Conversation messages are sent to our server and on to Anthropic to write replies, and we don't store them.</p>
+    <p class="note">Check-ins, journal entries, tasks and kept drawings stay on this device. Some settings (like your Home layout, mantra, and sound choices) are saved to your account so they follow you when you sign in.</p>
+    <p class="note">Each message you send goes to our server and on to Anthropic, which writes the reply. Anthropic doesn’t train on it, and may keep it briefly for safety checks under its API terms. With Save conversations on, the conversation is kept in your account until you delete it. With it off, our server doesn’t keep the conversation once the reply is sent. Memory is separate: only short notes you allow are saved.</p>
     <p class="note">Present contains no third-party analytics, advertising, or tracking SDKs. Not one.</p>
   </div>
+</div></section>
+
+<!-- ================= SETTINGS (r3) ================= -->
+<section class="screen" id="s-settings"><div class="scroll">
+  <div class="subhead">
+    <div class="statusbar"><span>9:41</span><span>▮▮▮ ᯤ ▰</span></div>
+    <div class="backrow"><button class="iconbtn" onclick="back()" aria-label="Back">‹</button><div><h2>Settings</h2><p>How Present works for you.</p></div></div>
+  </div>
+  <div class="pad" style="padding-top:14px"><div id="settingsBody"></div></div>
+</div></section>
+<section class="screen" id="s-howiuse"><div class="scroll">
+  <div class="subhead">
+    <div class="statusbar"><span>9:41</span><span>▮▮▮ ᯤ ▰</span></div>
+    <div class="backrow"><button class="iconbtn" onclick="back()" aria-label="Back">‹</button><div><h2>How I use Present</h2><p>Change any of this whenever you like.</p></div></div>
+  </div>
+  <div class="pad" style="padding-top:14px"><div id="howiuseBody"></div></div>
+</div></section>
+<section class="screen" id="s-tasks"><div class="scroll">
+  <div class="subhead">
+    <div class="statusbar"><span>9:41</span><span>▮▮▮ ᯤ ▰</span></div>
+    <div class="backrow"><button class="iconbtn" onclick="back()" aria-label="Back">‹</button><div><h2>Today’s list</h2><p>Small steps. Nothing has to be finished.</p></div></div>
+  </div>
+  <div class="pad" style="padding-top:14px"><div id="tasksFull"></div></div>
 </div></section>
 
 <!-- ================= WELCOME ================= -->
@@ -2344,8 +2550,9 @@ window.PresentSync=(function(){
   var KEYS={presentOnboarded:1,presentProfile:1,presentName:1,presentTheme:1,presentTintScene:1,
     presentHomeLayout:1,presentPinnedTrackers:1,presentSanctuary:1,presentSancSound:1,presentSancMuted:1,
     presentVolumePos:1,presentPlaySound:1,presentPlayHaptics:1,presentFavPlaces:1,
-    presentSanctuaryName:1,presentSanctuaryNote:1,presentLang:1};
-  var pending={}, timer=null, last={};
+    presentSanctuaryName:1,presentSanctuaryNote:1,presentLang:1,
+    presentPrefs3:1,presentMantra:1,presentHome2:1};
+  var pending={}, timer=null, last={}, inflight={};
   var A=window.PRESENT_ACCOUNT;
   if(A && A.prefs) Object.keys(A.prefs).forEach(function(k){ last[k]=A.prefs[k]; });
   function syncs(k){ return !!KEYS[k] || /^presentOff_[A-Za-z0-9_]{1,40}$/.test(k); }
@@ -2362,17 +2569,19 @@ window.PresentSync=(function(){
     clearTimeout(timer); timer=null;
     var keys=Object.keys(pending); if(!keys.length) return Promise.resolve();
     var body={prefs:pending}; pending={};
+    keys.forEach(function(k){ inflight[k]=(inflight[k]||0)+1; });
+    var done=function(){ keys.forEach(function(k){ if(!--inflight[k]) delete inflight[k]; }); };
     return fetch('/api/prefs',{method:'PUT',credentials:'same-origin',keepalive:!!beacon,
       headers:{'content-type':'application/json'},body:JSON.stringify(body)})
       .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status);
-        keys.forEach(function(k){ last[k]=body.prefs[k]; }); })
-      .catch(function(){ keys.forEach(function(k){ if(!(k in pending)) pending[k]=body.prefs[k]; });
+        keys.forEach(function(k){ last[k]=body.prefs[k]; }); done(); })
+      .catch(function(){ done(); keys.forEach(function(k){ if(!(k in pending)) pending[k]=body.prefs[k]; });
         if(!timer) timer=setTimeout(function(){ flush(); }, 15000); });
   }
   function note(k,v){
     if(!window.PRESENT_ACCOUNT || !syncs(k)) return;
     var c=clean(k,v); if(c===undefined) return;
-    if(last[k]===c || (last[k]===undefined && c===null)){ delete pending[k]; return; }
+    if(!(k in inflight) && (last[k]===c || (last[k]===undefined && c===null))){ delete pending[k]; return; }
     pending[k]=c; clearTimeout(timer); timer=setTimeout(function(){ flush(); }, 700);
   }
   window.addEventListener('pagehide',function(){ flush(true); });
@@ -4322,8 +4531,8 @@ function paintScene(){
   renderScene(document.getElementById('heroScene'), sanctuary);
   renderScene(document.getElementById('sancScene'), sanctuary);
   const hl=document.getElementById('homeSceneLabel');
-  if(hl) hl.textContent = sanctuary.type==='photo'
-    ? '' : `${envOf(sanctuary.environment).label} · ${sanctuary.time} · ${sanctuary.sounds[0]||'Silence'}`;
+  if(hl) hl.textContent = sanctuary.type==='photo' ? '' : (sanctuary.type==='preset' && sanctuary.presetId) ? sanctuaryCaption(sanctuary)
+    : `${envOf(sanctuary.environment).label} · ${sanctuary.time} · ${sanctuary.sounds[0]||'Silence'}`;
   const ms=document.querySelector('#meSanctuarySub');
   if(ms) ms.textContent=sanctuaryCaption(sanctuary);
   renderScene(document.getElementById('meScene'), sanctuary, {noAvatar:true});
@@ -4977,9 +5186,10 @@ const Breath = {
 
     const circle=$('#bCircle');
     if(circle){
-      if(REDUCE){
+      const still=(typeof r3StillBreath==='function' && r3StillBreath());
+      if(REDUCE || still){
         circle.style.transform='scale(0.94)';
-        circle.style.opacity = String(0.45 + 0.5*((val-SCALE.rest)/(SCALE.full-SCALE.rest)));
+        circle.style.opacity = still ? '1' : String(0.45 + 0.5*((val-SCALE.rest)/(SCALE.full-SCALE.rest)));
       } else {
         circle.style.transform='scale('+val.toFixed(4)+')';
       }
@@ -11706,7 +11916,7 @@ function onboarded(){ return store.get('presentOnboarded')==='1'; }
 function finishWelcome(){
   store.set('presentOnboarded','1');
   go('home');
-  toast("You're all set. Change anything later in Me.");
+  toast("You're all set. Change anything later in Settings.");
 }
 
 let welcomeStep=0, whyPicked=[];
@@ -14077,7 +14287,7 @@ saveTo = async function(where){
   if(where==='memory'){
     if(!ACCOUNT){ toast('Sign in to use memory'); return; }
     if(Chat.temporary){ toast('This is a temporary chat, so nothing is saved'); return; }
-    if(!memoryIsOn()){ toast('Memory is off. You can turn it on in Me → Memory.'); return; }
+    if(!memoryIsOn()){ toast('Memory is off. You can turn it on in Settings → What Present knows.'); return; }
     const t=fromMe ? text : userText;
     if(!t){ toast('Nothing of yours to remember here yet'); return; }
     try{ await presentApi('/api/memories',{method:'POST',body:{text:t.slice(0,300)}}); }
@@ -14651,6 +14861,2072 @@ function micToggle(){
   try{ rec.start(); dictation.on=true; micUI(); }catch(e){ dictation.on=false; micUI(); toast('Voice input stopped. You can type instead.'); }
 }
 (function(){ const b=document.getElementById('micBtn'); if(b && !dictationCtor()) b.style.display='none'; })();
+</script>
+<script id="r3js">
+const R3_NAME_WORDS='fghcvq|vqvbg|vqvbgvp|zbeba|zbebavp|qhzo|qhzonff|qhzob|ybfre|jbeguyrff|hfryrff|cngurgvp|snvyher|htyl|snggl|sngfb|yneqnff|sernx|qvfthfgvat|genfu|tneontr|fphz|fphzont|haybinoyr|ovgpu|ovgpurf|onfgneq|nffubyr|nefrubyr|qvpxurnq|cevpx|gjng|phag|jnaxre|wnpxnff|fuvgurnq|fuvg|shpx|shpxre|shpxvat|zbgureshpxre|juber|fyhg|fxnax|gubg|qbhpur|qbhpuront|qvcfuvg|pbpxfhpxre|ergneq|ergneqrq|gneq|fcnm|fcnfgvp|pevccyr|zbatbybvq|cflpub|avttre|avttn|avttref|puvax|tbbx|fcvp|fcvpx|jrgonpx|xvxr|xlxr|ornare|enturnq|gbjryurnq|cnxv|wnc|genaal|snttbg|snt|furznyr|fnaqavttre|xlf|crqb|crqbcuvyr|encvfg|anmv';
+const R3_NAME_PHRASES='cvrpr bs fuvg|jnfgr bs fcnpr|jnfgr bs nve|xvyy lbhefrys|xvyy zlfrys|tb qvr|sng nff|sng cvt|htyl cvt|qhzo ovgpu|abobql ybirf zr|ungr zlfrys|v ungr zr|jbeguyrff cvrpr';
+
+/* ===================== PRESENT v9 (round 3) =====================
+   Layered on top of v8. Each block replaces or wraps a function from the
+   main script by name, the same way v8 does, so nothing earlier has to be
+   edited in place. */
+
+/* ---- one small settings object for this round, synced to the account ---- */
+const P3 = {
+  all(){ return lget('presentPrefs3', {}) || {}; },
+  get(k, d){ const o=this.all(); return (k in o) ? o[k] : d; },
+  set(k, v){ const o=this.all(); o[k]=v; lset('presentPrefs3', o); }
+};
+const R3_REDUCE = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+function r3esc(s){ return esc8(s); }
+function r3sheet(html){ openSheet8(html); }
+function r3confirm({cat, title, body, yes, no, danger, onYes}){
+  window.__r3yes = onYes;
+  r3sheet(`<div class="promptcat">${r3esc(cat||'')}</div>
+    <p class="prompttext" style="font-size:20px">${r3esc(title)}</p>
+    ${body?`<p class="muted" style="line-height:1.6">${body}</p>`:''}
+    <button class="btn" style="margin-top:12px;${danger?'background:#A5453F':''}" onclick="closeTool();(window.__r3yes||function(){})()">${r3esc(yes)}</button>
+    <button class="btn quiet" onclick="closeTool()">${r3esc(no||'Cancel')}</button>`);
+}
+
+/* ===================== 3. NAMES =====================
+   Whole words only, after normalising accents, case and look-alike digits,
+   so ordinary names (Dumbledore, Dickson, Cockburn, Scunthorpe) are fine.
+   The list is ROT13-encoded so the page source doesn't read as a list of slurs. */
+const R3_ROT = s => s.replace(/[a-z]/g, c => String.fromCharCode((c.charCodeAt(0)-97+13)%26+97));
+const R3_BAD = new Set(R3_NAME_WORDS.split('|').map(R3_ROT));
+const R3_BAD_PHRASES = R3_NAME_PHRASES.split('|').map(R3_ROT);
+function r3normName(s){
+  return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
+    .replace(/0/g,'o').replace(/1/g,'i').replace(/3/g,'e').replace(/4/g,'a').replace(/5/g,'s').replace(/7/g,'t').replace(/@/g,'a').replace(/\$/g,'s');
+}
+function nameProblem(raw){
+  const v=String(raw||'').trim(); if(!v) return '';
+  const n=r3normName(v);
+  let words=n.split(/[^a-z']+/).map(w=>w.replace(/^'+|'+$/g,'')).filter(Boolean);
+  if(words.length>2 && words.every(w=>w.length===1)) words=[words.join('')];      // s t u p i d
+  const variants = w => { const out=new Set([w, w.replace(/'/g,''), w.replace(/(.)\1{2,}/g,'$1'), w.replace(/(.)\1+/g,'$1')]);
+    [...out].forEach(x=>{ if(x.endsWith('es')) out.add(x.slice(0,-2)); if(x.endsWith('s')) out.add(x.slice(0,-1)); }); return [...out]; };
+  if(words.some(w=>variants(w).some(x=>R3_BAD.has(x)))) return 'bad';
+  const joined=' '+words.join(' ')+' ';
+  if(R3_BAD_PHRASES.some(p=>joined.includes(' '+p+' '))) return 'bad';
+  return '';
+}
+const NAME_REJECT_COPY = 'Please choose a name that doesn\u2019t put you or others down. You can also leave this blank.';
+/* Never address someone by a label that was rejected, including one saved before this check existed. */
+const _preferredName = preferredName;
+preferredName = function(){ const n=_preferredName(); return nameProblem(n) ? '' : n; };
+const _setPreferredName = setPreferredName;
+setPreferredName = function(n){ if(nameProblem(n)) return false; _setPreferredName(n); return true; };
+function nameFieldHTML(id){
+  return `<input class="toolinput" id="${id}" maxlength="40" autocomplete="nickname" placeholder="What you\u2019d like to be called"
+      value="${attr(preferredName())}" oninput="r3NameCheck('${id}')" aria-describedby="${id}Err">
+    <p class="nameerr" id="${id}Err" role="alert" hidden>${NAME_REJECT_COPY}</p>`;
+}
+function r3NameCheck(id){
+  const i=document.getElementById(id), e=document.getElementById(id+'Err'); if(!i||!e) return true;
+  const bad=!!nameProblem(i.value); e.hidden=!bad; i.setAttribute('aria-invalid', bad?'true':'false'); return !bad;
+}
+function r3SaveNameFrom(id){
+  const i=document.getElementById(id); if(!i) return true;
+  if(!r3NameCheck(id)){ i.focus(); return false; }
+  setPreferredName(i.value||''); return true;
+}
+
+/* ===================== 4. WHAT BRINGS YOU HERE ===================== */
+if(!WHY_HERE.includes('Other')) WHY_HERE.push('Just exploring','Other');
+function whyChipsHTML(onToggle){
+  const p=whyPicked;
+  return `<div class="tagwrap" role="group" aria-label="What brings you here">${WHY_HERE.map(w=>
+      `<button class="tag${p.includes(w)?' on':''}" aria-pressed="${p.includes(w)}" onclick="${onToggle}('${attr(w)}')">${w}</button>`).join('')}</div>
+    <div id="whyOtherWrap" ${p.includes('Other')?'':'hidden'} style="margin-top:12px">
+      <label class="fieldlabel" for="whyOther">Anything you\u2019d like to share? <span class="muted">(optional)</span></label>
+      <input class="toolinput" id="whyOther" maxlength="200" value="${attr(profile().whyOther||'')}">
+    </div>
+    ${p.includes('Just exploring')?`<p class="muted wcexplore">Lovely. Have a look around — nothing here assumes something\u2019s wrong.</p>`:''}`;
+}
+function r3SaveWhy(){
+  const o=document.getElementById('whyOther');
+  saveProfile({why:whyPicked.slice(), whyOther: whyPicked.includes('Other') && o ? o.value.trim().slice(0,200) : ''});
+}
+
+/* ---- onboarding: the name and why steps, and honest privacy copy ---- */
+const _renderWelcome = renderWelcome;
+renderWelcome = function(){
+  _renderWelcome();
+  const b=$('#welcomeBody'); if(!b) return;
+  const step=WELCOME_STEPS[welcomeStep];
+  if(step==='hello'){
+    const ps=b.querySelectorAll('.card p.muted'); const last=ps[ps.length-1];
+    if(last) last.innerHTML=PRIVACY_SHORT;
+  }
+  if(step==='name') b.innerHTML=`
+    <h3 class="wch">What should I call you?</h3>
+    <p class="wcp">Your name, nickname, alias, or alter ego\u2014choose what feels right for you. You can leave this blank or change it later.</p>
+    ${nameFieldHTML('wcName')}
+    <button class="btn" style="margin-top:18px" onclick="if(r3SaveNameFrom('wcName')) welcomeNext()">Continue</button>
+    <button class="btn quiet" onclick="welcomeNext()">Skip</button>`;
+  if(step==='why') b.innerHTML=`
+    <h3 class="wch">What brings you here?</h3>
+    <p class="wcp">Pick any that fit, or none. This only shapes what I suggest — it isn't a diagnosis and you can change it whenever in Settings → How I use Present.</p>
+    <div id="whyChips">${whyChipsHTML('toggleWhy')}</div>
+    <button class="btn" style="margin-top:18px" onclick="r3SaveWhy();welcomeNext()">Continue</button>
+    <button class="btn quiet" onclick="welcomeNext()">Skip</button>`;
+  if(step==='done'){ const p=b.querySelector('.card p'); if(p) p.innerHTML='Everything you just chose lives in <b>Settings</b> (the gear on Home), and you can change or clear any of it.'; }
+};
+toggleWhy = function(w){
+  const o=document.getElementById('whyOther'); const keep=o?o.value:null;
+  const i=whyPicked.indexOf(w); if(i>-1) whyPicked.splice(i,1); else whyPicked.push(w);
+  const host=document.getElementById('whyChips');
+  if(host){ host.innerHTML=whyChipsHTML(host.dataset.toggle||'toggleWhy'); const n=document.getElementById('whyOther'); if(n && keep!==null) n.value=keep; }
+  else renderWelcome();
+};
+
+/* ===================== 2. HONEST PRIVACY COPY ===================== */
+const PRIVACY_SHORT = `Your check-ins, journal and tasks are kept in this browser, linked to your account. Your settings and anything saved to memory are stored in your Present account on our server. Conversations are saved only if you turn on <b>Save conversations</b> in Settings → Privacy. To write replies, your messages go through our server to Anthropic, the company that makes the Claude AI model, and are handled under Anthropic\u2019s terms. Nothing goes to a therapist automatically.`;
+
+/* ===================== 1. SETTINGS PAGE ===================== */
+function r3row(icon, title, sub, act, bg){
+  return `<button class="merow" onclick="${act}"><span class="bub" style="background:${bg}">${icon}</span>
+    <span style="flex:1"><b>${title}</b><small>${sub}</small></span><span class="chev">${CHEV}</span></button>`;
+}
+function renderSettings(){
+  const el=$('#settingsBody'); if(!el) return;
+  const n=preferredName();
+  const why=(profile().why||[]);
+  const saving=saveChatsOn();
+  el.innerHTML=`
+    <div class="eyebrow">You</div><div class="melist">
+      ${r3row(ICON.leaf,'How I use Present', (n?`Called ${r3esc(n)} · `:'')+(why.length?r3esc(why.slice(0,3).join(', '))+(why.length>3?'…':''):'Name, reasons, tone, reminders'),"go('howiuse')",'#E7F0E5')}
+    </div>
+    <div class="eyebrow">How Present works with you</div><div class="melist">
+      ${r3row(ICON.sparkle,'How Present learns','In plain words',"go('howlearns')",'#E7F0E5')}
+      ${r3row(ICON.mind,'What Present knows about me','View, edit or forget anything',"go('knows')",'#EDE4F7')}
+      ${r3row(ICON.leaf,'What Present does','Turn features on or off',"go('systems')",'#F2E8DE')}
+    </div>
+    <div class="eyebrow">Health</div><div class="melist">
+      ${r3row(ICON.pill,'My medications','A tracker, nothing more',"go('meds')",'#FBE4EC')}
+    </div>
+    <div class="eyebrow">Privacy and comfort</div><div class="melist">
+      ${r3row(ICON.lock,'Privacy', 'Save conversations: '+(saving?'On':'Off')+' · export, delete',"go('privacy')",'#E4EDF6')}
+      ${r3row('<span style="font-size:17px">🔔</span>','Sound & vibration','Activities and task celebrations',"openFxSettings()",'#FDF0DC')}
+    </div>
+    <div class="eyebrow">Account</div>
+    ${typeof accountCardHTML==='function'?accountCardHTML():''}
+    <button class="btn quiet" style="margin-top:8px" onclick="openCredits()">Credits</button>`;
+}
+
+/* ---- How I use Present: one page instead of re-running the welcome ---- */
+function renderHowIUse(){
+  const el=$('#howiuseBody'); if(!el) return;
+  const p=profile();
+  whyPicked=(p.why||[]).slice();
+  el.innerHTML=`
+    <div class="card">
+      <label class="fieldlabel" for="hiName"><b>What should I call you?</b></label>
+      <p class="muted" style="margin:2px 0 10px;font-size:13px">Your name, nickname, alias, or alter ego\u2014choose what feels right for you. You can leave this blank.</p>
+      ${nameFieldHTML('hiName')}
+    </div>
+    <div class="card" style="margin-top:12px">
+      <b>What brings you here?</b>
+      <p class="muted" style="margin:2px 0 10px;font-size:13px">Any, all or none. It only shapes suggestions.</p>
+      <div id="whyChips" data-toggle="toggleWhy">${whyChipsHTML('toggleWhy')}</div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <b>How would you like me to talk to you?</b>
+      <div class="tagwrap" style="margin-top:10px" role="radiogroup" aria-label="Tone">${TONE_CHOICES.map(o=>
+        `<button class="tag${p.tone===o.k?' on':''}" role="radio" aria-checked="${p.tone===o.k}" onclick="r3Pick(this,'tone','${o.k}')">${o.t}</button>`).join('')}</div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <b>Are you working with a therapist?</b>
+      <div class="tagwrap" style="margin-top:10px" role="radiogroup" aria-label="Therapy">${THERAPY_STATUS.map(o=>
+        `<button class="tag${p.therapy===o.k?' on':''}" role="radio" aria-checked="${p.therapy===o.k}" onclick="r3Pick(this,'therapy','${o.k}')">${o.t}</button>`).join('')}</div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <b>Reminders</b>
+      <p class="muted" style="margin:2px 0 10px;font-size:13px">Saved as your preference. This preview doesn\u2019t send notifications yet.</p>
+      <div class="tagwrap" role="radiogroup" aria-label="Reminders">${[['evening','Evenings'],['morning','Mornings'],['none','No reminders']].map(([k,t])=>
+        `<button class="tag${p.reminder===k?' on':''}" role="radio" aria-checked="${p.reminder===k}" onclick="r3Pick(this,'reminder','${k}')">${t}</button>`).join('')}</div>
+    </div>
+    <button class="btn" style="margin-top:16px" onclick="r3SaveHowIUse()">Save</button>
+    <button class="btn quiet" onclick="startWelcome()">Go through the welcome again</button>`;
+}
+const r3HowDraft={};
+function r3Pick(btn, key, val){
+  r3HowDraft[key]=val;
+  btn.parentElement.querySelectorAll('.tag').forEach(t=>{ t.classList.remove('on'); t.setAttribute('aria-checked','false'); });
+  btn.classList.add('on'); btn.setAttribute('aria-checked','true');
+}
+function r3SaveHowIUse(){
+  if(!r3SaveNameFrom('hiName')) return;
+  r3SaveWhy(); saveProfile({...r3HowDraft});
+  toast('Saved'); renderSettings();
+}
+
+/* ===================== 1. ME ===================== */
+renderMeGroups = function(){
+  const el=$('#meGroups'); if(!el) return;
+  let vals=''; try{ vals=pinnedSummary(); }catch(e){ vals=''; }
+  const m=mantra();
+  const jc=lget('presentJournal',[]).length;
+  el.innerHTML=`
+    <button class="mevalues" onclick="go('values')">
+      <span class="mvhead"><span class="bub" style="background:#FBE4EC">${ICON.gem}</span><b>My values</b><span class="chev">${CHEV}</span></span>
+      <span class="mvsub">${vals?r3esc(vals):'Choose what matters most to you'}</span>
+      <span class="mvmantra">${mantraArt(26)}<span><small>My mantra</small>${r3esc(m.text)}</span></span>
+    </button>
+    <button class="btn" style="margin-top:12px" onclick="go('journal')">✍️ Open my journal</button>
+    <p class="muted" style="text-align:center;margin:6px 0 0;font-size:12.5px">${jc?jc+' entr'+(jc===1?'y':'ies')+' · ':''}Read your entries or write a new one</p>
+    <div class="eyebrow">Growing</div><div class="melist">
+      ${r3row(ICON.goal,'Goals','Small and real beats big and abstract',"go('goals')",'#E7F0E5')}
+      ${r3row(ICON.journal,'Reflections','Your answers to bigger questions',"go('reflections')",'#E4EDF6')}
+    </div>
+    <div class="eyebrow">Looking back</div><div class="melist">
+      ${r3row(ICON.star,'My progress','Check-ins, breathing, mindful minutes',"go('progress')",'#E7F0E5')}
+      ${r3row(ICON.chart,'Insights','What Present has noticed',"go('insights')",'#EDE4F7')}
+      ${r3row(ICON.star,'What helps me','The things that have worked',"go('helps')",'#FDF0DC')}
+    </div>
+    <div class="eyebrow">Yours</div><div class="melist">
+      ${r3row(ICON.orb,'My companion','Name it, and choose how it looks','openCompanionSheet()','#E4EDF6')}
+      ${r3row(ICON.leaf,'My Sanctuary','Your scene, sounds and seat',"editSanctuary('me')",'#E7F0E5')}
+    </div>
+    <p class="note">Settings, privacy and memory are under the gear on Home.</p>`;
+};
+
+/* ===================== 2 + 20–22. CHAT =====================
+   - Let's talk opens chat directly, resuming the conversation in progress.
+   - The conversation lives in the page while you move between tabs, saved
+     or not; saving to the account is opt-in (Settings → Privacy).
+   - The response indicator starts the moment you press Send, a failed
+     request offers Retry, and nothing can be sent twice. */
+function saveChatsOn(){ return !!ACCOUNT && P3.get('saveChats', false)===true; }
+OPENERS.talk = "I\u2019m here. What\u2019s on your mind?";
+const R3Chat = { started:false, pending:null, retry:null, sending:false };
+function chatHasUserTurns(){ return chatTranscript.some(m=>m.role==='user'); }
+
+/* Persist only when saving is on (temporary chats never). */
+chatPersistable = function(){ return !!ACCOUNT && !Chat.temporary && !Chat.restoring && saveChatsOn(); };
+
+function r3NewSession(temporary){
+  picked=[]; pendingSupport=null;
+  Chat.nextTemporary=!!temporary;
+  startChat();                         // v8 wrapper: new session, opener, renderChatMeta, go('chat')
+  R3Chat.started=true; R3Chat.retry=null;
+  const mb=$('#modebar'); if(mb) mb.innerHTML='';
+  updateComposer();
+}
+/* Let's talk: resume if there's a conversation, otherwise open straight into chat. */
+function letsTalk(){
+  if(R3Chat.started){ go('chat'); setTimeout(()=>{ const sc=$('#bubbles').closest('.scroll'); if(sc) sc.scrollTop=sc.scrollHeight; },30); return; }
+  r3NewSession(false);
+}
+function unsavedChatAtRisk(){ return R3Chat.started && chatHasUserTurns() && !(chatPersistable() && Chat.id); }
+function r3ConfirmDiscard(then, label){
+  if(!unsavedChatAtRisk()){ then(); return; }
+  r3confirm({cat:label||'New chat', title:'Start a new chat?',
+    body:'This conversation isn\u2019t saved, so it will be cleared. Anything already saved to memory stays.',
+    yes:'Start a new chat', no:'Keep this conversation', onYes:then});
+}
+startNewChat = function(){ r3ConfirmDiscard(()=>r3NewSession(false)); };
+startTemporaryChat = function(){ r3ConfirmDiscard(()=>r3NewSession(true), 'Temporary chat'); };
+
+/* The support-picker screen is no longer part of chat. Anything that still
+   asks for it gets the chat instead. */
+const _goR3 = go;
+go = function(id, isBack){
+  if(id==='needs'){ letsTalk(); return; }
+  if(id==='settings') setTimeout(renderSettings,0);
+  if(id==='howiuse') setTimeout(renderHowIUse,0);
+  if(id==='history') setTimeout(renderHistory,0);
+  if(id==='tasks') setTimeout(renderTasks,0);
+  if(id==='privacy') setTimeout(renderPrivacyR3,0);
+  if(id==='values') setTimeout(renderValuesMantra,0);
+  if(id==='chat') setTimeout(()=>{ renderChatMeta(); updateComposer(); },0);
+  return _goR3(id, isBack);
+};
+/* A check-in suggestion can still open chat in a particular way. */
+const _startChatInMode = startChatInMode;
+startChatInMode = function(key, support){
+  r3ConfirmDiscard(()=>{ _startChatInMode(key, support); R3Chat.started=true; const mb=$('#modebar'); if(mb) mb.innerHTML=''; });
+};
+/* The feelings wheel's "Talk it through" carries on an existing chat. */
+emoTalk = function(){ letsTalk(); };
+setModeBar = function(){ const mb=$('#modebar'); if(mb) mb.innerHTML=''; };
+
+/* ---- header: what happens to this conversation, in plain words ---- */
+renderChatMeta = function(){
+  let el=$('#chatMeta');
+  if(!el){
+    const host=document.querySelector('#s-chat .subhead'); if(!host) return;
+    host.insertAdjacentHTML('beforeend','<div class="chatmeta" id="chatMeta"></div>');
+    el=$('#chatMeta');
+    document.querySelector('#s-chat .modebar').insertAdjacentHTML('beforebegin','<div id="tempBanner"></div>');
+  }
+  const tb=$('#tempBanner');
+  const hist = saveChatsOn() || P3.get('hasSavedChats', false);
+  const links = `${hist?`<button class="link" onclick="go('history')">Saved chats</button> · `:''}<button class="link" onclick="startNewChat()">New chat</button>`;
+  if(Chat.temporary){
+    el.innerHTML=`<span>Temporary chat</span> · ${links}`;
+    if(tb) tb.innerHTML=`<div class="tempbanner">This chat isn\u2019t saved and doesn\u2019t use or add to memory. It stays while you move around the app, and clears when you start a new chat, sign out, or close or refresh Present.</div>`;
+    return;
+  }
+  let state;
+  if(!ACCOUNT) state='';
+  else if(saveChatsOn()) state = Chat.failed ? 'Couldn\u2019t save just now' : Chat.id ? 'Saved to your account' : 'Saves when you send a message';
+  else state = Chat.id ? 'Saved earlier · new messages aren\u2019t being saved' : 'Not saved';
+  el.innerHTML=`${state?`<span>${state}</span> · `:''}${links}`;
+  if(tb) tb.innerHTML = (!saveChatsOn() && ACCOUNT && chatHasUserTurns() && !P3.get('unsavedNoteSeen', false))
+    ? `<div class="tempbanner">Saving is off, so this conversation stays only while Present is open \u2014 moving between tabs is fine. It clears when you start a new chat, sign out, or close or refresh Present. <button class="link" onclick="P3.set('unsavedNoteSeen',true);renderChatMeta()">Got it</button> · <button class="link" onclick="go('privacy')">Change</button></div>` : '';
+};
+
+/* ---- composer ---- */
+function updateComposer(){
+  const i=$('#msg'), s=$('#sendBtn'); if(!i) return;
+  const has=!!i.value.trim();
+  if(s){ s.hidden=!has; s.disabled=!!R3Chat.sending; }
+  i.style.height='auto'; i.style.height=Math.min(140, i.scrollHeight)+'px';
+}
+function composerKey(e){
+  if(e.key==='Enter' && !e.shiftKey && !e.isComposing){
+    const coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+    if(!coarse){ e.preventDefault(); send(); }
+  }
+}
+
+/* ---- sending ---- */
+function bubbleUser(v){
+  const b=$('#bubbles');
+  b.insertAdjacentHTML('beforeend', `<div class="msg me"><div class="bub">${r3esc(v)}</div><button class="dots" onclick="openSheet()">•••</button></div>`);
+  return b.lastElementChild;
+}
+function bubbleIndicator(){
+  const b=$('#bubbles'), id='ind'+Date.now();
+  b.insertAdjacentHTML('beforeend', `<div class="msg ai pending" id="${id}" role="status" aria-live="polite">
+    <div class="bub thinking"><span class="thinkorb" aria-hidden="true"></span><span class="thinktext">Present is responding\u2026</span></div></div>`);
+  return document.getElementById(id);
+}
+async function r3Generate(v){
+  const last=chatTranscript[chatTranscript.length-1];
+  if(!last || last.role!=='user' || last.content!==v) recordTurn('user', v);
+  const local=pickReply(v);
+  if(local && local.safety){ Chat.lastSafety=true; return {r:local}; }
+  Chat.lastSafety=false;
+  if(!PresentAI.configured()) return {r:local};
+  try{
+    const text=await PresentAI.generate(v);
+    if(text) return {r:{t:text}};
+    throw new Error('empty');
+  }catch(e){ return {fail:true}; }
+}
+function scrollChat(force){
+  const sc=$('#bubbles') && $('#bubbles').closest('.scroll'); if(!sc) return;
+  if(force || nearBottom(sc)) softScroll(sc); else { const n=$('#newMsg'); if(n) n.classList.add('on'); }
+}
+async function deliver(v, ind){
+  R3Chat.sending=true; updateComposer();
+  R3Chat.pending={text:v};
+  const out=await r3Generate(v);
+  R3Chat.pending=null; R3Chat.sending=false;
+  if(out.fail){
+    ind.classList.remove('pending'); ind.removeAttribute('role');
+    ind.innerHTML=`<div class="bub failbub">I couldn\u2019t reach Present just now. Your message is still here.
+      <button class="btn sm retrybtn" onclick="retrySend(this)">Retry</button></div>`;
+    R3Chat.retry={text:v, el:ind};
+    updateComposer(); scrollChat(true);
+    return;
+  }
+  const r=out.r;
+  recordTurn('assistant', r.t);
+  ind.classList.remove('pending'); ind.removeAttribute('role');
+  ind.innerHTML=`<div class="bub"></div><button class="dots" onclick="openSheet()">•••</button>`;
+  const bub=ind.querySelector('.bub'); bub.classList.add('arrive');
+  streamInto(bub, r3esc(r.t), ()=>{
+    if(r.safety) $('#bubbles').insertAdjacentHTML('beforeend',
+      `<div class="crisis" style="margin:2px 0 12px">Call or text <b>988</b> · <button class="link" onclick="getHelp()">my safety plan</button></div>`);
+    scrollChat(false);
+  });
+  scrollChat(false);
+  updateComposer(); renderChatMeta();
+}
+send = async function(){
+  const inp=$('#msg'); if(!inp) return;
+  const v=inp.value.trim(); if(!v || R3Chat.sending) return;
+  if(dictation.on) micStop(true);
+  R3Chat.started=true;
+  if(R3Chat.retry){ const old=R3Chat.retry.el; if(old) old.remove(); R3Chat.retry=null; }
+  bubbleUser(v);
+  const ind=bubbleIndicator();                       // before any network wait
+  inp.value=''; updateComposer();
+  scrollChat(true);
+  convo.turns++;
+  const asked=modeFromText(v); if(asked && asked!==convo.support) setSupportMode(asked, true);
+  await deliver(v, ind);
+};
+function retrySend(btn){
+  const R=R3Chat.retry; if(!R || R3Chat.sending) return;
+  R3Chat.retry=null;
+  const ind=R.el; ind.classList.add('pending'); ind.setAttribute('role','status');
+  ind.innerHTML=`<div class="bub thinking"><span class="thinkorb" aria-hidden="true"></span><span class="thinktext">Present is responding\u2026</span></div>`;
+  deliver(R.text, ind);
+}
+
+/* ---- memory still works when conversations aren't saved ---- */
+maybeExtractMemory = function(){
+  if(!ACCOUNT || Chat.temporary || !memoryIsOn() || Chat.lastSafety) return;
+  if(!memoryCandidate(Chat.lastUser)) return;
+  const S=Chat.cur;
+  let lu=-1; chatTranscript.forEach((m,i)=>{ if(m.role==='user') lu=i; });
+  let prev=null; for(let i=lu-1;i>=0;i--){ if(chatTranscript[i].role==='assistant'){ prev=chatTranscript[i]; break; } }
+  Chat.chain = Chat.chain.then(async ()=>{
+    let r;
+    try{
+      if(chatPersistable() && S.id && !S.buffer.length) r=await presentApi('/api/memories/extract',{method:'POST',body:{conversation_id:S.id}});
+      else if(!chatPersistable()) r=await presentApi('/api/memories/extract',{method:'POST',body:{latest:Chat.lastUser, previous:prev?prev.content:''}});
+      else return;
+    }catch(e){ return; }
+    if(S!==Chat.cur) return;
+    if(r && Array.isArray(r.saved) && r.saved.length){ memCache=null; showMemorySaved(r.saved); }
+  });
+};
+
+/* ---- opening a saved chat keeps working; continuing it follows the saving setting ---- */
+const _openConversation = openConversation;
+openConversation = async function(id){
+  const go2=async()=>{ await _openConversation(id); R3Chat.started=true; setModeBar(); updateComposer(); renderChatMeta(); };
+  if(unsavedChatAtRisk()) r3ConfirmDiscard(go2, 'Open a saved chat'); else go2();
+};
+const _renderHistory = renderHistory;
+renderHistory = async function(){
+  await _renderHistory();
+  const has = (historyCache||[]).length>0;
+  if(has !== P3.get('hasSavedChats', false)) P3.set('hasSavedChats', has);
+  const note=$('#histSaveNote');
+  if(note) note.innerHTML = saveChatsOn()
+    ? 'Saving is on. New conversations are saved to your account so you can come back to them.'
+    : 'Saving is off. New conversations aren\u2019t saved. Chats saved earlier stay here until you delete them. <button class="link" onclick="go(\'privacy\')">Change</button>';
+  const e=$('#histList .illocard .illosub');
+  if(e) e.textContent = saveChatsOn() ? 'Conversations you have from now on will appear here.' : 'Turn on Save conversations in Privacy if you\u2019d like to keep conversations and come back to them.';
+};
+/* v8 deleteChat clears the open chat's id; keep the visible conversation, just unsaved. */
+
+/* ---- dictation: review before sending ---- */
+const dict2 = { base:'', final:'' };
+function dictUI(){
+  const bar=$('#dictBar'), mic=$('#micBtn'), inp=$('#msg');
+  if(mic){ mic.classList.toggle('listening', dictation.on); mic.setAttribute('aria-pressed', dictation.on?'true':'false');
+    mic.setAttribute('aria-label', dictation.on?'Stop dictation':'Dictate a message'); }
+  if(bar) bar.hidden=!dictation.on;
+  if(inp) inp.placeholder = dictation.on ? 'Listening\u2026' : 'Message Present\u2026';
+}
+function dictNote(html){ const n=$('#dictNote'); if(!n) return; n.innerHTML=html; n.hidden=!html; }
+micToggle = function(){
+  if(dictation.on){ micStop(true); return; }
+  const C=dictationCtor();
+  if(!C){ dictNote('Dictation isn\u2019t available in this browser. Your phone\u2019s keyboard may have its own microphone key. <button class="link" onclick="dictNote(\'\')">OK</button>'); return; }
+  const inp=$('#msg'); if(!inp) return;
+  dictNote('');
+  const rec=new C(); dictation.rec=rec;
+  rec.lang=dictationLang(); rec.interimResults=true; rec.continuous=true; rec.maxAlternatives=1;
+  dict2.base = inp.value ? inp.value.replace(/\s*$/,' ') : ''; dict2.cancelled=false;
+  rec.onresult=e=>{ if(dict2.cancelled) return; let txt=''; for(let i=0;i<e.results.length;i++) txt+=e.results[i][0].transcript;
+    inp.value=(dict2.base+txt).replace(/\s+/g,' ').trimStart(); updateComposer(); };
+  rec.onerror=e=>{
+    if(e.error==='not-allowed' || e.error==='service-not-allowed') dictNote('Microphone access is blocked for Present. You can allow it in your browser\u2019s site settings, or type instead. <button class="link" onclick="dictNote(\'\')">OK</button>');
+    else if(e.error==='no-speech') dictNote('I didn\u2019t catch anything. Tap the microphone to try again. <button class="link" onclick="dictNote(\'\')">OK</button>');
+    else if(e.error==='audio-capture') dictNote('No microphone was found. You can type instead. <button class="link" onclick="dictNote(\'\')">OK</button>');
+    else if(e.error!=='aborted') dictNote('Dictation stopped. You can type instead. <button class="link" onclick="dictNote(\'\')">OK</button>');
+  };
+  rec.onend=()=>{ dictation.on=false; dictation.rec=null; dictUI(); const i=$('#msg'); if(i){ i.focus({preventScroll:true}); } updateComposer(); };
+  try{ rec.start(); dictation.on=true; dictUI();
+    if(!store.get('presentVoiceNoted')){ store.set('presentVoiceNoted','1');
+      dictNote('Your browser turns speech into text, and may use Apple\u2019s or Google\u2019s servers to do it. Nothing is sent until you press Send. <button class="link" onclick="dictNote(\'\')">OK</button>'); } }
+  catch(e){ dictation.on=false; dictUI(); dictNote('Dictation couldn\u2019t start. You can type instead.'); }
+};
+function micStop(keep){
+  const inp=$('#msg');
+  if(!keep){ dict2.cancelled=true; if(inp) inp.value=dict2.base.trimEnd(); }
+  try{ dictation.rec && (keep ? dictation.rec.stop() : dictation.rec.abort()); }catch(e){}
+  dictation.on=false; dictUI(); updateComposer();
+}
+
+/* ---- the on-screen keyboard shouldn't cover the composer ---- */
+(function(){
+  const vv=window.visualViewport; if(!vv) return;
+  const fit=()=>{
+    const i=document.getElementById('msg'); const typing = i && document.activeElement===i;
+    const gap=Math.round(window.innerHeight - vv.height);
+    const app=document.getElementById('app');
+    if(typing && gap>120){ app.classList.add('kbopen'); app.style.height=vv.height+'px'; window.scrollTo(0,0);
+      const sc=i.closest('.scroll'); if(sc) sc.scrollTop=sc.scrollHeight; }
+    else if(app.classList.contains('kbopen')){ app.classList.remove('kbopen'); app.style.height=''; }
+  };
+  vv.addEventListener('resize',fit); document.addEventListener('focusout',()=>setTimeout(fit,60)); document.addEventListener('focusin',()=>setTimeout(fit,60));
+})();
+
+/* ---- Privacy: save conversations, plus honest notes ---- */
+function setSaveChats(on){
+  P3.set('saveChats', !!on);
+  if(on && R3Chat.started && !Chat.temporary && chatHasUserTurns() && !Chat.id){
+    // Saving now includes the conversation already on screen.
+    chatTranscript.forEach(m=>{ Chat.cur.buffer.push({role:m.role, content:m.content}); });
+    Chat.chain=Chat.chain.then(()=>flushChat(Chat.cur));
+  }
+  renderPrivacyR3(); renderChatMeta();
+  toast(on ? 'Conversations will be saved' : 'New messages won\u2019t be saved');
+}
+function renderPrivacyR3(){
+  const el=$('#privSave'); if(!el) return;
+  const on=saveChatsOn();
+  el.innerHTML = ACCOUNT ? `
+    <div class="fxrow"><span><b>Save conversations</b>
+      <small>${on ? 'On. Conversations are saved to your Present account so you can reopen, continue or delete them.'
+        : 'Off. A conversation stays while Present is open, even as you move between tabs. It clears when you start a new chat, sign out, or close or refresh Present.'}</small></span>
+      <button class="fxbtn" role="switch" aria-checked="${on}" aria-label="Save conversations" onclick="setSaveChats(${!on})">${on?'On':'Off'}</button></div>
+    <button class="act" onclick="go('history')"><i>💬</i><div>Saved conversations<small>Reopen, continue or delete them</small></div></button>
+    <p class="muted" style="font-size:12.5px;line-height:1.55;margin:8px 2px 0">Saved conversations and memory are separate. Turning saving off or deleting chats doesn\u2019t remove anything saved to memory — that\u2019s under <button class="link" onclick="go('knows')">What Present knows about me</button>.</p>`
+    : '';
+}
+
+/* ===================== 19. HOME: EDIT MODE =====================
+   Cards keep their order, size and visibility in one saved layout
+   (presentHome2). Removing a card only takes it off Home. */
+const HC_DEFS = {
+  mantra:    {t:'My mantra',       s:'Words you\u2019ve chosen to keep close', sizes:['compact','full'], def:'full'},
+  checkin:   {t:'Check-in',        s:'How are you feeling?',                 sizes:['compact','full'], def:'compact'},
+  progress:  {t:'My progress',     s:'A quiet count of check-in days',      sizes:['compact','full'], def:'compact'},
+  suggest:   {t:'Gentle suggestions', s:'Appears when something might help', sizes:['full'], def:'full'},
+  tasks:     {t:'Today\u2019s list', s:'Your small next steps',               sizes:['compact','full'], def:'full'},
+  journal:   {t:'Journal',         s:'Your latest entry',                    sizes:['compact','full'], def:'compact'},
+  therapy:   {t:'My therapy',      s:'Notes and your next session',         sizes:['compact','full'], def:'compact'},
+  tracking:  {t:'Sleep, energy & stress', s:'What your check-in tracks',     sizes:['compact','full'], def:'compact'},
+  understand:{t:'Understand',      s:'Feelings, ideas and activities',       sizes:['full'], def:'full'}
+};
+const HC_ORDER_DEFAULT = ['mantra','checkin','progress','suggest','tasks','journal','therapy','understand','tracking'];
+function homeLayout2(){
+  let L=null; try{ L=JSON.parse(store.get('presentHome2')||'null'); }catch(e){}
+  if(!L || !Array.isArray(L.order)){
+    // First time: carry over what was pinned or hidden in the previous version.
+    let old=null; try{ old=JSON.parse(store.get('presentHomeLayout')||'null'); }catch(e){}
+    const hidden = old && Array.isArray(old.hidden) ? old.hidden.map(id=>id==='focus'?'mantra':id).filter(id=>HC_DEFS[id]) : ['tracking'];
+    L={v:2, order:HC_ORDER_DEFAULT.slice(), hidden, size:{}, migrated: !!old};
+  }
+  Object.keys(HC_DEFS).forEach(id=>{ if(!L.order.includes(id)) L.order.push(id); });
+  L.order=L.order.filter(id=>HC_DEFS[id]); L.hidden=(L.hidden||[]).filter(id=>HC_DEFS[id]); L.size=L.size||{};
+  return L;
+}
+function saveHomeLayout2(L){ store.set('presentHome2', JSON.stringify({v:2, order:L.order, hidden:L.hidden, size:L.size})); }
+function hcSize(L,id){ const d=HC_DEFS[id]; const s=L.size[id]; return d.sizes.includes(s) ? s : d.def; }
+let homeEditing=false;
+
+applyHomeLayout = function(){
+  const wrap=$('#homeCards'); if(!wrap) return;
+  const L=homeLayout2();
+  wrap.querySelectorAll('.hcpin').forEach(x=>x.remove());            // the old pin buttons from the previous version
+  wrap.querySelectorAll('.hc-off').forEach(x=>x.classList.remove('hc-off'));
+  L.order.forEach(id=>{ const el=wrap.querySelector(`:scope > [data-hc="${id}"]`); if(el) wrap.appendChild(el); });
+  wrap.querySelectorAll(':scope > [data-hc]').forEach(el=>{
+    const id=el.dataset.hc, off=L.hidden.includes(id), size=hcSize(L,id);
+    el.hidden=off;
+    el.classList.toggle('hc-compact', size==='compact'); el.classList.toggle('hc-full', size==='full');
+    let ctl=el.querySelector(':scope > .hcedit');
+    if(homeEditing && !off){
+      const d=HC_DEFS[id], i=L.order.filter(x=>!L.hidden.includes(x)).indexOf(id), n=L.order.filter(x=>!L.hidden.includes(x)).length;
+      const html=`<button class="hcminus" onclick="hcRemove('${id}')" aria-label="Remove ${attr(d.t)} from Home">−</button>
+        <span class="hchandle" role="button" tabindex="-1" aria-hidden="true" title="Drag to move" data-drag="${id}">⠿</span>
+        <b class="hcname">${d.t}</b>
+        <button class="hcmv" onclick="hcMove('${id}',-1)" ${i===0?'disabled':''} aria-label="Move ${attr(d.t)} up">↑</button>
+        <button class="hcmv" onclick="hcMove('${id}',1)" ${i===n-1?'disabled':''} aria-label="Move ${attr(d.t)} down">↓</button>
+        ${d.sizes.length>1?`<button class="hcsize" onclick="hcToggleSize('${id}')" aria-label="Card size for ${attr(d.t)}: ${size==='compact'?'compact':'large'}. Change size">${size==='compact'?'Compact':'Large'}</button>`:''}`;
+      if(!ctl){ el.insertAdjacentHTML('afterbegin', `<div class="hcedit">${html}</div>`); }
+      else ctl.innerHTML=html;
+      [...el.children].forEach(c=>{ if(!c.classList.contains('hcedit')) c.inert=true; });
+    } else {
+      if(ctl) ctl.remove();
+      [...el.children].forEach(c=>{ c.inert=false; });
+    }
+  });
+  wrap.classList.toggle('editing', homeEditing);
+  const bar=$('#homeEditBar'), btn=$('#homeEditBtn');
+  if(bar){ bar.hidden=!homeEditing;
+    if(homeEditing) bar.innerHTML=`<p>Drag a card by its handle, or use the arrows. <b>−</b> takes a card off Home; nothing in it is deleted.</p>
+      <div class="hebtns"><button class="btn line sm" onclick="hcAddPicker()">＋ Add cards${L.hidden.length?` (${L.hidden.length})`:''}</button>
+      <button class="btn line sm" onclick="hcReset()">Reset layout</button>
+      <button class="btn sm" onclick="homeEdit(false)">Done</button></div>`; }
+  if(btn){ btn.hidden=homeEditing; }
+  const st=$('#hcStatus');
+  if(st) st.innerHTML = (!homeEditing && L.hidden.length) ? `<span>${L.hidden.length} card${L.hidden.length===1?'':'s'} not on Home</span><button class="link" onclick="homeEdit(true);hcAddPicker()">Add cards</button>` : '';
+  r3SuggestVisibility();
+  try{ renderHomeTracking(); }catch(e){}
+};
+function homeEdit(on){
+  homeEditing=!!on; applyHomeLayout();
+  if(on){ const b=$('#homeEditBar'); if(b){ b.scrollIntoView({block:'nearest'}); const f=b.querySelector('button'); if(f) f.focus({preventScroll:true}); } }
+  else { const b=$('#homeEditBtn'); if(b) b.focus({preventScroll:true}); try{ window.PresentSync && PresentSync.flush(); }catch(e){} toast('Home saved'); }
+}
+function hcMove(id, dir){
+  const L=homeLayout2(), vis=L.order.filter(x=>!L.hidden.includes(x)), i=vis.indexOf(id), j=i+dir;
+  if(j<0||j>=vis.length) return;
+  const other=vis[j], a=L.order.indexOf(id), b=L.order.indexOf(other);
+  L.order[a]=other; L.order[b]=id; saveHomeLayout2(L); applyHomeLayout();
+  const btn=document.querySelector(`[data-hc="${id}"] .hcmv[aria-label$="${dir<0?'up':'down'}"]:not([disabled])`) || document.querySelector(`[data-hc="${id}"] .hcmv:not([disabled])`);
+  if(btn) btn.focus({preventScroll:true});
+  const live=$('#homeLive'); if(live) live.textContent=`${HC_DEFS[id].t} moved ${dir<0?'up':'down'}.`;
+}
+function hcToggleSize(id){ const L=homeLayout2(); L.size[id]= hcSize(L,id)==='compact'?'full':'compact'; saveHomeLayout2(L); applyHomeLayout(); try{ renderTasks(); }catch(e){} }
+function hcRemove(id){
+  const L=homeLayout2(); if(!L.hidden.includes(id)) L.hidden.push(id); saveHomeLayout2(L); applyHomeLayout();
+  const live=$('#homeLive'); if(live) live.textContent=`${HC_DEFS[id].t} removed from Home. Add cards brings it back.`;
+}
+function hcAdd(id){
+  const L=homeLayout2(); L.hidden=L.hidden.filter(x=>x!==id); saveHomeLayout2(L); applyHomeLayout(); hcAddPicker(true);
+}
+function hcAddPicker(refresh){
+  const L=homeLayout2();
+  if(refresh && !$('#hcAddSheet')) return;
+  r3sheet(`<div id="hcAddSheet"></div><div class="promptcat">Add cards</div>
+    <p class="prompttext" style="font-size:20px">Cards you can put back on Home</p>
+    ${L.hidden.length ? `<div class="card" style="padding:6px 14px">${L.hidden.map(id=>`<div class="hcrow"><span style="flex:1"><b>${HC_DEFS[id].t}</b><small>${HC_DEFS[id].s}</small></span>
+        <button class="btn sm" style="width:auto" onclick="hcAdd('${id}')">Add</button></div>`).join('')}</div>`
+      : `<p class="muted">Every card is already on Home.</p>`}
+    <button class="btn quiet" onclick="closeTool()">Done</button>`);
+}
+function hcReset(){
+  r3confirm({cat:'Reset layout', title:'Put Home back the way it started?',
+    body:'Only the order, sizes and which cards show are reset. Nothing you\u2019ve written or tracked changes.',
+    yes:'Reset layout', no:'Keep my layout', onYes(){ saveHomeLayout2({order:HC_ORDER_DEFAULT.slice(), hidden:['tracking'], size:{}}); applyHomeLayout(); try{ renderTasks(); }catch(e){} toast('Layout reset'); }});
+}
+/* drag by the handle (mouse, touch or pen) */
+(function(){
+  let drag=null;
+  document.addEventListener('pointerdown',e=>{
+    const h=e.target.closest && e.target.closest('.hchandle'); if(!h || !homeEditing) return;
+    const card=h.closest('[data-hc]'); if(!card) return;
+    e.preventDefault(); drag={card, id:card.dataset.hc, pid:e.pointerId}; card.classList.add('dragging');
+    try{ h.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  document.addEventListener('pointermove',e=>{
+    if(!drag || e.pointerId!==drag.pid) return; e.preventDefault();
+    const wrap=$('#homeCards'); const cards=[...wrap.querySelectorAll(':scope > [data-hc]:not([hidden])')].filter(c=>c!==drag.card);
+    let target=null, before=true;
+    for(const c of cards){ const r=c.getBoundingClientRect();
+      if(e.clientY>=r.top && e.clientY<=r.bottom && e.clientX>=r.left && e.clientX<=r.right){ target=c;
+        before = (r.width<wrap.clientWidth*0.75) ? e.clientX < r.left+r.width/2 : e.clientY < r.top+r.height/2; break; } }
+    if(target){ if(before) wrap.insertBefore(drag.card, target); else wrap.insertBefore(drag.card, target.nextSibling); }
+    const sc=wrap.closest('.scroll'); if(sc){ const r=sc.getBoundingClientRect(); if(e.clientY<r.top+50) sc.scrollTop-=12; else if(e.clientY>r.bottom-50) sc.scrollTop+=12; }
+  },{passive:false});
+  const end=e=>{
+    if(!drag || e.pointerId!==drag.pid) return;
+    drag.card.classList.remove('dragging');
+    const L=homeLayout2(); const dom=[...$('#homeCards').querySelectorAll(':scope > [data-hc]')].map(c=>c.dataset.hc);
+    L.order=dom; saveHomeLayout2(L); drag=null; applyHomeLayout();
+  };
+  document.addEventListener('pointerup',end); document.addEventListener('pointercancel',end);
+})();
+/* the suggestions card only shows when it has something to say (or while editing) */
+function r3SuggestVisibility(){
+  const s=document.querySelector('#homeCards > [data-hc="suggest"]'); if(!s) return;
+  const L=homeLayout2(); if(L.hidden.includes('suggest')) return;
+  const empty=['therapyNudge','todayInsight','gentleCard'].every(id=>{ const e=document.getElementById(id); return !e || !e.innerHTML.trim(); });
+  s.classList.toggle('hc-empty', empty);
+  const ph=s.querySelector('.hcph'); if(ph) ph.hidden=!(empty && homeEditing);
+}
+
+/* ===================== 17. MY MANTRA ===================== */
+const MANTRA_PRESETS = [...new Set(['I am successful.','I am a kind human.','I am strong.','I am intelligent.','I have an incredible life.','I love all of me.','I am always beautiful.','I can achieve anything.','I am kind to myself.','I am happy.','I am loved.','I feel grateful.','I am constantly growing.','I am healing every day.','I am proud of myself.','I love my body.','I believe in myself.','My mistakes help me grow.','Today will be memorable.','I radiate positivity.','My actions are meaningful.','I am in the right place.','I am enough.','I am incredible.','I am the greatest.','I am optimistic.','I am valued.','My sensitivity is beautiful.','I am peaceful.','I belong here.','I deserve self-respect.','I will succeed today.','I\u2019m worthy of love.','I choose peace.','I love myself fully.','I can choose to see the good.','I\u2019m more at ease every day.','I am fearless.','I am uniquely me.','I am unstoppable.','I am here with a purpose.','I am becoming stronger every day.','I trust myself completely.','I open my mind and my heart.','I am open to new possibilities.','I choose peace over pressure.','I can be gentle with myself.','I can take one small step.','I deserve kindness, even on hard days.','Rest is allowed.','I don\u2019t have to figure everything out right now.','My worth isn\u2019t measured by my productivity.'])];
+function mantra(){
+  let m=null; try{ m=JSON.parse(store.get('presentMantra')||'null'); }catch(e){}
+  if(m && m.text) return m;
+  // Carry over a daily intention someone had written themselves.
+  let f=null; try{ f=getFocus(); }catch(e){}
+  const own = f && f.intent && f.intent!==FOCUS_DEFAULT.intent ? f.intent : null;
+  return {text: own || 'I choose peace over pressure.', preset: !own, carried: !!own};
+}
+function mantraArt(size){
+  const s=size||40;
+  return `<svg class="mantraart" width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true">
+    <circle cx="20" cy="20" r="19" fill="#FBE4EC"/>
+    <path d="M20 29c-5-3-8-7-8-11 3 0 6 2 8 5 2-3 5-5 8-5 0 4-3 8-8 11z" fill="#E0A0B4"/>
+    <path d="M20 29c-2-4-2-9 0-14 2 5 2 10 0 14z" fill="#A78BC4"/>
+    <path d="M11 29h18" stroke="#8FA98A" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+}
+function renderMantraCard(){
+  const el=$('#mantraCard'); if(!el) return;
+  const m=mantra();
+  el.innerHTML=`<div class="mantra">${mantraArt(44)}<div class="mtext"><small>My mantra</small><p>${r3esc(m.text)}</p></div>
+    <button class="link medit" onclick="editMantra()" aria-label="Edit my mantra">Edit</button></div>`;
+}
+function editMantra(){
+  const m=mantra();
+  r3sheet(`<div class="promptcat">My mantra</div>
+    <p class="prompttext" style="font-size:20px">Words to keep close, for as long as they help.</p>
+    <label class="fieldlabel" for="mantraIn">Write your own, or choose one below</label>
+    <textarea class="toolinput" id="mantraIn" rows="2" maxlength="140">${r3esc(m.text)}</textarea>
+    <button class="btn" style="margin-top:12px" onclick="saveMantra()">Save</button>
+    <div class="eyebrow" style="margin:18px 4px 8px">Choose one</div>
+    <div class="mantralist" role="listbox" aria-label="Mantras">${MANTRA_PRESETS.map(p=>
+      `<button class="tag${p===m.text?' on':''}" role="option" aria-selected="${p===m.text}" onclick="pickMantra(this)">${r3esc(p)}</button>`).join('')}</div>
+    <p class="muted" style="font-size:12.5px;margin:12px 4px 0">It stays until you change it. No daily reset, no reminders.</p>
+    <button class="btn quiet" onclick="closeTool()">Cancel</button>`);
+}
+function pickMantra(btn){
+  const t=$('#mantraIn'); if(t) t.value=btn.textContent;
+  btn.parentElement.querySelectorAll('.tag').forEach(b=>{ b.classList.remove('on'); b.setAttribute('aria-selected','false'); });
+  btn.classList.add('on'); btn.setAttribute('aria-selected','true');
+}
+function saveMantra(){
+  const v=(($('#mantraIn')||{}).value||'').replace(/\s+/g,' ').trim();
+  if(v.length<2){ toast('Write a few words, or choose one'); return; }
+  store.set('presentMantra', JSON.stringify({text:v.slice(0,140), preset:MANTRA_PRESETS.includes(v), at:Date.now()}));
+  closeTool(); renderMantraCard(); renderValuesMantra(); try{ renderMeGroups(); }catch(e){} toast('Mantra saved');
+}
+function renderValuesMantra(){
+  const el=$('#valuesMantra'); if(!el) return;
+  const m=mantra();
+  el.innerHTML=`<div class="card mantra" style="margin-bottom:14px">${mantraArt(40)}<div class="mtext"><small>My mantra</small><p>${r3esc(m.text)}</p></div>
+    <button class="link medit" onclick="editMantra()" aria-label="Edit my mantra">Edit</button></div>`;
+}
+renderFocus = function(){ renderMantraCard(); };
+
+/* ===================== 14–16. TASKS ===================== */
+const TASK_ICON_PATHS = {
+  broom:'<path d="M16 3l-6 9"/><path d="M7 12h6l2 8H5z" fill="#F6E3C8"/><path d="M8 16l-1 4M11 16v4M13.5 16l1 4"/>',
+  dumbbell:'<path d="M7 12h10"/><rect x="3" y="8" width="3" height="8" rx="1" fill="#EAE1F4"/><rect x="18" y="8" width="3" height="8" rx="1" fill="#EAE1F4"/><path d="M2 11v2M22 11v2"/>',
+  pot:'<path d="M4 10h16v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" fill="#F9E3D6"/><path d="M2 10h20M10 6c0-1 1-2 2-2s2 1 2 2"/><path d="M9 7c0-1 .5-1.5 1-2M15 7c0-1-.5-1.5-1-2"/>',
+  book:'<path d="M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2z" fill="#E4EDF6"/><path d="M4 20a2 2 0 0 0 2 2h13v-4"/><path d="M8 7h7"/>',
+  pencil:'<path d="M4 20l1-4L16 5l3 3L8 19z" fill="#FDF0DC"/><path d="M14 7l3 3"/>',
+  shower:'<path d="M5 21V8a4 4 0 0 1 8 0"/><path d="M10 9h6l-1 2h-4z" fill="#E4EDF6"/><path d="M11 14v1M13 14v2M15 14v1M12 17v1M14 18v1"/>',
+  phone:'<path d="M6 3h4l1 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 1v4a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2z" fill="#E7F0E5"/>',
+  notebook:'<rect x="5" y="3" width="14" height="18" rx="2" fill="#FBE4EC"/><path d="M9 3v18M12 8h4M12 11h4"/>',
+  water:'<path d="M6 4h12l-1.5 16h-9z" fill="#E4EDF6"/><path d="M7 9h10"/>',
+  food:'<path d="M12 7c-4-2-8 1-7 6s4 8 7 7c3 1 6-2 7-7s-3-8-7-6z" fill="#FBE4EC"/><path d="M12 7c0-2 1-3 3-4"/>',
+  toothbrush:'<path d="M4 20L16 8"/><rect x="14" y="3" width="7" height="5" rx="1.5" transform="rotate(45 17.5 5.5)" fill="#E4EDF6"/>',
+  shirt:'<path d="M8 3l-5 3 2 4 2-1v12h10V9l2 1 2-4-5-3a3 3 0 0 1-8 0z" fill="#EAE1F4"/>',
+  heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" fill="#FBE4EC"/>',
+  breath:'<path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 17h6"/>',
+  hand:'<path d="M8 13V6a1.5 1.5 0 0 1 3 0v5V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8a7 7 0 0 1-7 7c-3 0-4-2-6-5l-1.5-2.5a1.5 1.5 0 0 1 2.5-1.5z" fill="#FDF0DC"/>',
+  stretch:'<circle cx="12" cy="4" r="2" fill="#EAE1F4"/><path d="M5 8l7 2 7-2M12 10v5l-3 6M12 15l3 6"/>',
+  sun:'<circle cx="12" cy="12" r="4" fill="#FDF0DC"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>',
+  shoe:'<path d="M3 16v-5l4-1 3 3 9 1a2 2 0 0 1 2 2v1z" fill="#E7F0E5"/><path d="M3 19h18"/>',
+  screen:'<rect x="3" y="4" width="18" height="12" rx="2" fill="#E4EDF6"/><path d="M8 20h8M12 16v4M9 10h6"/>',
+  moon:'<path d="M20 14A8 8 0 1 1 10 4a6.5 6.5 0 0 0 10 10z" fill="#EAE1F4"/>',
+  chat:'<path d="M4 5h16v11H9l-5 4z" fill="#EAE1F4"/><path d="M8 9h8M8 12h5"/>',
+  hands:'<path d="M3 14l4-4 4 3 2-1M21 14l-4-4-4 3"/><path d="M5 16l4 4h6l4-4" fill="#FBE4EC"/>',
+  box:'<path d="M3 8l9-4 9 4v9l-9 4-9-4z" fill="#F6E3C8"/><path d="M3 8l9 4 9-4M12 12v9"/>',
+  dish:'<ellipse cx="12" cy="13" rx="9" ry="5" fill="#E4EDF6"/><ellipse cx="12" cy="12" rx="5" ry="2.5"/><path d="M8 4c0 2 1 2 1 4M12 3c0 2 1 2 1 4"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2" fill="#FDF0DC"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/>',
+  chair:'<path d="M6 11V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v6" fill="#EAE1F4"/><path d="M4 11h16v4H4zM6 15v6M18 15v6"/>',
+  leaf:'<path d="M5 19C5 10 11 5 20 4c0 9-5 15-14 15z" fill="#E7F0E5"/><path d="M5 19l9-9"/>',
+  clipboard:'<rect x="5" y="4" width="14" height="17" rx="2" fill="#E7F0E5"/><rect x="9" y="2.5" width="6" height="3" rx="1"/><path d="M8 11h8M8 15h5"/>',
+  sparkle:'<path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z" fill="#F2E8DE"/>'
+};
+const TASK_ICON_NAMES = {broom:'Broom',dumbbell:'Dumbbell',pot:'Pot',book:'Book',pencil:'Pencil',shower:'Shower',phone:'Phone',notebook:'Notebook',water:'Glass of water',food:'Food',toothbrush:'Toothbrush',shirt:'Clothes',heart:'Heart',breath:'Breath',hand:'Hand',stretch:'Stretch',sun:'Sun',shoe:'Shoe',screen:'Screen',moon:'Moon',chat:'Message',hands:'Support',box:'Box',dish:'Dish',calendar:'Calendar',chair:'Therapy chair',leaf:'Leaf',clipboard:'Clipboard',sparkle:'Sparkle'};
+function taskIconSVG(k, size){
+  const p=TASK_ICON_PATHS[k]||TASK_ICON_PATHS.sparkle, s=size||28;
+  return `<svg class="taskart" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="#6B5484" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+}
+const TASK_KEYWORDS = [
+  ['clipboard',/\b(therapy homework|worksheet|paperwork|forms?|bills?|taxes)\b/],
+  ['chair',/\b(therapy|therapist|counsell?or|session)\b/],
+  ['toothbrush',/\b(teeth|toothbrush|floss)\b/],
+  ['shower',/\b(shower|bath|wash (my )?face|skin ?care)\b/],
+  ['dish',/\b(dish|dishes|wash up|washing up|cup|plates?)\b/],
+  ['box',/\b(put away|declutter|organi[sz]e|five things|3 things|three things)\b/],
+  ['broom',/\b(clean|tidy|vacuum|hoover|sweep|dust|mop|bedroom|room)\b/],
+  ['stretch',/\b(stretch|yoga)\b/],
+  ['dumbbell',/\b(workout|work out|exercise|gym|lift|run|running|train)\b/],
+  ['pot',/\b(cook|dinner|lunch|breakfast|meal|bake|recipe)\b/],
+  ['water',/\b(water|drink|hydrate)\b/],
+  ['food',/\b(eat|snack|food|fruit)\b/],
+  ['notebook',/\b(journal|diary)\b/],
+  ['book',/\b(read|study|assignment|homework|essay|class|exam|revise|revision|course)\b/],
+  ['pencil',/\b(write|draft|notes?)\b/],
+  ['phone',/\b(call|ring|phone)\b/],
+  ['chat',/\b(text|message|reply|dm)\b/],
+  ['hands',/\b(support|ask for help|reach out|help)\b/],
+  ['calendar',/\b(appointment|schedule|book (a|an)|doctor|dentist|gp)\b/],
+  ['shirt',/\b(clothes|dress|laundry|change into|outfit)\b/],
+  ['breath',/\b(breath|breathe|breathing|ground|grounding|meditat\w*)\b/],
+  ['hand',/\b(sensory|fidget)\b/],
+  ['shoe',/\b(walk|steps|hike)\b/],
+  ['sun',/\b(outside|sunlight|fresh air|garden|window)\b/],
+  ['screen',/\b(screen|offline|social media)\b/],
+  ['moon',/\b(wind down|winding down|sleep|bed|rest|nap)\b/],
+  ['leaf',/\b(coping|skill|calm)\b/],
+  ['heart',/\b(check in|check-in|myself|self-care|feel)\b/]
+];
+function suggestTaskIcon(text){ const t=String(text||'').toLowerCase(); for(const [k,re] of TASK_KEYWORDS) if(re.test(t)) return k; return 'sparkle'; }
+function taskIconKey(t){ if(t.icon==='none') return null; if(t.icon && TASK_ICON_PATHS[t.icon]) return t.icon; return suggestTaskIcon(t.title); }
+function taskPicsOn(){ return P3.get('taskPics', true)!==false; }
+
+const TASK_SUGGESTIONS = [
+  ['Drink some water','A few sips','water'],['Eat something','A small snack','food'],['Brush my teeth','Just a quick brush','toothbrush'],
+  ['Shower or wash my face','Splash some water on my face','shower'],['Change into comfortable clothes','Change one thing','shirt'],
+  ['Check in with myself','Notice one feeling','heart'],['Write in my journal','Write one sentence','notebook'],
+  ['Try a breathing or grounding activity','Three slow breaths','breath'],['Spend a moment with a sensory activity','One minute with Squishy ball','hand'],
+  ['Stretch','Reach up once','stretch'],['Step outside','Open a window','sun'],['Take a short walk','Walk to the end of the street','shoe'],
+  ['Take a screen break','Five minutes away from screens','screen'],['Begin winding down','Dim one light','moon'],
+  ['Text someone I trust','Send one emoji','chat'],['Ask for support','Tell one person it\u2019s hard right now','hands'],
+  ['Put away five things','Put away one thing','box'],['Wash one dish','Rinse one cup','dish'],
+  ['Spend five minutes on an assignment','Open the assignment','book'],['Schedule an appointment','Find the phone number','calendar'],
+  ['Prepare a topic for therapy','Note one thing to bring','chair'],['Practice a coping skill','Try it for one minute','leaf'],
+  ['Work on therapy homework','Read the first question','clipboard']
+];
+
+/* ---- the add / edit sheet, shared ---- */
+const taskDraft={ id:null, icon:undefined, manual:false };
+function taskSheet(t){
+  taskDraft.id=t?t.id:null; taskDraft.icon=t?t.icon:undefined; taskDraft.manual=!!(t&&t.iconManual);
+  const title=t?t.title:'', small=t?(t.gentleTitle||''):'';
+  r3sheet(`<div class="promptcat">${t?'Edit':'Add something'}</div>
+    <p class="prompttext" style="font-size:20px">${t?'Change it however you like':'What would you like on your list?'}</p>
+    ${t?'':`<button class="btn line sm" style="margin-bottom:12px" onclick="taskSuggestPicker()">Choose from suggestions</button>`}
+    <label class="fieldlabel" for="tkTitle">In your own words</label>
+    <input class="toolinput" id="tkTitle" maxlength="120" value="${attr(title)}" placeholder="Wash up, reply to Sam…" oninput="taskIconPreview()">
+    <label class="fieldlabel" for="tkGentle" style="margin-top:14px">A smaller version <span class="muted">(optional)</span></label>
+    <input class="toolinput" id="tkGentle" maxlength="120" value="${attr(small)}" placeholder="What would count on a hard day?">
+    <div class="tkicon"><span id="tkIconNow"></span><span style="flex:1"><b>Picture</b><small id="tkIconWhy"></small></span>
+      <button class="link" onclick="taskIconPicker()">Change</button></div>
+    <button class="btn" style="margin-top:14px" onclick="commitTaskSheet()">${t?'Save':'Add'}</button>
+    ${t?`<button class="btn quiet" style="color:#A5453F" onclick="closeTool();removeTask('${t.id}')">Delete</button>`:''}
+    <button class="btn quiet" onclick="closeTool()">Cancel</button>`);
+  taskIconPreview();
+  setTimeout(()=>{ const e=$('#tkTitle'); if(e && !t) e.focus(); },60);
+}
+function taskIconPreview(){
+  const now=$('#tkIconNow'), why=$('#tkIconWhy'); if(!now) return;
+  const text=(($('#tkTitle')||{}).value||'');
+  let k, msg;
+  if(taskDraft.icon==='none'){ k=null; msg='No picture'; }
+  else if(taskDraft.manual && taskDraft.icon){ k=taskDraft.icon; msg='Your choice: '+TASK_ICON_NAMES[k]+' (kept if you change the words)'; }
+  else { k=suggestTaskIcon(text); msg = k==='sparkle' ? 'A gentle default. Choose another if you like.' : 'Suggested from your words: '+TASK_ICON_NAMES[k]; }
+  now.innerHTML = k ? taskIconSVG(k, 32) : '<span class="noicon">—</span>';
+  why.textContent=msg;
+}
+function taskIconPicker(){
+  const host=$('#tkIconGrid');
+  if(host){ host.remove(); return; }
+  const box=document.querySelector('.tkicon'); if(!box) return;
+  box.insertAdjacentHTML('afterend', `<div class="tkgrid" id="tkIconGrid" role="listbox" aria-label="Pictures">
+    ${Object.keys(TASK_ICON_PATHS).map(k=>`<button class="tkpick" role="option" onclick="taskIconChoose('${k}')" aria-label="${TASK_ICON_NAMES[k]}" title="${TASK_ICON_NAMES[k]}">${taskIconSVG(k,26)}</button>`).join('')}
+    <button class="tkpick" onclick="taskIconChoose('auto')" aria-label="Suggest from my words" title="Suggest from my words">Auto</button>
+    <button class="tkpick" onclick="taskIconChoose('none')" aria-label="No picture" title="No picture">None</button></div>`);
+}
+function taskIconChoose(k){
+  if(k==='auto'){ taskDraft.icon=undefined; taskDraft.manual=false; }
+  else { taskDraft.icon=k; taskDraft.manual=true; }
+  const g=$('#tkIconGrid'); if(g) g.remove(); taskIconPreview();
+}
+function commitTaskSheet(){
+  const t=(($('#tkTitle')||{}).value||'').trim();
+  if(!t){ toast('Give it a name first'); return; }
+  const g=(($('#tkGentle')||{}).value||'').trim();
+  const list=tasks();
+  const icon = taskDraft.icon==='none' ? 'none' : (taskDraft.manual ? taskDraft.icon : suggestTaskIcon(t));
+  if(taskDraft.id){ const x=list.find(y=>y.id===taskDraft.id); if(x){ x.title=t; x.gentleTitle=g||null; x.icon=icon; x.iconManual=taskDraft.manual || taskDraft.icon==='none'; } }
+  else list.push({id:'t_'+Date.now(), title:t, gentleTitle:g||null, done:null, icon, iconManual:taskDraft.manual || taskDraft.icon==='none'});
+  saveTasks(list); closeTool(); renderTasks(); toast(taskDraft.id?'Saved':'Added');
+}
+addTaskSheet = function(){ taskSheet(null); };
+commitTask = commitTaskSheet;
+function editTask(id){ const t=tasks().find(x=>x.id===id); if(t) taskSheet(t); }
+function taskSuggestPicker(){
+  const have=new Set(tasks().map(t=>t.title.toLowerCase()));
+  r3sheet(`<div class="promptcat">Suggestions</div>
+    <p class="prompttext" style="font-size:20px">Pick one to add. You can change the words first.</p>
+    <div class="sugglist">${TASK_SUGGESTIONS.map(([a,b,k],i)=>`<button class="suggrow" onclick="taskFromSuggestion(${i})" ${have.has(a.toLowerCase())?'aria-describedby="sgHave"':''}>
+      ${taskIconSVG(k,28)}<span><b>${a}</b><small>Smaller: ${b}${have.has(a.toLowerCase())?' · already on your list':''}</small></span></button>`).join('')}</div>
+    <button class="btn line" style="margin-top:12px" onclick="taskSheet(null)">Write my own</button>
+    <button class="btn quiet" onclick="closeTool()">Cancel</button>`);
+}
+function taskFromSuggestion(i){
+  const [a,b,k]=TASK_SUGGESTIONS[i];
+  taskSheet(null); const ti=$('#tkTitle'), tg=$('#tkGentle'); if(ti) ti.value=a; if(tg) tg.value=b;
+  taskDraft.icon=k; taskDraft.manual=false; taskIconPreview();
+}
+removeTask = function(id){
+  const list=tasks(), i=list.findIndex(t=>t.id===id); if(i<0) return;
+  const [gone]=list.splice(i,1); saveTasks(list); renderTasks();
+  undoToast('Removed \u201c'+r3esc(gone.title)+'\u201d', ()=>{ const l=tasks(); l.splice(Math.min(i,l.length),0,gone); saveTasks(l); renderTasks(); });
+};
+
+/* ---- the list itself ---- */
+let tasksDoneOpen=false;
+function taskRowHTML(t, today){
+  const done=t.done===today, k=taskPicsOn()?taskIconKey(t):null;
+  return `<div class="taskrow${done?' done':''}" data-tid="${attr(t.id)}">
+    <button class="taskbox${done?' on':''}" onclick="toggleTask('${t.id}')" role="checkbox" aria-checked="${done}" aria-label="${attr(taskTitle(t))}">${done?'✓':''}</button>
+    ${k?`<span class="taskpic">${taskIconSVG(k,26)}</span>`:''}
+    <button class="tasktitle" onclick="editTask('${t.id}')" aria-label="Edit ${attr(taskTitle(t))}">${r3esc(taskTitle(t))}</button>
+    <button class="taskx" onclick="removeTask('${t.id}')" aria-label="Remove ${attr(taskTitle(t))}">×</button>
+  </div>`;
+}
+function taskListHTML(compact){
+  const list=tasks(), today=todayKey();
+  const open=list.filter(t=>t.done!==today), done=list.filter(t=>t.done===today);
+  const shown=compact?open.slice(0,3):open;
+  return `<div class="between" style="margin:0 4px 10px">
+      <span class="eyebrowinline">Today\u2019s list</span>
+      <span>${gentleOn()?'<span class="gentlechip">gentle</span> ':''}<button class="link tasksettings" onclick="openTaskSettings()" aria-label="List settings">⚙</button></span>
+    </div>
+    <div class="taskcele" id="taskCele${compact?'H':'F'}" role="status" aria-live="polite"></div>
+    ${shown.map(t=>taskRowHTML(t,today)).join('') || `<p class="muted" style="margin:4px 4px 8px;font-size:13.5px">${list.length?'Nothing left on the list.':'Nothing on your list. Add something small, or leave it empty.'}</p>`}
+    ${compact && open.length>3 ? `<button class="link viewall" onclick="go('tasks')">View all (${open.length})</button>` : ''}
+    <div class="rowbtns" style="margin-top:10px">
+      <button class="btn line sm" onclick="addTaskSheet()">＋ Add something</button>
+      <button class="btn line sm" onclick="taskSuggestPicker()">Suggestions</button>
+    </div>
+    ${done.length ? (compact
+      ? `<p class="muted" style="margin:10px 4px 0;font-size:13px">${done.length} done today · <button class="link" onclick="go('tasks')">See completed</button></p>`
+      : `<details class="taskdone" ${tasksDoneOpen?'open':''} ontoggle="tasksDoneOpen=this.open"><summary>Completed (${done.length})</summary>
+          ${done.map(t=>taskRowHTML(t,today)).join('')}</details>`) : ''}`;
+}
+renderTasks = function(){
+  const L=homeLayout2();
+  const h=$('#taskList'); if(h) h.innerHTML=taskListHTML(hcSize(L,'tasks')==='compact');
+  const f=$('#tasksFull'); if(f) f.innerHTML=taskListHTML(false);
+};
+
+/* ---- 16. celebrations: only on a real tap that completes a task ---- */
+function celeOn(){ return P3.get('celebrate', true)!==false; }
+function celeSoundOn(){ return P3.get('celebrateSound', false)===true; }
+function celeHapticOn(){ return P3.get('celebrateHaptic', true)!==false; }
+toggleTask = function(id){
+  const list=tasks(), t=list.find(x=>x.id===id); if(!t) return;
+  const today=todayKey(), wasDone=t.done===today;
+  t.done = wasDone ? null : today;
+  saveTasks(list); renderTasks();
+  if(!wasDone) celebrateTask(id, list.length>0 && list.every(x=>x.done===today));
+};
+function celebrateTask(id, all){
+  if(!celeOn()) return;
+  document.querySelectorAll(`.taskrow[data-tid="${CSS.escape(id)}"]`).forEach(row=>{
+    row.classList.add('justdone');
+    if(!R3_REDUCE()){ const s=document.createElement('span'); s.className='sparkles'; s.setAttribute('aria-hidden','true');
+      s.innerHTML='<i></i><i></i><i></i><i></i><i></i>'; row.appendChild(s); setTimeout(()=>s.remove(),1200); }
+    setTimeout(()=>row.classList.remove('justdone'),1300);
+  });
+  const msg = all ? 'You made time for yourself today.' : 'One little step done.';
+  document.querySelectorAll('.taskcele').forEach(c=>{ c.textContent=msg; c.classList.add('on'); clearTimeout(c._t); c._t=setTimeout(()=>{ c.classList.remove('on'); c.textContent=''; }, all?4200:2400); });
+  if(celeSoundOn()){ try{ if(Audio_.init()){ Audio_.resume(); const c=Audio_.ctx, g=c.createGain(); g.gain.value=r3PlayVol(); g.connect(c.destination);
+    (all?[0,4,7]:[5]).forEach((k,n)=>sndNote(Audio_, g, c.currentTime+n*.16, {freq:FX.scale[k], level:.045, decay:1.4, partials:[[1,1],[2.01,.18]]}));
+    setTimeout(()=>{ try{ g.disconnect(); }catch(e){} }, 3000); } }catch(e){} }
+  if(celeHapticOn() && fxVibeMode()==='vibrate'){ try{ navigator.vibrate(all?[12,80,12]:12); }catch(e){} }
+}
+function openTaskSettings(){
+  const row=(k, label, sub, on, unavailable)=>`<div class="fxrow"><span><b>${label}</b><small>${sub}</small></span>
+    ${unavailable?'<button class="fxbtn" disabled aria-disabled="true">Not available</button>'
+      :`<button class="fxbtn" role="switch" aria-checked="${on}" aria-label="${label}" onclick="P3.set('${k}',${!on});openTaskSettings()">${on?'On':'Off'}</button>`}</div>`;
+  const vm=fxVibeMode();
+  r3sheet(`<div class="promptcat">Your list</div><p class="prompttext" style="font-size:20px">How the list looks and feels</p>
+    <div class="card fxset">
+      ${row('taskPics','Pictures','Small drawings beside tasks',taskPicsOn())}
+      ${row('celebrate','Celebrations','A small check and sparkle when you tick something off',celeOn())}
+      ${row('celebrateSound','Sound','A soft chime with the celebration',celeSoundOn())}
+      ${row('celebrateHaptic','Vibration', vm==='vibrate'?'One short pulse':'Not available on this device', celeHapticOn(), vm!=='vibrate')}
+    </div>
+    <p class="muted" style="font-size:12.5px;margin:10px 4px 0">${R3_REDUCE()?'Your device asks for less motion, so celebrations are shown as words without sparkles.':'Celebrations never count anything or keep a streak.'}</p>
+    <button class="btn quiet" onclick="closeTool();renderTasks()">Done</button>`);
+}
+
+/* ---- Home render ---- */
+const _renderHomeR3 = renderHome;
+renderHome = function(){
+  _renderHomeR3();
+  renderMantraCard();
+  const u=$('#homeForYouWrap');
+  if(u) u.innerHTML=`<div class="card hcunder"><b>Understand</b><p class="muted">Name a feeling, read something short, or try an activity.</p>
+    <button class="btn sm line" onclick="go('foryou')">Open Understand</button></div>`;
+  applyHomeLayout();
+};
+
+/* ===== R3 · Sanctuary visual stability (item 18) =====
+   Breathing and sitting no longer swap the background for a fitted copy
+   (which cropped, zoomed and showed a portrait with blurred sides). The
+   Sanctuary scene that's already on screen stays exactly where it is; only
+   the controls fade away and the breathing guide moves. */
+function r3StillBreath(){ return !!P3.get('breathStill', false); }
+immersiveBackdrop = function(){ return ''; };
+function r3SetStillBreath(on){
+  P3.set('breathStill', !!on);
+  const c=document.getElementById('bCircle');
+  if(c && on){ c.style.transform='scale(0.94)'; c.style.opacity='1'; }
+  r3BreathOpt();
+}
+function r3BreathOpt(){
+  const list=document.getElementById('breathList'); if(!list) return;
+  let el=document.getElementById('breathStillOpt');
+  if(!el){ el=document.createElement('div'); el.id='breathStillOpt'; el.className='breathstill'; list.parentNode.insertBefore(el, list); }
+  const still=r3StillBreath();
+  el.innerHTML=`<div class="sub" style="margin:0 0 8px">Breathing guide</div>
+    <div class="lenrow" role="group" aria-label="Breathing guide">
+      <button class="lenbtn ${still?'':'on'}" aria-pressed="${!still}" onclick="r3SetStillBreath(false)">Moving circle</button>
+      <button class="lenbtn ${still?'on':''}" aria-pressed="${still}" onclick="r3SetStillBreath(true)">Still guide</button></div>
+    <p class="sub" style="font-size:12px;margin:6px 0 14px">${R3_REDUCE()?'Your device asks for reduced motion, so the circle stays still either way and the words lead.':'Still guide keeps the circle in place. The words and count lead instead.'}</p>`;
+}
+if(typeof renderBreathList==='function'){ const _rbl=renderBreathList; renderBreathList=function(){ const r=_rbl.apply(this, arguments); try{ r3BreathOpt(); }catch(e){} return r; }; }
+
+/* ===================== R3 · ACTIVITIES (items 5–12) =====================
+   Sound is opt-in and has a volume; vibration is light, throttled, and
+   stops the moment an activity is paused, closed or switched off. */
+
+/* ---- sound: off until chosen, one volume for the activities ---- */
+fxSoundOn = function(){ return store.get('presentPlaySound')==='1'; };
+playSoundOn = fxSoundOn;
+function r3PlayVol(){ const v=+P3.get('playVol', 0.6); return isFinite(v) ? Math.max(0, Math.min(1, v)) : 0.6; }
+(function(){
+  const _ready=FX.ready;
+  FX.ready=function(){ const c=_ready.call(FX); if(c && FX.out && !FX._r3vol){ FX._r3vol=true; FX.out.gain.value=r3PlayVol(); } return c; };
+})();
+function r3SetVol(v){
+  v=Math.max(0, Math.min(1, +v||0)); P3.set('playVol', v);
+  if(FX.out && Audio_.ctx) FX.out.gain.setTargetAtTime(v, Audio_.ctx.currentTime, .05);
+  const o=document.getElementById('fxVolOut'); if(o) o.textContent=Math.round(v*100)+'%';
+}
+fxSetSound = function(on){
+  store.set('presentPlaySound', on?'1':'0');
+  if(!on){ FX.stopAll(); R3Amb.stop(); }
+  else r3AmbSync();
+  fxRefreshControls();
+};
+
+/* ---- background loops (rain, crickets, river), synthesised ---- */
+function r3AmbOn(key){ return !!P3.get('amb_'+key, false); }
+const R3Amb = {
+  cur:null,
+  start(kind){
+    if(this.cur && this.cur.kind===kind) return;
+    this.stop();
+    const c=FX.ready(); if(!c) return;
+    const A=Audio_, out=c.createGain(); out.gain.value=0; out.connect(FX.out);
+    out.gain.setTargetAtTime(1, c.currentTime, R3_REDUCE()?.2:.6);     // fade in
+    const nodes=[], timers=[];
+    const noise=(color, chain, level)=>{ const s=c.createBufferSource(); s.buffer=A.buf(color); s.loop=true;
+      let n=s; chain.forEach(f=>{ n.connect(f); n=f; }); const g=c.createGain(); g.gain.value=level; n.connect(g); g.connect(out);
+      s.start(0, Math.random()*3); nodes.push(s); return g; };
+    if(kind==='rain'){
+      const patter=noise('white',[A.filter('highpass',900,.5), A.filter('lowpass',5200,.4)], .05);
+      noise('brown',[A.filter('lowpass',700,.5)], .16);
+      timers.push(setInterval(()=>{ const t=c.currentTime; patter.gain.setTargetAtTime(.035+Math.random()*.03, t, .8);
+        for(let i=0;i<3;i++) if(Math.random()<.6) sndBurst(A, out, t+Math.random()*.3, {type:'bandpass', freq:2500+Math.random()*3500, q:6, level:.012+Math.random()*.012, decay:.03}); }, 320));
+    } else if(kind==='crickets'){
+      noise('brown',[A.filter('lowpass',380,.4)], .05);
+      const crickets=[{f:4300,p:.95},{f:4850,p:1.25},{f:5200,p:1.6}];
+      crickets.forEach(k=>{ k.next=c.currentTime+Math.random()*1.2; });
+      timers.push(setInterval(()=>{ const now=c.currentTime;
+        crickets.forEach(k=>{ while(k.next < now+.3){ const t=Math.max(now, k.next);
+            for(let n=0;n<3;n++){ const o=c.createOscillator(), g=c.createGain(); o.type='sine'; o.frequency.value=k.f*(1+(Math.random()-.5)*.01);
+              const s=t+n*.045; g.gain.setValueAtTime(0,s); g.gain.linearRampToValueAtTime(.012,s+.006); g.gain.exponentialRampToValueAtTime(.0001,s+.032);
+              o.connect(g); g.connect(out); o.start(s); o.stop(s+.05); }
+            k.next=t + k.p*(0.85+Math.random()*.4) + (Math.random()<.15 ? 1.5+Math.random()*2 : 0); } }); }, 120));
+    } else if(kind==='river'){
+      const a=noise('white',[A.filter('bandpass',520,.55), A.filter('lowpass',1900,.5)], .07);
+      noise('brown',[A.filter('lowpass',320,.5)], .14);
+      timers.push(setInterval(()=>{ const t=c.currentTime; a.gain.setTargetAtTime(.05+Math.random()*.045, t, 1.2);
+        if(Math.random()<.55){ const f=280+Math.random()*420; sndNote(A, out, t+Math.random()*.25, {freq:f, to:f*1.6, level:.008, attack:.004, decay:.07}); } }, 260));
+    }
+    this.cur={kind, out, nodes, timers};
+  },
+  stop(){
+    const cur=this.cur; if(!cur) return; this.cur=null;
+    cur.timers.forEach(clearInterval);
+    try{ const c=Audio_.ctx; cur.out.gain.cancelScheduledValues(c.currentTime); cur.out.gain.setTargetAtTime(0, c.currentTime, .25); }catch(e){}
+    setTimeout(()=>{ cur.nodes.forEach(n=>{ try{ n.stop(); }catch(e){} }); try{ cur.out.disconnect(); }catch(e){} }, 1400);
+  }
+};
+function r3AmbSync(){
+  const a=playEng.act;
+  if(!a || !a.amb || !fxSoundOn() || !r3AmbOn(a.amb.key) || document.hidden) R3Amb.stop();
+  else R3Amb.start(a.amb.key);
+}
+function r3SetAmb(key, on){
+  P3.set('amb_'+key, !!on);
+  if(on && !fxSoundOn()) store.set('presentPlaySound','1');   // choosing a sound turns sound on
+  r3AmbSync(); fxRefreshControls();
+}
+document.addEventListener('visibilitychange', ()=>{ if(playEng.key) r3AmbSync(); });
+
+/* ---- vibration: light, spaced out, and stopped when it should stop ---- */
+const R3H = { t:{} };
+function r3Haptic(ms, key, gap){
+  const now=performance.now(), k=key||'x';
+  if(now-(R3H.t[k]||0) < (gap||250)) return;
+  R3H.t[k]=now; playHaptic(Math.min(16, ms||8));
+}
+function r3VibeStop(){ try{ if(playHapticsVibrate()) navigator.vibrate(0); }catch(e){} playHap.want=false; }
+fxSetVibe = function(on){ playSetHaptics(on); if(!on) r3VibeStop(); else if(fxVibeMode()==='vibrate'){ try{ navigator.vibrate(12); }catch(e){} } fxRefreshControls(); };
+
+/* ---- the controls row: sound, volume, the activity's own loop, vibration ---- */
+fxControlsHTML = function(){
+  const snd=fxSoundOn(), mode=fxVibeMode(), vib=playHapticsOn(), a=playEng.act, vol=r3PlayVol();
+  let v;
+  if(mode==='none') v=`<span class="fxbtn fxna" role="note">Vibration · not available on this device</span>`;
+  else if(mode==='ios') v=`<button class="fxbtn" aria-pressed="${vib}" onclick="fxSetVibe(${!vib})">Vibration: ${vib?'On':'Off'}</button>
+      <span class="fxnote">iPhone: a light tick on taps only, not while dragging</span>`;
+  else v=`<button class="fxbtn" aria-pressed="${vib}" onclick="fxSetVibe(${!vib})">Vibration: ${vib?'On':'Off'}</button>`;
+  const amb = a && a.amb ? (()=>{ const on=r3AmbOn(a.amb.key) && snd;
+      return `<button class="fxbtn" aria-pressed="${on}" onclick="r3SetAmb('${a.amb.key}', ${!on})">${a.amb.label}: ${on?'On':'Off'}</button>`; })() : '';
+  const volume = snd ? `<label class="fxvol"><span>Volume</span><input type="range" min="0" max="1" step="0.05" value="${vol}" aria-label="Activity volume" oninput="r3SetVol(this.value)"><output id="fxVolOut">${Math.round(vol*100)}%</output></label>` : '';
+  return `<span class="fxctl" id="fxCtl"><button class="fxbtn" aria-pressed="${snd}" onclick="fxSetSound(${!snd})">Sound: ${snd?'On':'Off'}</button>${amb}${volume}${v}</span>`;
+};
+fxSettingsInner = function(){
+  const snd=fxSoundOn(), mode=fxVibeMode(), vib=playHapticsOn(), vol=r3PlayVol();
+  return `<div class="fxrow"><span><b>Sound</b><small>Soft sounds in the activities. Off until you turn it on. Separate from Sanctuary sounds.</small></span>
+      <button class="fxbtn" aria-pressed="${snd}" onclick="fxSetSound(${!snd})">${snd?'On':'Off'}</button></div>
+    ${snd?`<div class="fxrow"><span><b>Volume</b></span><label class="fxvol"><input type="range" min="0" max="1" step="0.05" value="${vol}" aria-label="Activity volume" oninput="r3SetVol(this.value)"><output id="fxVolOut">${Math.round(vol*100)}%</output></label></div>`:''}
+    <div class="fxrow"><span><b>Vibration</b><small>${mode==='none'?'Not available on this device or browser.'
+        : mode==='ios'?'On iPhone, Safari only allows a light tick when you tap, not while you drag.'
+        : 'Short, light pulses, spaced out so they never run on.'}</small></span>
+      ${mode==='none'?'<span class="fxbtn fxna">Not available</span>'
+        :`<button class="fxbtn" aria-pressed="${vib}" onclick="fxSetVibe(${!vib})">${vib?'On':'Off'}</button>`}</div>
+    <p class="note" style="margin-top:6px">Remembered on your account.</p>`;
+};
+
+/* ---- engine hooks ---- */
+(function(){
+  const _mount=playMount;
+  playMount=function(){
+    const had=!!document.getElementById('playWrap');
+    _mount.apply(this, arguments);
+    if(had) return;
+    // a row that holds the stage plus an optional side panel (the palette on desktop)
+    const st=document.getElementById('playStage'), row=document.createElement('div'); row.className='playrow'; row.id='playRow';
+    st.parentNode.insertBefore(row, st); row.appendChild(st);
+    const side=document.createElement('div'); side.className='playside'; side.id='playSide'; row.appendChild(side);
+    // hover-follow (fireflies): the pointer itself, no click needed
+    const surf=document.getElementById('playTapLayer') || document.getElementById('playCanvas'), c=document.getElementById('playCanvas');
+    const pt=e=>{ const r=c.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
+    surf.addEventListener('pointermove', e=>{ const a=playEng.act; if(!a || !a.attract || e.pointerType==='touch') return; if(playEng.active===null) a.attract(pt(e)); });
+    surf.addEventListener('pointerleave', e=>{ const a=playEng.act; if(a && a.attract && e.pointerType!=='touch' && playEng.active===null) a.attract(null); });
+    surf.addEventListener('pointerdown', e=>{ R3H.ptype=e.pointerType; }, true);
+  };
+  const _open=openPlay;
+  openPlay=function(key){
+    const a=PLAY_ACTS[key]; if(a) a._opening=true;
+    _open.apply(this, arguments);
+    if(a) a._opening=false;
+    const bar=document.getElementById('playBar'); if(bar){ bar.dataset.r3=''; }
+    const w=document.getElementById('playWrap'); if(w) w.classList.toggle('drawside', !!(a && a.side && a.side()));
+    r3SideRender(); r3AmbSync(); playUI();
+  };
+  const _close=closePlay;
+  closePlay=function(){
+    const a=playEng.act;
+    try{ if(a && a.saveArt) a.saveArt(); }catch(e){}
+    R3Amb.stop(); r3VibeStop();
+    _close.apply(this, arguments);
+    const w=document.getElementById('playWrap'); if(w) w.classList.remove('drawside');
+  };
+  const _ui=playUI;
+  playUI=function(){
+    _ui.apply(this, arguments);
+    const a=playEng.act, bar=document.getElementById('playBar'); if(!a || !bar) return;
+    if(bar.dataset.r3===playEng.key) return;
+    if(a.r3Bar) bar.innerHTML=a.r3Bar()+fxControlsHTML();
+    else if(playEng.key==='flow' && !document.getElementById('flowTouchPause')){
+      const r=bar.querySelector('.touch-only'); if(r){ r.textContent='Reset';
+        r.insertAdjacentHTML('beforebegin', `<button class="btn sm touch-only" id="flowTouchPause" aria-pressed="false" onclick="r3FlowPause()">Pause</button>`); }
+    }
+    bar.dataset.r3=playEng.key; bar.dataset.fx=bar.dataset.k;
+  };
+  const _hui=playHoverUI;
+  playHoverUI=function(){
+    _hui.apply(this, arguments);
+    const a=playEng.act, h=document.getElementById('playHint');
+    if(a && h && !a.hover) h.textContent = (playHv.input==='mouse' && a.mouseHint) ? a.mouseHint : (a.hintFn ? a.hintFn() : a.hint);
+    if(a && h && a.hintFn && !a.hover) h.textContent = a.hintFn(playHv.input);
+  };
+})();
+function r3BarRefresh(){ const bar=document.getElementById('playBar'); if(bar) bar.dataset.r3=''; playUI(); }
+function r3SideRender(){
+  const s=document.getElementById('playSide'), a=playEng.act, w=document.getElementById('playWrap');
+  const on=!!(a && a.side && a.side());
+  if(w) w.classList.toggle('drawside', on);
+  if(s) s.innerHTML = on ? a.sideHTML() : '';
+}
+
+/* ===== 10. Follow the flow: endless, no finish line ===== */
+(function(){
+  const F=PLAY_ACTS.flow; if(!F) return;
+  F.ends=false;
+  F.desc='Trace a slow infinity loop, round and round, for as long as you like.';
+  F.hint='Trace the loop with your finger, round and round. Lift and come back whenever you like.';
+  F.mouseHint='Click Start, then follow the loop with your mouse. No need to hold the button. It never ends; stop whenever you like.';
+  F.reset=function(){ this.covered=new Array(260).fill(0); this.at=new Float64Array(260); this.trail=[]; this.done=false; this.paused=false; this.step=0; };
+  F.progress=function(){ return null; };
+  F.down=function(p,now){ if(this.paused) return; this.trail.push({...p,t:now,brk:true}); this.move(p,now); };
+  F.move=function(p,now){
+    if(this.paused) return;
+    this.trail.push({...p,t:now}); if(this.trail.length>500) this.trail.shift();
+    const N=this.pts.length; let bi=-1, bd=1e9;
+    for(let i=0;i<N;i++){ const q=this.pts[i], d=Math.hypot(q.x-p.x,q.y-p.y); if(d<bd){ bd=d; bi=i; } }
+    if(bi<0 || bd>this.tol) return;
+    let fresh=0;
+    for(let k=-2;k<=2;k++){ const j=(bi+k+N)%N; if(!this.covered[j]){ this.covered[j]=1; fresh++; } this.at[j]=now; }
+    if(!fresh) return;
+    const c=playCount(this.covered)/N, step=Math.floor(c*8);
+    if(step>this.step){ this.step=step; FX.bell(FX.scale[Math.min(9,step+1)], .028); }
+    if(c>=0.92){ this.covered.fill(0); this.step=0; FX.bell(FX.scale[7], .03); FX.bell(FX.scale[9], .022, .22); r3Haptic(10,'flow',1500); }
+  };
+  F.draw=function(ctx,W,H,now){
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.strokeStyle='#EAE1F4'; ctx.lineWidth=this.tol*1.1; ctx.beginPath();
+    this.pts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y)); ctx.closePath(); ctx.stroke();
+    const FADE=9000, N=this.pts.length; ctx.strokeStyle='#F2C6D2'; ctx.lineWidth=this.tol*0.55;
+    for(let i=0;i<N;i++){ const j=(i+1)%N, t=Math.min(this.at[i], this.at[j]); if(!t) continue;
+      const age=now-t; if(age>FADE) continue;
+      ctx.globalAlpha=Math.max(0, 1-age/FADE); ctx.beginPath(); ctx.moveTo(this.pts[i].x,this.pts[i].y); ctx.lineTo(this.pts[j].x,this.pts[j].y); ctx.stroke(); }
+    ctx.globalAlpha=1;
+    if(!playReduced()){ ctx.shadowColor='#E0A0B4'; ctx.shadowBlur=18; }
+    playTrailDraw(ctx,this.trail,now,1600,'#E0A0B4',10); ctx.shadowBlur=0;
+  };
+})();
+function r3FlowPause(){
+  const F=PLAY_ACTS.flow; F.paused=!F.paused; if(F.paused){ r3VibeStop(); playEng.active=null; }
+  const b=document.getElementById('flowTouchPause'); if(b){ b.textContent=F.paused?'Resume':'Pause'; b.setAttribute('aria-pressed', F.paused?'true':'false'); }
+  const p=document.getElementById('playProg'); if(p) p.textContent=F.paused?'Paused. Tap Resume when you\u2019re ready.':'';
+}
+(function(){ const _p=playHvPause; playHvPause=function(){ _p.apply(this, arguments); if(playHv.state==='paused') r3VibeStop(); }; })();
+
+/* ===== 11. Make ripples: same as before, plus an optional Keep ripples ===== */
+(function(){
+  const R=PLAY_ACTS.ripples; if(!R) return;
+  const _draw=R.draw;
+  R.layout=function(W,H){
+    const dpr=Math.min(2, window.devicePixelRatio||1), old=this.bake;
+    this.bake=playOff(W,H,dpr); this.W=W; this.H=H;
+    if(old && old.c.width) this.bake.x.drawImage(old.c, 0, 0, W, H);   // a resize never wipes kept rings
+  };
+  R.reset=function(){ this.rs=[]; this.lastAdd=null; if(this.bake) this.bake.x.clearRect(0,0,this.W||0,this.H||0); this.bakeFade=0; };
+  R.keepOn=function(){ return !!P3.get('ripplesKeep', false); };
+  R.ring=function(x, r, a, keep){ const rings=playReduced()?1:3;
+    for(let k=0;k<rings;k++){ const rad=(a*170)-k*18; if(rad<=0) continue;
+      const fade=(1-a)*(0.8-k*0.2), floor=keep ? (0.32-k*0.07) : 0;
+      x.strokeStyle=k%2?'#A78BC4':'#FFFFFF'; x.globalAlpha=Math.max(fade, floor); x.lineWidth=3-k*0.6;
+      x.beginPath(); x.ellipse(r.x,r.y,rad,rad*0.82,0,0,7); x.stroke(); } x.globalAlpha=1; };
+  R.draw=function(ctx,W,H,now){
+    const keep=this.keepOn();
+    if(!keep && !this.bakeFade){ return _draw.call(this,ctx,W,H,now); }
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#E4EDF6'); g.addColorStop(1,'#CBDCEC'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    if(this.bake){
+      if(this.bakeFade){ const a=1-(now-this.bakeFade)/1500; if(a<=0){ this.bake.x.clearRect(0,0,W,H); this.bakeFade=0; } else { ctx.globalAlpha=a; ctx.drawImage(this.bake.c,0,0,W,H); ctx.globalAlpha=1; } }
+      else ctx.drawImage(this.bake.c,0,0,W,H);
+    }
+    const life=playReduced()?1600:2600;
+    this.rs=this.rs.filter(r=>{ const a=(now-r.t)/life;
+      if(a>=1){ if(keep && this.bake) this.ring(this.bake.x, r, 1, true); return false; }
+      this.ring(ctx, r, a, keep); return true; });
+  };
+  R.r3Bar=function(){ return `<button class="btn line sm" onclick="playRestart()">Calm the water</button>
+    <label class="playkeep"><input type="checkbox" id="ripKeep" ${this.keepOn()?'checked':''} onchange="r3RipKeep(this.checked)"> Keep ripples</label>`; };
+})();
+function r3RipKeep(on){ P3.set('ripplesKeep', !!on); const R=PLAY_ACTS.ripples; if(!on && R.bake) R.bakeFade=performance.now(); }
+
+/* ===== 5. Squishy ball =====
+   A soft-body outline: each point of the edge has its own spring, tied to its
+   neighbours. Pressing makes a local dent that sinks in slowly (viscous) while
+   the rest of the ball bulges out to keep its volume; dragging pulls the gel
+   toward your finger. On release the springs overshoot a little and settle,
+   which is the wobble. Shading, highlight and shadow follow the shape. */
+PLAY_ACTS.blob = {
+  title:'Squishy ball', desc:'A soft, squishy ball. Press it, poke it, stretch it. It wobbles back.',
+  hint:'Press to squish. Press and drag to stretch. Let go and it wobbles back into shape.',
+  mouseHint:'Press and hold to squish. Hold and drag to stretch. Let go and it wobbles back.',
+  ends:false, N:72, dprCap:2,
+  layout(W,H){ this.W=W; this.H=H; this.cx=W/2; this.cy=H*0.47; this.R=Math.max(60, Math.min(W*0.33, H*0.3, 190));
+    const N=this.N; if(!this.d){ this.d=new Float32Array(N*2); this.v=new Float32Array(N*2); }
+    this.u=[...Array(N)].map((_,i)=>{ const a=i*2*Math.PI/N; return [Math.cos(a), Math.sin(a)]; }); },
+  reset(){ if(this.d){ this.d.fill(0); this.v.fill(0); } this.ptr=null; this.depth=0; this.pp=null; this.S={x:0,y:0}; this.grab=null; },
+  progress(){ return null; },
+  down(p,now){
+    const dc=Math.hypot(p.x-this.cx, p.y-this.cy); if(dc>this.R*1.25) return;
+    this.ptr={x:p.x, y:p.y, sx:p.x, sy:p.y, t:now}; this.pp={x:p.x, y:p.y};
+    this.mode = dc>this.R*0.92 ? 'pull' : 'press'; this.grab = {x:p.x, y:p.y};
+    FX.note(175,{to:118, type:'triangle', level:.05, decay:.28}); FX.burst({type:'bandpass', freq:520, q:1.4, level:.028, decay:.16, color:'brown'});
+    r3Haptic(12,'blob',250);
+  },
+  move(p,now){
+    if(!this.ptr) return; this.ptr.x=p.x; this.ptr.y=p.y;
+    if(this.mode==='press'){ this.pp={x:p.x, y:p.y}; if(Math.hypot(p.x-this.ptr.sx, p.y-this.ptr.sy) > this.R*0.2) this.mode='pull'; }
+    if(this.mode==='pull' && now-(this.lastStretch||0)>240){ const L=Math.hypot(this.S.x, this.S.y);
+      if(L>this.R*0.08){ this.lastStretch=now; FX.burst({type:'bandpass', freq:420+L*2, q:2.2, level:.014, decay:.12, color:'brown'}); r3Haptic(6,'blobdrag',450); } }
+  },
+  up(){
+    if(!this.ptr) return; this.ptr=null;
+    FX.note(230,{to:330, level:.035, decay:.16}); r3Haptic(8,'blob',250);
+  },
+  shape(){ const N=this.N, P=[]; for(let i=0;i<N;i++) P.push({x:this.cx+this.u[i][0]*this.R+this.d[2*i], y:this.cy+this.u[i][1]*this.R+this.d[2*i+1]}); return P; },
+  step(dt){
+    const N=this.N, R=this.R, C={x:this.cx, y:this.cy}, rm=playReduced();
+    const pressing=this.ptr && this.mode==='press', pulling=this.ptr && this.mode==='pull';
+    this.depth += ((pressing?1:0)-this.depth)*Math.min(1, dt*(pressing?3.2:14));
+    let tx=0, ty=0;
+    if(pulling){ const sx=this.ptr.x-this.grab.x, sy=this.ptr.y-this.grab.y, L=Math.hypot(sx,sy)||1, M=R*0.7, s=M*Math.tanh(L/M); tx=sx/L*s; ty=sy/L*s; }
+    this.S.x += (tx-this.S.x)*Math.min(1, dt*(pulling?9:16)); this.S.y += (ty-this.S.y)*Math.min(1, dt*(pulling?9:16));
+    const P=this.pp, e = P ? Math.min(1, Math.hypot(P.x-C.x, P.y-C.y)/R) : 0, sig=R*0.5, sigp=R*0.42;
+    const SL=Math.hypot(this.S.x, this.S.y);
+    const k=rm?260:170, c=rm?2*Math.sqrt(k):2*0.17*Math.sqrt(k), kl=900;
+    const T=new Float32Array(N*2);
+    for(let i=0;i<N;i++){ const ux=this.u[i][0], uy=this.u[i][1], rx=C.x+ux*R, ry=C.y+uy*R;
+      let rho=0;
+      if(P && this.depth>0.002){ const d=Math.hypot(rx-P.x, ry-P.y), w=Math.exp(-(d*d)/(2*sig*sig));
+        rho = this.depth*R*(-0.36*w*(0.3+0.7*e*e) + 0.09*(1-w)) + this.depth*R*0.035*(ux*ux-uy*uy); }
+      let ox=ux*rho, oy=uy*rho;
+      if(SL>0.5){ const G=this.grab, d=Math.hypot(rx-G.x, ry-G.y), w=Math.exp(-(d*d)/(2*sigp*sigp));
+        ox+=this.S.x*w; oy+=this.S.y*w;
+        const nx=-this.S.y/SL, ny=this.S.x/SL, side=Math.abs(ux*nx+uy*ny);   // thin across the pull, keep the volume
+        ox-=ux*SL*0.16*(1-w)*side; oy-=uy*SL*0.16*(1-w)*side; }
+      T[2*i]=ox; T[2*i+1]=oy; }
+    const sub=4, h=dt/sub;
+    for(let s=0;s<sub;s++) for(let i=0;i<N;i++){ const a=(i+N-1)%N, b=(i+1)%N;
+      for(let q=0;q<2;q++){ const j=2*i+q;
+        const lap=this.d[2*a+q]+this.d[2*b+q]-2*this.d[j];
+        const acc=k*(T[j]-this.d[j]) - c*this.v[j] + kl*lap*0.25;
+        this.v[j]+=acc*h; this.d[j]+=this.v[j]*h; } }
+  },
+  path(ctx, P){ const N=P.length; ctx.beginPath();
+    for(let i=0;i<=N;i++){ const a=P[i%N], b=P[(i+1)%N], mx=(a.x+b.x)/2, my=(a.y+b.y)/2; if(i===0) ctx.moveTo(mx,my); else ctx.quadraticCurveTo(a.x,a.y,mx,my); }
+    ctx.closePath(); },
+  draw(ctx,W,H,now){
+    const dt=Math.min(0.033, (now-(this.lt||now))/1000); this.lt=now; if(dt>0) this.step(dt);
+    const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#FDF7F0'); bg.addColorStop(1,'#F3E6EA'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    const P=this.shape(), R=this.R; let minX=1e9,maxX=-1e9,maxY=-1e9, cx=0, cy=0;
+    P.forEach(q=>{ minX=Math.min(minX,q.x); maxX=Math.max(maxX,q.x); maxY=Math.max(maxY,q.y); cx+=q.x/P.length; cy+=q.y/P.length; });
+    // shadow: widens and darkens as the ball is squashed
+    const sw=(maxX-minX)/2, sy=this.cy+R*1.06+Math.max(0, maxY-(this.cy+R))*0.6;
+    let g=ctx.createRadialGradient(cx, sy, 0, cx, sy, sw*1.05); g.addColorStop(0,`rgba(74,53,96,${.24+this.depth*.08})`); g.addColorStop(1,'rgba(74,53,96,0)');
+    ctx.save(); ctx.translate(cx, sy); ctx.scale(1, 0.16+this.depth*.03); ctx.translate(-cx, -sy); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx, sy, sw*1.05, 0, 7); ctx.fill(); ctx.restore();
+    // body: translucent gel
+    this.path(ctx, P);
+    g=ctx.createRadialGradient(cx-R*.32, cy-R*.38, R*.08, cx, cy, R*1.25);
+    g.addColorStop(0,'rgba(253,232,239,.96)'); g.addColorStop(.55,'rgba(236,166,190,.9)'); g.addColorStop(1,'rgba(176,96,138,.94)');
+    ctx.fillStyle=g; ctx.fill();
+    ctx.save(); this.path(ctx, P); ctx.clip();
+    // light passing through the lower part (translucency)
+    g=ctx.createRadialGradient(cx+R*.18, cy+R*.45, 0, cx+R*.18, cy+R*.45, R*.85); g.addColorStop(0,'rgba(255,214,228,.55)'); g.addColorStop(1,'rgba(255,214,228,0)');
+    ctx.fillStyle=g; ctx.fillRect(cx-R*2, cy-R*2, R*4, R*4);
+    // thickness at the rim
+    this.path(ctx, P); ctx.strokeStyle='rgba(140,62,104,.20)'; ctx.lineWidth=R*.16; ctx.stroke();
+    // the dent
+    if(this.pp && this.depth>0.02){ const p=this.pp, r=R*.42;
+      g=ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r); g.addColorStop(0,`rgba(128,52,92,${.26*this.depth})`); g.addColorStop(.6,`rgba(128,52,92,${.08*this.depth})`); g.addColorStop(1,'rgba(128,52,92,0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 7); ctx.fill();
+      g=ctx.createRadialGradient(p.x-r*.18, p.y-r*.22, r*.55, p.x-r*.18, p.y-r*.22, r*1.05); g.addColorStop(0,'rgba(255,255,255,0)'); g.addColorStop(.6,`rgba(255,255,255,${.22*this.depth})`); g.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x, p.y, r*1.1, 0, 7); ctx.fill(); }
+    ctx.restore();
+    // highlight: moves with the surface
+    let hx=0, hy=0, n=0; for(let i=Math.floor(this.N*.55); i<Math.floor(this.N*.72); i++){ hx+=this.d[2*i]; hy+=this.d[2*i+1]; n++; }
+    hx=cx-R*.32+hx/n*.6+this.S.x*.15; hy=cy-R*.4+hy/n*.6+this.S.y*.15;
+    ctx.save(); ctx.translate(hx, hy); ctx.rotate(-0.6); ctx.scale(1, .55);
+    g=ctx.createRadialGradient(0,0,0,0,0,R*.3); g.addColorStop(0,`rgba(255,255,255,${.78-this.depth*.25})`); g.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,R*.3,0,7); ctx.fill(); ctx.restore();
+    ctx.fillStyle='rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(hx-R*.05, hy-R*.02, R*.035, 0, 7); ctx.fill();
+    this.path(ctx, P); ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=1.5; ctx.stroke();
+  }
+};
+PLAY_PREVIEW.blob=`<svg viewBox="0 0 120 80"><rect width="120" height="80" rx="10" fill="#FBF1F2"/><ellipse cx="60" cy="70" rx="30" ry="4.5" fill="#4A3560" opacity=".14"/><defs><radialGradient id="r3ball" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#FDE8EF"/><stop offset=".55" stop-color="#ECA6BE"/><stop offset="1" stop-color="#B0608A"/></radialGradient></defs><path d="M33 42 q0 -27 27 -27 q27 0 27 27 q0 22 -27 24 q-27 -2 -27 -24z" fill="url(#r3ball)" opacity=".95"/><ellipse cx="49" cy="28" rx="9" ry="5" fill="#fff" opacity=".7" transform="rotate(-30 49 28)"/></svg>`;
+
+/* ===== 6. Rain on glass =====
+   The garden behind the glass is a sharp photo. The fog is its own layer:
+   a blurred, hazy copy, shown through a mask. Wiping clears the mask
+   completely along your path; after a pause the fog creeps back. */
+PLAY_ACTS.rain = {
+  title:'Rain on glass', desc:'Wipe the fogged-up window and see the garden outside while rain trickles down.',
+  hint:'Wipe the glass with your finger to see the garden. After a pause it slowly fogs up again.',
+  mouseHint:'Click and drag to wipe the glass and see the garden. After a pause it slowly fogs up again.',
+  ends:false, dprCap:2, amb:{key:'rain', label:'Rain'},
+  img(){ const wide=(this.W||1)>(this.H||1)*1.05, src=wide?'/scenes/garden-wide.webp':'/scenes/garden-portrait.webp';
+    if(!this._img || this._img.dataset.src!==src){ const im=new Image(); im.dataset.src=src; im.decoding='async';
+      im.onload=()=>{ if(this._img===im && this.W) this.paint(); }; im.src=src; this._img=im; }
+    return this._img; },
+  paint(){ const W=this.W, H=this.H, im=this.img(), s=this.scene.x;
+    if(im.complete && im.naturalWidth){ const ar=im.naturalWidth/im.naturalHeight; let w=W, h=W/ar; if(h<H){ h=H; w=H*ar; }
+      s.drawImage(im, (W-w)/2, (H-h)/2, w, h); }
+    else { const g=s.createLinearGradient(0,0,0,H); g.addColorStop(0,'#CFE0C8'); g.addColorStop(1,'#7FA06E'); s.fillStyle=g; s.fillRect(0,0,W,H); }
+    const f=this.fogSrc.x; f.clearRect(0,0,W,H);
+    try{ f.filter='blur(14px)'; }catch(e){} f.drawImage(this.scene.c, -20, -20, W+40, H+40); f.filter='none';
+    f.fillStyle='rgba(238,234,236,.62)'; f.fillRect(0,0,W,H);
+    if(!this.spk){ this.spk=[]; for(let i=0;i<900;i++) this.spk.push([Math.random(), Math.random(), Math.random()]); }
+    this.spk.forEach(([a,b,c])=>{ f.fillStyle=c>.5?'rgba(255,255,255,.45)':'rgba(200,196,206,.35)'; f.beginPath(); f.arc(a*W, b*H, .6+c*1.1, 0, 7); f.fill(); }); },
+  layout(W,H){ const dpr=Math.min(2, window.devicePixelRatio||1), oldMask=this.mask;
+    this.W=W; this.H=H; this.scene=playOff(W,H,dpr); this.fogSrc=playOff(W,H,dpr); this.comp=playOff(W,H,dpr);
+    this.mask=playOff(W,H,dpr);
+    if(oldMask && oldMask.c.width) this.mask.x.drawImage(oldMask.c, 0, 0, W, H); else this.fogAll(1);
+    this.paint(); },
+  fogAll(a){ const x=this.mask.x; x.globalCompositeOperation='source-over'; x.globalAlpha=a; x.fillStyle='#fff'; x.fillRect(0,0,this.W,this.H); x.globalAlpha=1; },
+  reset(){ this.drops=[]; this.last=null; this.lastWipe=0; if(this.mask) this.fogAll(1); },
+  progress(){ return null; },
+  wipe(a,b,r){ const x=this.mask.x; x.save(); x.globalCompositeOperation='destination-out'; x.lineCap='round'; x.lineJoin='round';
+    x.strokeStyle='rgba(0,0,0,.35)'; x.lineWidth=r*2.5; x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x+.01,b.y); x.stroke();
+    x.strokeStyle='#000'; x.lineWidth=r*2; x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x+.01,b.y); x.stroke(); x.restore(); },
+  down(p,now){ this.last=p; this.wipe(p,p,30); this.lastWipe=now; r3Haptic(8,'rain',300);
+    const t=FX.texture('rain','wipe'); if(t) t.set(p, now); },
+  move(p,now){ if(!this.last){ this.last=p; return; } this.wipe(this.last, p, 30); this.last=p; this.lastWipe=now;
+    const t=FX.tex.rain; if(t) t.set(p, now); r3Haptic(5,'rainmove',380); },
+  up(){ this.last=null; const t=FX.tex.rain; if(t) t.stop(); },
+  draw(ctx,W,H,now){ const dt=Math.min(0.05,(now-(this.lt||now))/1000); this.lt=now;
+    if(now-(this.lastWipe||0)>2600 && now-(this.lastFog||0)>120){ this.lastFog=now; this.fogAll(0.02); }   // creeps back over ~15s
+    const cap=playReduced()?12:30;
+    if(this.drops.length<cap && Math.random()<(playReduced()?0.03:0.09)) this.drops.push({x:Math.random()*W, y:Math.random()*H*0.7, r:sndRand(2,4.5), vy:0});
+    this.drops.forEach(d=>{ if(d.r>4.2){ d.vy=Math.min(80,d.vy+36*dt); const y0=d.y; d.y+=d.vy*dt; d.x+=Math.sin(d.y*0.05)*0.3; this.wipe({x:d.x,y:y0-d.r},{x:d.x,y:d.y-d.r},d.r*.7); } });
+    for(let i=0;i<this.drops.length;i++) for(let j=i+1;j<this.drops.length;j++){ const a=this.drops[i], b=this.drops[j];
+      if(!a.gone&&!b.gone&&Math.hypot(a.x-b.x,a.y-b.y)<a.r+b.r){ a.r=Math.min(9,Math.sqrt(a.r*a.r+b.r*b.r)); b.gone=1; } }
+    this.drops=this.drops.filter(d=>!d.gone && d.y<H+20);
+    const c=this.comp.x; c.globalCompositeOperation='copy'; c.drawImage(this.fogSrc.c,0,0,W,H);
+    c.globalCompositeOperation='destination-in'; c.drawImage(this.mask.c,0,0,W,H); c.globalCompositeOperation='source-over';
+    ctx.drawImage(this.scene.c,0,0,W,H); ctx.drawImage(this.comp.c,0,0,W,H);
+    this.drops.forEach(d=>{ ctx.fillStyle='rgba(255,255,255,.28)'; ctx.beginPath(); ctx.ellipse(d.x,d.y,d.r,d.r*1.15,0,0,7); ctx.fill();
+      ctx.strokeStyle='rgba(80,70,95,.28)'; ctx.lineWidth=1; ctx.stroke(); ctx.fillStyle='rgba(255,255,255,.9)'; ctx.beginPath(); ctx.arc(d.x-d.r*.35,d.y-d.r*.4,d.r*.28,0,7); ctx.fill(); }); },
+  r3Bar(){ return `<button class="btn line sm" onclick="PLAY_ACTS.rain.fogAll(1)">Fog it up</button>`; }
+};
+if(store.get('presentPlayRain')==='1' && P3.get('amb_rain')===undefined) P3.set('amb_rain', true);   // carry over the old Rain sound choice
+PLAY_PREVIEW.rain=`<svg viewBox="0 0 120 80"><defs><linearGradient id="r3gd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFD8B0"/><stop offset="1" stop-color="#5E8450"/></linearGradient></defs><rect width="120" height="80" rx="10" fill="url(#r3gd)"/><circle cx="30" cy="50" r="6" fill="#E77E9A"/><circle cx="44" cy="58" r="5" fill="#F4C25B"/><circle cx="86" cy="54" r="6" fill="#E9A0C0"/><rect width="120" height="80" rx="10" fill="#EEEAEC" opacity=".78"/><path d="M28 36 q22 -16 56 -2" stroke="#BFD8B0" stroke-width="14" stroke-linecap="round" fill="none" opacity=".9"/>${[[18,16],[96,22],[70,60],[40,66]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2.4" ry="3" fill="#fff" opacity=".8"/>`).join('')}</svg>`;
+
+/* ===== 7. Fireflies ===== */
+PLAY_ACTS.fireflies = {
+  title:'Fireflies', desc:'Soft lights drift in the dusk and gather around you.',
+  hint:'Touch and drag, and the fireflies follow your finger. Let go and they drift off.',
+  mouseHint:'Move your mouse over the dusk and the fireflies gather around it. No clicking needed. Move away and they wander off.',
+  ends:false, amb:{key:'crickets', label:'Crickets'},
+  layout(W,H){ const first=!this.W; this.W=W; this.H=H; if(first||!this.fs) this.reset(); this.bg=null; },
+  reset(){ const n=playReduced()?40:90, W=this.W||300, H=this.H||500;
+    this.fs=[...Array(n)].map(()=>({x:Math.random()*W, y:Math.random()*H, vx:0, vy:0, ph:Math.random()*6, tw:sndRand(.7,1.5),
+      or:sndRand(14,120)*(Math.random()<.5?.6:1), a:Math.random()*6.28, w:sndRand(.25,.8)*(Math.random()<.5?-1:1), s:sndRand(.55,1.15), wx:Math.random()*6.28}));
+    this.att=null; if(!this.spr) this.spr=playGlowSprite('rgba(255,226,150,1)',24); },
+  progress(){ return null; },
+  attract(p){ this.att=p; },
+  down(p){ this.att=p; this.held=true; if(R3H.ptype!=='mouse') r3Haptic(8,'ff',600); FX.bell(FX.scale[7+Math.floor(Math.random()*3)], .02); },
+  move(p){ if(this.held) this.att=p; },
+  up(){ this.held=false; if(R3H.ptype!=='mouse') this.att=null; },
+  backdrop(W,H){ const b=playOff(W,H,Math.min(2,window.devicePixelRatio||1)), x=b.x;
+    const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#2E2142'); g.addColorStop(.65,'#5A3F70'); g.addColorStop(1,'#6E4E7A'); x.fillStyle=g; x.fillRect(0,0,W,H);
+    for(let i=0;i<60;i++){ x.fillStyle=`rgba(255,248,230,${Math.random()*.5+.1})`; x.beginPath(); x.arc(Math.random()*W, Math.random()*H*.5, Math.random()*1.1+.2, 0, 7); x.fill(); }
+    x.fillStyle='rgba(28,20,40,.85)'; x.beginPath(); x.moveTo(0,H);
+    for(let X=0; X<=W; X+=W/24){ x.lineTo(X, H*0.86 - Math.sin(X/W*7)*H*0.02 - Math.random()*H*0.03); } x.lineTo(W,H); x.closePath(); x.fill();
+    x.strokeStyle='rgba(28,20,40,.85)'; x.lineWidth=1.4;
+    for(let i=0;i<90;i++){ const X=Math.random()*W, h=H*(0.04+Math.random()*.08); x.beginPath(); x.moveTo(X, H*0.9); x.quadraticCurveTo(X+sndRand(-6,6), H*0.9-h*.6, X+sndRand(-10,10), H*0.9-h); x.stroke(); }
+    return b; },
+  draw(ctx,W,H,now){ const dt=Math.min(0.05,(now-(this.lt||now))/1000); this.lt=now;
+    if(!this.bg) this.bg=this.backdrop(W,H); ctx.drawImage(this.bg.c,0,0,W,H);
+    const rm=playReduced(), A=this.att;
+    this.fs.forEach(f=>{ f.ph+=dt*f.tw; f.a+=dt*f.w*(rm?.4:1); f.wx+=dt*.3;
+      if(A){ const tx=A.x+Math.cos(f.a)*f.or, ty=A.y+Math.sin(f.a)*f.or*.8, k=rm?1.2:2.4, c=rm?2.2:2.1;
+        f.vx+=((tx-f.x)*k - f.vx*c)*dt; f.vy+=((ty-f.y)*k - f.vy*c)*dt; }
+      else { f.vx+=Math.cos(f.wx*1.7+f.s*9)*10*dt; f.vy+=Math.sin(f.wx*1.3+f.s*5)*10*dt; f.vx*=0.985; f.vy*=0.985; }
+      const sp=Math.hypot(f.vx,f.vy), mx=rm?60:150; if(sp>mx){ f.vx*=mx/sp; f.vy*=mx/sp; }
+      f.x+=f.vx*dt; f.y+=f.vy*dt;
+      if(f.x<-30) f.x=W+30; if(f.x>W+30) f.x=-30; if(f.y<-30) f.y=H+30; if(f.y>H+30) f.y=-30;
+      const tw=rm?0.85:0.62+0.38*Math.sin(f.ph); const r=24*f.s;
+      ctx.globalAlpha=tw; ctx.drawImage(this.spr, f.x-r, f.y-r, r*2, r*2); });
+    ctx.globalAlpha=1; },
+  scatter(){ this.att=null; this.fs.forEach(f=>{ f.vx+=sndRand(-110,110); f.vy+=sndRand(-110,110); }); },
+  r3Bar(){ return `<button class="btn line sm" onclick="PLAY_ACTS.fireflies.scatter()">Let them wander</button>`; }
+};
+
+/* ===== 8. Zen garden =====
+   Sand (base texture) + rake marks (their own layer) + stream, plants and
+   stones drawn on top. Rake marks are masked so they never cross a stone, a
+   plant or the water, and moving a stone leaves smooth sand behind it. */
+PLAY_ACTS.sand = {
+  title:'Zen garden', desc:'Rake slow patterns in soft sand around stones, moss and a little stream.',
+  hint:'Drag on the sand to rake. Drag a stone to move it.',
+  mouseHint:'Click and drag on the sand to rake. Drag a stone to move it.',
+  ends:false, dprCap:2, amb:{key:'river', label:'River'},
+  autoOn(){ return P3.get('zenAuto', true)!==false; },
+  flat(){ return !!this.flipped; },
+  waterTop(x){ return this.H*0.85 + Math.sin(x/this.W*Math.PI*2.2+0.6)*this.H*0.018; },
+  layout(W,H){ const dpr=Math.min(2, window.devicePixelRatio||1), old=this.marks;
+    this.W=W; this.H=H; this.m=Math.min(W,H); this.dpr=dpr;
+    this.base=playOff(W,H,dpr); this.paintSand(this.base.x);
+    this.marks=playOff(W,H,dpr); this.seg=playOff(W,H,dpr);
+    if(old && old.c.width) this.marks.x.drawImage(old.c,0,0,old.c.width/old.dpr,old.c.height/old.dpr);   // 1:1, never stretched
+    this.marks.dpr=dpr;
+    if(!this.stones) this.stones=[{x:.3,y:.36,rx:.11,ry:.08,rot:.25,tone:0,moss:true},{x:.68,y:.55,rx:.085,ry:.065,rot:-.4,tone:1},{x:.56,y:.2,rx:.055,ry:.045,rot:.8,tone:2}];
+    this.deco=playOff(W,H,dpr); this.paintDeco(this.deco.x);
+    if(!old && !this.seeded){ this.seeded=true; this.stones.forEach(s=>this.ringsAround(s)); } },
+  paintSand(x){ const W=this.W, H=this.H;
+    const g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#F2E6D2'); g.addColorStop(1,'#E6D3B8'); x.fillStyle=g; x.fillRect(0,0,W,H);
+    for(let i=0;i<14;i++){ const r=sndRand(60,180); const rg=x.createRadialGradient(0,0,0,0,0,r); rg.addColorStop(0,Math.random()<.5?'rgba(255,250,240,.18)':'rgba(190,160,120,.08)'); rg.addColorStop(1,'rgba(0,0,0,0)');
+      x.save(); x.translate(Math.random()*W, Math.random()*H); x.fillStyle=rg; x.fillRect(-r,-r,2*r,2*r); x.restore(); }
+    const n=Math.round(W*H/38);
+    for(let i=0;i<n;i++){ const c=Math.random(); x.fillStyle=c>.55?'rgba(255,255,255,.38)':c>.15?'rgba(150,118,84,.16)':'rgba(110,86,60,.22)'; x.fillRect(Math.random()*W, Math.random()*H, c>.9?1.6:1, c>.9?1.6:1); } },
+  /* plants are fixed; each also counts as an obstacle for the rake */
+  paintDeco(x){ const W=this.W, H=this.H, m=this.m; x.clearRect(0,0,W,H); this.obst=[];
+    // fern cluster, top-left
+    const fern=(ox,oy,len,ang,hue)=>{ x.save(); x.translate(ox,oy); x.rotate(ang);
+      x.strokeStyle=hue[0]; x.lineWidth=2; x.beginPath(); x.moveTo(0,0); x.quadraticCurveTo(len*.5,-len*.08,len,len*.06); x.stroke();
+      for(let t=0.08;t<0.98;t+=0.055){ const px=len*t, py=-len*.08*4*t*(1-t)+len*.06*t*t, s=(1-t)*len*.17+3;
+        [-1,1].forEach(sd=>{ x.fillStyle=sd<0?hue[1]:hue[2]; x.save(); x.translate(px,py); x.rotate(sd*1.05-0.25); x.beginPath(); x.ellipse(s*.55,0,s*.6,s*.2,0,0,7); x.fill(); x.restore(); }); }
+      x.restore(); };
+    const L=m*0.34, greens=[['#4F6E43','#6F8F5E','#87A86F'],['#5A7A4B','#7B9C66','#93B57A']];
+    x.save(); x.shadowColor='rgba(60,45,30,.25)'; x.shadowBlur=10; x.shadowOffsetY=4;
+    [[.15,0],[.55,1],[.95,0],[1.3,1]].forEach(([a,k],i)=>fern(-8,-8,L*(0.85+0.15*(i%2)),a,greens[k]));
+    x.restore(); this.obst.push({x:0,y:0,r:L*0.92});
+    // moss patch and small plants, bottom-left on the bank
+    const moss=(cx,cy,r)=>{ for(let i=0;i<70;i++){ const a=Math.random()*6.28, d=Math.sqrt(Math.random())*r; x.fillStyle=['#6E8A4C','#83A05C','#97B36C','#5E7A43'][i%4];
+        x.globalAlpha=.85; x.beginPath(); x.arc(cx+Math.cos(a)*d, cy+Math.sin(a)*d*.7, sndRand(3,7), 0, 7); x.fill(); } x.globalAlpha=1; };
+    const by=this.waterTop(W*0.14)-m*0.05; moss(W*0.14, by, m*0.09); this.obst.push({x:W*0.14,y:by,r:m*0.1});
+    // a clump of grass with tiny pink flowers, top-right
+    const gx=W-m*0.1, gy=m*0.12; x.strokeStyle='#6F8F5E'; x.lineWidth=2; x.lineCap='round';
+    for(let i=0;i<22;i++){ const a=-Math.PI/2+sndRand(-1,1), h=m*sndRand(.06,.13); x.beginPath(); x.moveTo(gx,gy+m*.04); x.quadraticCurveTo(gx+Math.cos(a)*h*.5, gy+Math.sin(a)*h*.5, gx+Math.cos(a)*h, gy+m*.04+Math.sin(a)*h); x.stroke(); }
+    for(let i=0;i<6;i++){ x.fillStyle=i%2?'#E0A0B4':'#F2C6D2'; x.beginPath(); x.arc(gx+sndRand(-m*.07,m*.07), gy-sndRand(0,m*.07), 3.2, 0, 7); x.fill(); }
+    moss(gx, gy+m*.05, m*0.05); this.obst.push({x:gx,y:gy,r:m*0.12});
+    // pebbles along the bank
+    for(let X=6; X<W; X+=sndRand(10,26)){ const y=this.waterTop(X)-sndRand(1,5); x.fillStyle=['#B9AE9F','#A39888','#CFC5B6'][Math.floor(Math.random()*3)];
+      x.beginPath(); x.ellipse(X, y, sndRand(3,6), sndRand(2,4), Math.random(), 0, 7); x.fill(); } },
+  stonePx(s){ return {x:s.x*this.W, y:s.y*this.H, rx:s.rx*this.m, ry:s.ry*this.m}; },
+  ringsAround(s){ const p=this.stonePx(s); for(let k=1;k<=3;k++){ const rx=p.rx+k*12+4, ry=p.ry+k*12+4, pts=[];
+      for(let a=0;a<=64;a++){ const t=a/64*Math.PI*2; pts.push({x:p.x+Math.cos(t)*rx*Math.cos(s.rot)-Math.sin(t)*ry*Math.sin(s.rot), y:p.y+Math.cos(t)*rx*Math.sin(s.rot)+Math.sin(t)*ry*Math.cos(s.rot)}); }
+      for(let i=1;i<pts.length;i++) this.groove(pts[i-1], pts[i], 1); } },
+  /* mask out everything the rake must not touch */
+  maskObstacles(x){ x.save(); x.globalCompositeOperation='destination-out'; x.fillStyle='#000';
+    this.stones.forEach(s=>{ const p=this.stonePx(s); x.beginPath(); x.ellipse(p.x,p.y,p.rx+5,p.ry+5,s.rot,0,7); x.fill(); });
+    this.obst.forEach(o=>{ x.beginPath(); x.arc(o.x,o.y,o.r,0,7); x.fill(); });
+    x.beginPath(); x.moveTo(0,this.H); for(let X=0;X<=this.W;X+=8) x.lineTo(X, this.waterTop(X)-4); x.lineTo(this.W,this.H); x.closePath(); x.fill();
+    x.restore(); },
+  groove(a, b, tines){ const s=this.seg.x, dx=b.x-a.x, dy=b.y-a.y, L=Math.hypot(dx,dy)||1, nx=-dy/L, ny=dx/L, n=tines||5, gap=9;
+    const x0=Math.min(a.x,b.x)-n*gap-6, y0=Math.min(a.y,b.y)-n*gap-6, w=Math.abs(dx)+2*n*gap+12, h=Math.abs(dy)+2*n*gap+12;
+    s.clearRect(x0,y0,w,h); s.lineCap='round';
+    for(let k=0;k<n;k++){ const o=(k-(n-1)/2)*gap;
+      s.strokeStyle='rgba(140,108,76,.30)'; s.lineWidth=3.2; s.beginPath(); s.moveTo(a.x+nx*o,a.y+ny*o); s.lineTo(b.x+nx*o,b.y+ny*o); s.stroke();
+      s.strokeStyle='rgba(255,251,242,.6)'; s.lineWidth=1.5; s.beginPath(); s.moveTo(a.x+nx*(o+2.2),a.y+ny*(o+2.2)); s.lineTo(b.x+nx*(o+2.2),b.y+ny*(o+2.2)); s.stroke(); }
+    s.save(); s.beginPath(); s.rect(x0,y0,w,h); s.clip(); this.maskObstacles(s); s.restore();
+    const d=this.dpr; this.marks.x.drawImage(this.seg.c, x0*d, y0*d, w*d, h*d, x0, y0, w, h); },
+  smoothAlong(a, b){ const x=this.marks.x; x.save(); x.globalCompositeOperation='destination-out'; x.lineCap='round';
+    x.strokeStyle='rgba(0,0,0,.55)'; x.lineWidth=50; x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x+.01,b.y); x.stroke();
+    x.strokeStyle='rgba(0,0,0,.9)'; x.lineWidth=38; x.stroke(); x.restore(); },
+  reset(){ this.last=null; this.drag=null;
+    if(this._opening){ if(this.marks && this.autoOn()) this.marks.x.clearRect(0,0,this.W,this.H); return; }   // patterns stay between visits when auto-smooth is off
+    if(this.marks) this.marks.x.clearRect(0,0,this.W,this.H); },
+  progress(){ return null; },
+  hitStone(p){ for(let i=this.stones.length-1;i>=0;i--){ const s=this.stones[i], q=this.stonePx(s), c=Math.cos(-s.rot), si=Math.sin(-s.rot);
+      const dx=p.x-q.x, dy=p.y-q.y, lx=dx*c-dy*si, ly=dx*si+dy*c; if((lx*lx)/((q.rx+10)**2)+(ly*ly)/((q.ry+10)**2)<=1) return i; } return -1; },
+  down(p,now){ const i=this.hitStone(p);
+    if(i>=0){ const s=this.stones[i]; this.drag={i, ox:p.x-s.x*this.W, oy:p.y-s.y*this.H}; FX.note(110,{to:90, type:'triangle', level:.05, decay:.2}); r3Haptic(10,'zen',300); return; }
+    this.last=p; const t=FX.texture('sand','sand'); if(t) t.set(p, now); r3Haptic(6,'zen',300); },
+  move(p,now){
+    if(this.drag){ const s=this.stones[this.drag.i], q=this.stonePx(s);
+      let nx=(p.x-this.drag.ox), ny=(p.y-this.drag.oy);
+      nx=Math.max(q.rx+4, Math.min(this.W-q.rx-4, nx)); ny=Math.max(q.ry+4, Math.min(this.waterTop(nx)-q.ry-10, ny));
+      // the marks under the stone's new spot go; it sits on smooth sand
+      s.x=nx/this.W; s.y=ny/this.H; const x=this.marks.x; x.save(); x.globalCompositeOperation='destination-out'; x.beginPath(); x.ellipse(nx,ny,q.rx+5,q.ry+5,s.rot,0,7); x.fill(); x.restore();
+      return; }
+    if(!this.last){ this.last=p; return; } const a=this.last; if(Math.hypot(p.x-a.x,p.y-a.y)<2) return;
+    if(this.flat()) this.smoothAlong(a,p); else this.groove(a,p);
+    this.last=p; const t=FX.tex.sand; if(t) t.set(p, now); r3Haptic(5,'zenmove',420); },
+  up(){ if(this.drag){ this.drag=null; FX.note(95,{to:80, type:'triangle', level:.045, decay:.18}); r3Haptic(8,'zen',300); } this.last=null; const t=FX.tex.sand; if(t) t.stop(); },
+  drawStone(ctx, s, lifted){ const p=this.stonePx(s);
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(s.rot);
+    ctx.fillStyle='rgba(70,52,34,.28)'; ctx.filter && (ctx.filter='blur(6px)'); ctx.beginPath(); ctx.ellipse(lifted?10:5, lifted?14:8, p.rx*1.02, p.ry*.95, 0, 0, 7); ctx.fill(); ctx.filter='none';
+    const tones=[['#A7A29C','#6E6964'],['#9C948A','#5F5852'],['#B4ADA4','#77706A']][s.tone||0];
+    const g=ctx.createRadialGradient(-p.rx*.35,-p.ry*.45,p.ry*.1,0,0,p.rx*1.1); g.addColorStop(0,tones[0]); g.addColorStop(1,tones[1]);
+    ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(0,0,p.rx,p.ry,0,0,7); ctx.fill();
+    if(!s.spk){ s.spk=[...Array(40)].map(()=>[Math.random()*2-1, Math.random()*2-1, Math.random()]); }
+    s.spk.forEach(([a,b,c])=>{ if(a*a+b*b>0.85) return; ctx.fillStyle=c>.5?'rgba(255,255,255,.18)':'rgba(40,30,25,.18)'; ctx.fillRect(a*p.rx, b*p.ry, 1.5, 1.5); });
+    ctx.fillStyle='rgba(255,255,255,.22)'; ctx.beginPath(); ctx.ellipse(-p.rx*.3,-p.ry*.45,p.rx*.35,p.ry*.18,-.2,0,7); ctx.fill();
+    if(s.moss){ ctx.save(); ctx.beginPath(); ctx.ellipse(0,0,p.rx,p.ry,0,0,7); ctx.clip();
+      if(!s.mp) s.mp=[...Array(46)].map(()=>[sndRand(-1,1), sndRand(-1,-.15), Math.random()]);
+      s.mp.forEach(([a,b,c])=>{ ctx.fillStyle=['#6E8A4C','#83A05C','#97B36C'][Math.floor(c*3)]; ctx.beginPath(); ctx.arc(a*p.rx*.9, b*p.ry*.95-p.ry*.15, 3+c*4, 0, 7); ctx.fill(); });
+      ctx.restore(); }
+    ctx.restore(); },
+  draw(ctx,W,H,now){
+    if(this.autoOn() && now-(this.lastSmooth||0)>300){ this.lastSmooth=now; const x=this.marks.x; x.save(); x.globalCompositeOperation='destination-out'; x.globalAlpha=0.02; x.fillRect(0,0,W,H); x.restore(); }
+    ctx.drawImage(this.base.c,0,0,W,H); ctx.drawImage(this.marks.c,0,0,W,H);
+    // the stream
+    ctx.save(); ctx.beginPath(); ctx.moveTo(0,H); for(let X=0;X<=W;X+=6) ctx.lineTo(X, this.waterTop(X)+3); ctx.lineTo(W,H); ctx.closePath();
+    const wg=ctx.createLinearGradient(0,H*.83,0,H); wg.addColorStop(0,'#A7CAD3'); wg.addColorStop(1,'#6F9DAF'); ctx.fillStyle=wg; ctx.fill(); ctx.clip();
+    const t=playReduced()?0:now/1000; ctx.strokeStyle='rgba(255,255,255,.45)'; ctx.lineWidth=1.6; ctx.lineCap='round';
+    for(let i=0;i<14;i++){ const y=H*0.875+((i*37)%100)/100*H*0.11, sp=18+(i%5)*6, len=18+(i%4)*10, x0=((i*97+t*sp)%(W+80))-40;
+      ctx.globalAlpha=.25+(i%3)*.12; ctx.beginPath(); ctx.moveTo(x0,y); ctx.quadraticCurveTo(x0+len/2,y-2,x0+len,y); ctx.stroke(); }
+    ctx.globalAlpha=1; ctx.restore();
+    ctx.strokeStyle='rgba(120,96,70,.35)'; ctx.lineWidth=2; ctx.beginPath(); for(let X=0;X<=W;X+=6) X?ctx.lineTo(X,this.waterTop(X)+2):ctx.moveTo(X,this.waterTop(X)+2); ctx.stroke();
+    ctx.drawImage(this.deco.c,0,0,W,H);
+    this.stones.forEach((s,i)=>this.drawStone(ctx, s, this.drag && this.drag.i===i)); },
+  r3Bar(){ const auto=this.autoOn(), flat=this.flat();
+    return `<button class="btn line sm" aria-pressed="${flat}" onclick="r3ZenFlip()">${flat?'Rake: flat edge (smoothing)':'Rake: teeth'} · Flip rake</button>
+      <button class="btn line sm" onclick="r3ZenSmoothAll()">Smooth all</button>
+      <label class="playkeep"><input type="checkbox" ${auto?'checked':''} onchange="r3ZenAuto(this.checked)"> Auto-smooth</label>`; }
+};
+function r3ZenFlip(){ const Z=PLAY_ACTS.sand; Z.flipped=!Z.flipped; r3BarRefresh();
+  const p=document.getElementById('playProg'); if(p) p.textContent = Z.flipped ? 'Flat edge: drag over lines to smooth just that spot.' : 'Teeth: drag to rake lines.'; }
+function r3ZenAuto(on){ P3.set('zenAuto', !!on); const p=document.getElementById('playProg'); if(p) p.textContent = on ? 'The sand slowly smooths itself over.' : 'Your patterns stay until you smooth them.'; }
+function r3ZenSmoothAll(){ const Z=PLAY_ACTS.sand; if(!Z.marks) return;
+  const keep=playOff(Z.W,Z.H,Z.dpr); keep.x.drawImage(Z.marks.c,0,0,Z.W,Z.H); Z.marks.x.clearRect(0,0,Z.W,Z.H);
+  FX.burst({type:'bandpass', freq:2200, q:.6, level:.03, decay:.6});
+  undoToast('Sand smoothed', ()=>{ Z.marks.x.clearRect(0,0,Z.W,Z.H); Z.marks.x.drawImage(keep.c,0,0,Z.W,Z.H); }); }
+PLAY_PREVIEW.sand=`<svg viewBox="0 0 120 80"><rect width="120" height="80" rx="10" fill="#EFE2CC"/>${[0,1,2].map(k=>`<ellipse cx="44" cy="34" rx="${18+k*7}" ry="${13+k*6}" fill="none" stroke="#C9AE8C" stroke-width="1.6"/>`).join('')}<ellipse cx="44" cy="34" rx="12" ry="8" fill="#8F8A84"/><path d="M36 30 q8 -6 16 0" fill="#83A05C"/><ellipse cx="86" cy="42" rx="8" ry="6" fill="#9C948A"/><path d="M0 68 q30 -6 60 0 t60 0 V80 H0z" fill="#8DB6C4"/><path d="M0 0 q14 4 18 18" stroke="#6F8F5E" stroke-width="3" fill="none"/></svg>`;
+
+/* ===== 9. Scratch art + Free draw =====
+   Two modes, each with its own artwork, so switching never loses anything.
+   "Keep my drawing until I clear it" keeps both, here and on this device
+   between visits; otherwise they fade gently, as before. */
+const DRAW_COLOURS = {
+  Pastel:['#F2C6D2','#E0A0B4','#CDB4DB','#BCD3E8','#B5E2D0','#FBE7A1'],
+  Bright:['#E63946','#F77F00','#FCBF49','#2A9D8F','#277DA1','#7B2CBF'],
+  Neutral:['#E9DCC9','#B8A99A','#8D7B6A','#6C757D','#1E1A22','#FFFFFF']
+};
+const DRAW_SIZES = {scratch:{S:5,M:11,L:22}, free:{S:4,M:10,L:20}};
+PLAY_ACTS.draw = {
+  title:'Scratch & draw', desc:'Scratch a dark surface to reveal colour underneath, or draw freely.',
+  hint:'', ends:false, dprCap:2,
+  mode(){ return P3.get('drawMode','scratch')==='free' ? 'free' : 'scratch'; },
+  keepOn(){ return !!P3.get('drawKeep', false); },
+  hintFn(input){ const m=input==='mouse';
+    return this.mode()==='scratch' ? (m?'Click and drag to scratch away the dark surface and reveal the colours underneath.':'Scratch the dark surface with your finger to reveal the colours underneath.')
+      : (m?'Click and drag to draw. Pick colours and sizes from the palette.':'Draw with your finger. Pick colours and sizes from the palette below.'); },
+  side(){ return this.mode()==='free'; },
+  layout(W,H){ const dpr=Math.min(2, window.devicePixelRatio||1), o1=this.cover, o2=this.base;
+    this.W=W; this.H=H; this.dpr=dpr;
+    this.under=playOff(W,H,dpr); this.paintUnder();
+    this.coverSrc=playOff(W,H,dpr); this.paintCover(this.coverSrc.x);
+    this.cover=playOff(W,H,dpr); this.base=playOff(W,H,dpr); this.work=playOff(W,H,dpr);
+    this.cover.dpr=this.base.dpr=dpr;
+    if(o1 && o1.c.width){ this.cover.x.drawImage(this.coverSrc.c,0,0,W,H); const x=this.cover.x; x.save(); x.globalCompositeOperation='destination-out';
+        x.fillRect(0,0,Math.min(W,o1.c.width/o1.dpr),Math.min(H,o1.c.height/o1.dpr)); x.restore(); x.drawImage(o1.c,0,0,o1.c.width/o1.dpr,o1.c.height/o1.dpr); }   // 1:1; new edges get fresh cover
+    else if(!this.restore('scratch')) this.cover.x.drawImage(this.coverSrc.c,0,0,W,H);
+    if(o2 && o2.c.width) this.base.x.drawImage(o2.c,0,0,o2.c.width/o2.dpr,o2.c.height/o2.dpr); else this.restore('free');
+    if(!this.strokes) this.strokes=[]; },
+  restore(which){ if(this.restored && this.restored[which]) return false; this.restored=this.restored||{}; this.restored[which]=true;
+    if(!this.keepOn()) return false; const d=store.get('presentArt3_'+which); if(!d) return false;
+    const im=new Image(); im.onload=()=>{ const t=which==='scratch'?this.cover:this.base; t.x.clearRect(0,0,this.W,this.H); t.x.drawImage(im,0,0,this.W,this.H); }; im.src=d;
+    if(which==='scratch') this.cover.x.drawImage(this.coverSrc.c,0,0,this.W,this.H);
+    return true; },
+  saveArt(){ if(!this.keepOn() || !this.W) return;
+    const snap=(src)=>{ const c=document.createElement('canvas'); c.width=Math.round(this.W); c.height=Math.round(this.H); c.getContext('2d').drawImage(src,0,0,c.width,c.height); return c.toDataURL('image/png'); };
+    try{ this.bakeAll(); store.set('presentArt3_scratch', snap(this.cover.c)); store.set('presentArt3_free', snap(this.base.c)); }catch(e){} },
+  saveSoon(){ clearTimeout(this._st); if(this.keepOn()) this._st=setTimeout(()=>this.saveArt(), 1500); },
+  paintUnder(){ const x=this.under.x, W=this.W, H=this.H, bg=P3.get('scratchBg','rainbow');
+    if(bg==='garden'){ const im=this._gimg || (this._gimg=Object.assign(new Image(),{src:'/scenes/garden-wide.webp'}));
+      if(im.complete && im.naturalWidth){ const ar=im.naturalWidth/im.naturalHeight; let w=W, h=W/ar; if(h<H){ h=H; w=H*ar; } x.drawImage(im,(W-w)/2,(H-h)/2,w,h); }
+      else { x.fillStyle='#8FA98A'; x.fillRect(0,0,W,H); im.onload=()=>{ if(P3.get('scratchBg')==='garden') this.paintUnder(); }; }
+      return; }
+    if(bg==='pastel'){ x.fillStyle='#FBEFF3'; x.fillRect(0,0,W,H);
+      const cols=['#F2C6D2','#CDB4DB','#BCD3E8','#B5E2D0','#FBE7A1','#F7D1BA'];
+      for(let i=0;i<26;i++){ const r=sndRand(.12,.32)*Math.max(W,H), cx=Math.random()*W, cy=Math.random()*H, g=x.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,cols[i%cols.length]); g.addColorStop(1,'rgba(255,255,255,0)'); x.fillStyle=g; x.fillRect(0,0,W,H); } return; }
+    const g=x.createLinearGradient(0,0,W,H); ['#FF6B8A','#FFA94D','#FFE066','#69DB7C','#4DABF7','#9775FA','#F783AC'].forEach((c,i,a)=>g.addColorStop(i/(a.length-1),c));
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    x.globalAlpha=.25; for(let i=0;i<10;i++){ x.strokeStyle='#fff'; x.lineWidth=sndRand(6,20); x.beginPath(); x.arc(W*sndRand(-.2,1.2), H*sndRand(-.2,1.2), Math.max(W,H)*sndRand(.2,.6), 0, 7); x.stroke(); } x.globalAlpha=1; },
+  paintCover(x){ const W=this.W, H=this.H, g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#2B2236'); g.addColorStop(.5,'#1F1929'); g.addColorStop(1,'#2A2033');
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    const s=x.createLinearGradient(0,H*.2,W,H*.6); s.addColorStop(0,'rgba(255,255,255,0)'); s.addColorStop(.5,'rgba(255,255,255,.05)'); s.addColorStop(1,'rgba(255,255,255,0)'); x.fillStyle=s; x.fillRect(0,0,W,H); },
+  reset(){ if(this._opening) return; },          // opening never clears; Reset/Clear do it explicitly
+  progress(){ return null; },
+  colour(){ return P3.get('drawColor', DRAW_COLOURS.Pastel[1]); },
+  sizeKey(){ return P3.get(this.mode()==='scratch'?'scratchSize':'drawSize','M'); },
+  width(){ return DRAW_SIZES[this.mode()][this.sizeKey()] || 10; },
+  down(p,now){ if(this.mode()==='scratch'){ this.last=p; this.scratch(p,p); }
+    else { this.strokes.push({c:this.colour(), w:this.width(), erase:!!this.eraser, keep:this.keepOn(), pts:[{...p,t:now}]}); }
+    const t=FX.texture('draw','brush'); if(t) t.set(p, now); r3Haptic(6,'draw',350); },
+  move(p,now){ if(this.mode()==='scratch'){ if(this.last) this.scratch(this.last,p); this.last=p; }
+    else { const s=this.strokes[this.strokes.length-1]; if(s) s.pts.push({...p,t:now}); }
+    const t=FX.tex.draw; if(t && playEng.active!==null) t.set(p, now); r3Haptic(4,'drawmove',500); },
+  up(){ this.last=null; const t=FX.tex.draw; if(t) t.stop(); this.lastStrokeAt=performance.now(); this.saveSoon(); },
+  scratch(a,b){ const x=this.cover.x; x.save(); x.globalCompositeOperation='destination-out'; x.lineCap='round'; x.lineJoin='round'; x.lineWidth=this.width();
+    x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x+.01,b.y); x.stroke(); x.restore(); this.scratchedAt=performance.now(); },
+  strokePath(x, s, now, life){ x.lineCap='round'; x.lineJoin='round'; x.lineWidth=s.w; x.strokeStyle=s.c; x.fillStyle=s.c;
+    x.globalCompositeOperation=s.erase?'destination-out':'source-over';
+    if(s.pts.length===1){ x.globalAlpha=1; x.beginPath(); x.arc(s.pts[0].x,s.pts[0].y,s.w/2,0,7); x.fill(); }
+    else if(s.keep || !life){ x.globalAlpha=1; x.beginPath(); s.pts.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y)); x.stroke(); }
+    else { const lastT=s.pts[s.pts.length-1].t; x.globalAlpha=Math.max(0, Math.min(1, .95*(1-(now-lastT)/life)*1.4)); x.beginPath(); s.pts.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y)); x.stroke(); }
+    x.globalAlpha=1; x.globalCompositeOperation='source-over'; },
+  bakeAll(){ while(this.strokes.length && this.strokes[0].keep){ this.strokePath(this.base.x, this.strokes.shift(), 0, 0); } },
+  draw(ctx,W,H,now){ const life=7000, keep=this.keepOn();
+    if(this.mode()==='scratch'){
+      if(!keep && now-(this.scratchedAt||0)>1500 && now-(this.lastCover||0)>250){ this.lastCover=now; const x=this.cover.x; x.globalAlpha=.03; x.drawImage(this.coverSrc.c,0,0,W,H); x.globalAlpha=1; }
+      ctx.drawImage(this.under.c,0,0,W,H); ctx.drawImage(this.cover.c,0,0,W,H); return; }
+    // free draw
+    this.strokes=this.strokes.filter(s=>s.keep || (now-s.pts[s.pts.length-1].t)<life);
+    while(this.strokes.length>40 && this.strokes[0].keep) this.strokePath(this.base.x, this.strokes.shift(), 0, 0);   // undo goes back 40 strokes
+    if(!keep && now-(this.lastFadeBase||0)>300){ this.lastFadeBase=now; const x=this.base.x; x.save(); x.globalCompositeOperation='destination-out'; x.globalAlpha=.03; x.fillRect(0,0,W,H); x.restore(); }
+    const w=this.work.x; w.clearRect(0,0,W,H); w.drawImage(this.base.c,0,0,W,H);
+    this.strokes.forEach(s=>this.strokePath(w, s, now, life));
+    ctx.fillStyle='#FFFDF9'; ctx.fillRect(0,0,W,H); ctx.drawImage(this.work.c,0,0,W,H); },
+  r3Bar(){ const m=this.mode(), keep=this.keepOn(), bg=P3.get('scratchBg','rainbow'), sz=this.sizeKey();
+    const tabs=`<span class="seg" role="group" aria-label="Mode">
+      <button class="segb ${m==='scratch'?'on':''}" aria-pressed="${m==='scratch'}" onclick="r3DrawMode('scratch')">Scratch art</button>
+      <button class="segb ${m==='free'?'on':''}" aria-pressed="${m==='free'}" onclick="r3DrawMode('free')">Free draw</button></span>`;
+    const keepBox=`<label class="playkeep"><input type="checkbox" ${keep?'checked':''} onchange="r3DrawKeep(this.checked)"> Keep my drawing until I clear it</label>`;
+    if(m==='scratch') return tabs+`<span class="seg" role="group" aria-label="What's underneath">
+        ${[['rainbow','Rainbow'],['pastel','Pastel'],['garden','Garden']].map(([k,l])=>`<button class="segb ${bg===k?'on':''}" aria-pressed="${bg===k}" onclick="r3ScratchBg('${k}')">${l}</button>`).join('')}</span>
+      <span class="seg" role="group" aria-label="Brush size">${['S','M','L'].map(k=>`<button class="segb ${sz===k?'on':''}" aria-pressed="${sz===k}" aria-label="Brush ${({S:'small',M:'medium',L:'large'})[k]}" onclick="r3DrawSize('${k}')">${k}</button>`).join('')}</span>
+      <button class="btn line sm" onclick="r3DrawClear()">Reset</button>${keepBox}`;
+    return tabs+`<button class="btn line sm" onclick="r3DrawUndo()">Undo</button><button class="btn line sm" onclick="r3DrawClear()">Clear</button>${keepBox}`; },
+  sideHTML(){ const c=this.colour(), sz=this.sizeKey(), er=!!this.eraser;
+    return `<div class="palette" role="group" aria-label="Colours">
+      ${Object.entries(DRAW_COLOURS).map(([g,cs])=>`<div class="palgrp"><small>${g==='Neutral'?'Neutral, black & white':g}</small><div class="palrow">${cs.map(h=>`<button class="swatch ${!er&&c.toLowerCase()===h.toLowerCase()?'on':''}" style="--c:${h}" aria-label="Colour ${h}" aria-pressed="${!er&&c.toLowerCase()===h.toLowerCase()}" onclick="r3DrawColour('${h}')"></button>`).join('')}</div></div>`).join('')}
+      <label class="palcustom"><input type="color" value="${/^#[0-9a-f]{6}$/i.test(c)?c:'#E0A0B4'}" onchange="r3DrawColour(this.value)" aria-label="Choose any colour"> Any colour</label>
+      <div class="palgrp"><small>Size</small><div class="palrow">${['S','M','L'].map(k=>`<button class="sizeb ${sz===k?'on':''}" aria-pressed="${sz===k}" aria-label="Brush ${({S:'small',M:'medium',L:'large'})[k]}" onclick="r3DrawSize('${k}')"><i style="width:${DRAW_SIZES.free[k]}px;height:${DRAW_SIZES.free[k]}px"></i></button>`).join('')}</div></div>
+      <button class="sizeb erase ${er?'on':''}" aria-pressed="${er}" onclick="r3DrawEraser()">Eraser</button></div>`; }
+};
+function r3DrawRefresh(){ r3SideRender(); r3BarRefresh(); playHoverUI(); }
+function r3DrawMode(m){ PLAY_ACTS.draw.bakeAll && PLAY_ACTS.draw.keepOn() && PLAY_ACTS.draw.bakeAll(); P3.set('drawMode', m); r3DrawRefresh(); requestAnimationFrame(()=>playResize()); }
+function r3DrawColour(h){ P3.set('drawColor', h); PLAY_ACTS.draw.eraser=false; r3SideRender(); }
+function r3DrawSize(k){ P3.set(PLAY_ACTS.draw.mode()==='scratch'?'scratchSize':'drawSize', k); r3SideRender(); r3BarRefresh(); }
+function r3DrawEraser(){ const D=PLAY_ACTS.draw; D.eraser=!D.eraser; r3SideRender(); }
+function r3ScratchBg(k){ P3.set('scratchBg', k); const D=PLAY_ACTS.draw; if(D.under) D.paintUnder(); r3BarRefresh(); }
+function r3DrawKeep(on){ const D=PLAY_ACTS.draw; P3.set('drawKeep', !!on); const now=performance.now();
+  D.strokes.forEach(s=>{ s.keep=!!on; if(!on) s.pts.forEach(q=>q.t=now); });
+  if(on){ D.bakeAll(); D.saveArt(); } else { store.remove ? store.remove('presentArt3_scratch') : store.set('presentArt3_scratch',''); store.remove ? store.remove('presentArt3_free') : store.set('presentArt3_free',''); }
+  const p=document.getElementById('playProg'); if(p) p.textContent = on ? 'Kept until you clear it, even if you leave and come back.' : 'It will fade gently on its own.'; }
+function r3DrawUndo(){ const D=PLAY_ACTS.draw; if(D.strokes.length){ D.strokes.pop(); D.saveSoon(); }
+  else { const p=document.getElementById('playProg'); if(p) p.textContent='Nothing more to undo.'; } }
+function r3DrawClear(){ const D=PLAY_ACTS.draw, W=D.W, H=D.H; if(!W) return;
+  if(D.mode()==='scratch'){ const k=playOff(W,H,D.dpr); k.x.drawImage(D.cover.c,0,0,W,H); D.cover.x.globalCompositeOperation='copy'; D.cover.x.drawImage(D.coverSrc.c,0,0,W,H); D.cover.x.globalCompositeOperation='source-over';
+    undoToast('Surface reset', ()=>{ D.cover.x.globalCompositeOperation='copy'; D.cover.x.drawImage(k.c,0,0,W,H); D.cover.x.globalCompositeOperation='source-over'; D.saveSoon(); }); }
+  else { const k=playOff(W,H,D.dpr); k.x.drawImage(D.base.c,0,0,W,H); const st=D.strokes.slice(); D.base.x.clearRect(0,0,W,H); D.strokes=[];
+    undoToast('Drawing cleared', ()=>{ D.base.x.clearRect(0,0,W,H); D.base.x.drawImage(k.c,0,0,W,H); D.strokes=st; D.saveSoon(); }); }
+  D.saveSoon(); }
+PLAY_PREVIEW.draw=`<svg viewBox="0 0 120 80"><defs><linearGradient id="r3rb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF6B8A"/><stop offset=".35" stop-color="#FFE066"/><stop offset=".65" stop-color="#69DB7C"/><stop offset="1" stop-color="#9775FA"/></linearGradient></defs><rect width="120" height="80" rx="10" fill="#241C2E"/><path d="M16 58 q18 -40 38 -12 t44 -22" fill="none" stroke="url(#r3rb)" stroke-width="7" stroke-linecap="round"/><path d="M24 26 q22 14 44 4" fill="none" stroke="url(#r3rb)" stroke-width="4" stroke-linecap="round"/></svg>`;
+
+/* ===================== 13. FEELINGS WHEEL: own definitions, matching needs, working chips ===================== */
+const EMO_DEF = {
+ Anger:"A strong, energised feeling that something is wrong, unfair or in your way, often with an urge to push back.",
+ Sadness:"A heavy, low feeling that usually follows a loss, a let-down, or a gap between what you hoped for and what happened.",
+ Fear:"An alert, uneasy feeling that something might hurt you or go wrong. It gets your body ready to protect you.",
+ Joy:"A light, warm feeling that things are good, from quiet contentment to bright delight.",
+ Love:"A warm pull toward someone or something: wanting closeness, caring what happens to them, feeling connected.",
+ Surprise:"A quick jolt when something doesn’t match what you expected. It can be pleasant, unpleasant, or just disorienting.",
+ Frustrated:"Feeling stuck or thwarted when something keeps getting in the way of what you’re trying to do.",
+ Blocked:"Like there’s a wall in the way and you can’t get past it, however you try.",
+ 'Fed up':"Your patience has run out after the same thing has happened one too many times.",
+ Irritated:"Mildly but persistently bothered, as if something keeps rubbing you the wrong way.",
+ Impatient:"Wanting things to move faster than they are, and finding the waiting hard.",
+ Resentful:"Lingering anger about being treated unfairly, often carried for a while after it happened.",
+ Bitter:"A sour, lasting hurt about something unfair that’s hard to let go of.",
+ Wronged:"A sense that someone treated you unjustly and hasn’t put it right.",
+ Grudging:"Going along with something while still holding a quiet resentment about it.",
+ Cheated:"Feeling you were denied something fair, or tricked out of what you were owed.",
+ Annoyed:"A light, passing anger at something irritating or inconvenient.",
+ Prickly:"Easily irritated right now, quick to bristle at small things.",
+ Bothered:"Something is nagging at you and won’t quite leave you alone.",
+ Edgy:"Tense and close to snapping, with little room left for more irritation.",
+ 'Short-tempered':"Quick to lose patience or to speak sharply.",
+ Defensive:"Bracing against criticism or attack, ready to protect yourself or justify what you did.",
+ Guarded:"Holding back and watchful, not wanting to let someone in or show too much.",
+ Cornered:"Feeling trapped with no good way out, which can make you push back hard.",
+ Bristling:"An instant prickle of offence, like hackles rising.",
+ Judged:"Feeling evaluated or criticised by others, often unfairly.",
+ Furious:"Intense, hot anger that feels hard to contain.",
+ Seething:"Fiercely angry inside while keeping most of it hidden.",
+ Boiling:"Anger that’s building up and close to spilling over.",
+ Livid:"Extremely angry, usually about something that feels outrageous.",
+ Explosive:"Anger so strong it feels like it could burst out all at once.",
+ Disrespected:"Feeling your worth, effort or feelings weren’t treated as if they mattered.",
+ Dismissed:"Brushed aside, as if what you said or felt wasn’t worth taking seriously.",
+ Belittled:"Made to feel small, foolish, or less capable than you are.",
+ Overlooked:"Not noticed or recognised, especially when you’d earned it.",
+ Used:"Feeling someone took advantage of you for their own benefit.",
+ Lonely:"Feeling disconnected, or without the closeness you want, whether or not people are around.",
+ 'Left out':"Not included when others are, and feeling the sting of it.",
+ Unseen:"Like the people around you don’t really notice or understand you.",
+ Isolated:"Cut off from others, by circumstance or by how you feel.",
+ Homesick:"Missing a home, a place, or people you feel you belong with.",
+ Disappointed:"Sad because something didn’t turn out the way you hoped or expected.",
+ 'Let down':"Someone or something didn’t come through the way you counted on.",
+ Deflated:"Your energy or hope has suddenly gone out of you, like air from a balloon.",
+ Discouraged:"Losing confidence or motivation after things haven’t gone well.",
+ Crestfallen:"Suddenly, visibly sad after a hope was dashed.",
+ Grieving:"The deep sorrow that follows losing someone or something that mattered.",
+ 'Missing someone':"Feeling the absence of a person and wishing they were here.",
+ Heartbroken:"Overwhelming sadness, often after a loss or the end of a relationship.",
+ Mourning:"Actively grieving a loss. It often comes in waves over time.",
+ Aching:"A dull, lasting pain of sadness that stays with you.",
+ Low:"A flat, down mood with little energy or enjoyment.",
+ Flat:"Little feeling either way; things seem dull or muted.",
+ Heavy:"Like sadness has weight, making everything slower and harder.",
+ Drained:"Emotionally or physically used up, with nothing left in the tank.",
+ Numb:"Feelings seem switched off or far away. This can happen after too much, for too long.",
+ Defeated:"Feeling beaten by something and unsure it’s worth trying again.",
+ Stuck:"Unable to move forward, as if every option is blocked.",
+ 'Worn down':"Gradually exhausted by something that has gone on a long time.",
+ Resigned:"Accepting that something won’t change, usually with sadness.",
+ Powerless:"Feeling you have no control or influence over what happens.",
+ Guilty:"Feeling you did something wrong or hurt someone, and wishing you hadn’t.",
+ Regretful:"Wishing you’d made a different choice.",
+ Ashamed:"Feeling bad about who you are, not just what you did, and wanting to hide.",
+ Remorseful:"Deeply sorry for harm you caused, and wanting to make it right.",
+ Sorry:"Feeling apologetic about something you did, or something that happened.",
+ Anxious:"A worried, tense state of expecting something bad, often without a clear cause.",
+ 'On edge':"Tense and alert, as if waiting for something to go wrong.",
+ Restless:"Unable to settle or keep still; your body wants to move.",
+ Uneasy:"A vague sense that something isn’t quite right.",
+ 'Anticipating the worst':"Your mind jumping ahead to the worst possible outcome.",
+ Overwhelmed:"So much is happening at once that it’s hard to cope with comfortably.",
+ Swamped:"Buried under more tasks or demands than you can handle right now.",
+ Frazzled:"Frayed and scattered from stress or too much going on.",
+ 'Pulled apart':"Torn between different demands or people, each wanting something from you.",
+ 'Too much at once':"So many things at the same time that it’s hard to think about any of them.",
+ Insecure:"Unsure of your worth, abilities or place, and worried others can see it too.",
+ 'Not enough':"Feeling you fall short, however much you do.",
+ 'Self-doubting':"Questioning your own judgement or your ability to handle something.",
+ Exposed:"Feeling seen in a way that leaves you open to judgement.",
+ Inadequate:"Feeling not good enough, or not capable of what’s needed.",
+ Scared:"A clear, strong fear of something specific that feels threatening.",
+ Frightened:"Afraid, often suddenly, of something that feels dangerous.",
+ Alarmed:"Suddenly worried that something is wrong and needs attention.",
+ Shaky:"Fear you can feel in your body: trembling, unsteady, weak.",
+ Panicky:"Fear rising fast, with a racing heart or a sense of losing control.",
+ Worried:"Your thoughts keep returning to something that might go wrong.",
+ Preoccupied:"Your mind keeps getting pulled back to one concern.",
+ Nervous:"Jittery and uneasy about something coming up.",
+ 'Second-guessing':"Repeatedly doubting a decision you’ve made or need to make.",
+ Dreading:"Strongly not wanting something that’s coming, and fearing it.",
+ Vulnerable:"Feeling open to being hurt, without your usual protection.",
+ Fragile:"Easily broken right now; it wouldn’t take much to tip you over.",
+ Unprotected:"Without the support or safety you’d usually lean on.",
+ Raw:"Feelings very close to the surface, as if a wound is still fresh.",
+ 'Easily hurt':"Small things land harder than usual.",
+ Content:"Quietly satisfied with how things are, without needing more right now.",
+ Settled:"Calm and at home where you are.",
+ Satisfied:"Pleased that something met your needs or hopes.",
+ 'At ease':"Relaxed, without tension or worry.",
+ Comfortable:"Physically or emotionally cosy and safe.",
+ Hopeful:"Believing things can get better, or that something good may happen.",
+ Optimistic:"Expecting things to turn out well.",
+ Encouraged:"Given more confidence or hope by something that happened.",
+ 'Looking forward':"Pleasantly anticipating something ahead.",
+ Open:"Willing to see what happens and receptive to new things.",
+ Proud:"Pleased with something you, or someone close to you, did.",
+ Accomplished:"Satisfied at having achieved something that took effort.",
+ Capable:"Confident you can handle what’s in front of you.",
+ Confident:"Trusting yourself and your abilities.",
+ Worthy:"Feeling you deserve good things, just as you are.",
+ Playful:"Light, fun, and ready to enjoy the moment.",
+ Silly:"Happily goofy, not taking things too seriously for a bit.",
+ Lighthearted:"Carefree and cheerful.",
+ Cheeky:"Playfully mischievous or teasing.",
+ Free:"Unburdened, able to be yourself without holding back.",
+ Grateful:"Appreciating something or someone that has made your life better.",
+ Thankful:"Wanting to say thank you for something you received.",
+ Appreciative:"Recognising the value of something or someone.",
+ Lucky:"Feeling fortunate about something good that came your way.",
+ Touched:"Moved by someone’s kindness or thoughtfulness.",
+ Calm:"Settled and steady, without agitation.",
+ Peaceful:"Quiet inside, free from conflict or worry.",
+ Steady:"Balanced and stable, not easily shaken.",
+ Unhurried:"Taking things at an easy pace, without pressure.",
+ Grounded:"Present and connected to your body and your surroundings.",
+ Close:"Feeling near to someone emotionally, with a sense of connection.",
+ Connected:"Linked with someone, like you’re on the same wavelength.",
+ Understood:"Feeling that someone really gets you.",
+ Included:"Welcomed in and part of things.",
+ Seen:"Noticed and recognised for who you really are.",
+ Caring:"Concern for someone’s wellbeing and a wish to look after them.",
+ Tender:"Gentle, soft affection toward someone.",
+ Protective:"Wanting to keep someone safe from harm.",
+ Warm:"Friendly, kind feeling toward others.",
+ Kind:"Wanting to be good to someone.",
+ Affectionate:"Fondness you want to show, through words, touch or time.",
+ Fond:"A gentle liking for someone or something.",
+ Adoring:"Deep, admiring love.",
+ Sweet:"Soft, endearing feelings toward someone.",
+ 'Drawn to someone':"Feeling pulled toward a person and wanting to be near them.",
+ Trusting:"Feeling you can rely on someone and be yourself with them.",
+ 'Safe with someone':"Able to relax because you know they won’t hurt you.",
+ Relaxed:"At ease with someone, without needing to be on guard.",
+ 'Open-hearted':"Willing to share yourself without holding back.",
+ Secure:"Confident in a relationship and your place in it.",
+ Longing:"Wanting someone or something you don’t have right now.",
+ Yearning:"A deep, aching desire for something.",
+ Missing:"Feeling the gap where someone or something used to be.",
+ Wistful:"A gently sad longing, often for the past.",
+ Pining:"Longing intensely, especially for someone far away or out of reach.",
+ Compassionate:"Feeling someone’s pain with them and wanting to ease it.",
+ Sympathetic:"Sorry for someone’s difficulty and wanting them to feel better.",
+ Moved:"Stirred by something emotional, often to tears or tenderness.",
+ Gentle:"Soft and careful with someone, or with yourself.",
+ Forgiving:"Ready to let go of resentment toward someone who hurt you.",
+ Startled:"A sudden jolt of surprise, often felt in your body first.",
+ Jumpy:"Easily startled, reacting quickly to small things.",
+ 'Caught off guard':"Surprised by something you weren’t prepared for.",
+ Shocked:"Stunned by something unexpected, and often upsetting.",
+ Jolted:"Abruptly shaken out of what you were doing or feeling.",
+ Confused:"Unable to make sense of something or decide what it means.",
+ Puzzled:"Trying to figure out something that doesn’t add up.",
+ Unsure:"Not certain what to think, feel or do.",
+ 'Mixed up':"Thoughts or feelings tangled together.",
+ Lost:"Not knowing which way to go next.",
+ Amazed:"Struck by something remarkable or unexpected, in a good way.",
+ Awed:"Feeling small in the presence of something vast or beautiful.",
+ Wonderstruck:"Filled with delighted wonder.",
+ Impressed:"Admiring something done well.",
+ Dazzled:"Overwhelmed in a bright, delighted way.",
+ Curious:"Wanting to know or understand more.",
+ Intrigued:"Your interest caught by something mysterious or new.",
+ Interested:"Paying attention because something matters to you.",
+ Inquisitive:"Eager to ask questions and find out.",
+ Wondering:"Thinking openly about what might be.",
+ Disoriented:"Losing your bearings, unsure where you are or what’s happening.",
+ Thrown:"Knocked off balance by something unexpected.",
+ Unsteady:"Not on firm footing, emotionally or physically.",
+ Scattered:"Your attention feels pulled in different directions, making it hard to organize your thoughts.",
+ Foggy:"Your thoughts feel unclear, and it may be hard to concentrate or make sense of things.",
+ Stirred:"Strongly moved by something, so feelings rise to the surface.",
+ 'Touched deeply':"Moved to your core by something meaningful.",
+ Overcome:"So full of feeling that it’s hard to hold.",
+ Speechless:"So surprised or moved that words won’t come.",
+ 'Shaken up':"Unsettled after something unexpected, still reverberating."
+};
+/* what each need actually does when tapped */
+const EMO_NEED_ACTS = {
+  pause:  {verb:'A short pause or a minute of breathing', run:()=>r3EmoPause()},
+  breathe:{verb:'Breathe slowly for a minute', run:()=>r3EmoBreathe()},
+  ground: {verb:'A short grounding exercise', run:()=>r3EmoGround()},
+  info:   {verb:'Read more about this feeling', run:()=>r3EmoMore()},
+  talk:   {verb:'Talk it through with Present', run:()=>emoTalk()},
+  write:  {verb:'Write about it in your journal', run:p=>openWriter(p)},
+  step:   {verb:'Pick one small, doable thing', run:()=>{ if(typeof taskSuggestPicker==='function') taskSuggestPicker(); else addTaskSheet(); }},
+  sit:    {verb:'Sit quietly in your Sanctuary', run:()=>{ go('sanctuary'); setTimeout(()=>enterSitting(), 450); }},
+  squeeze:{verb:'Squeeze the squishy ball', run:()=>openPlay('blob')},
+  play:   {verb:'Something playful to do', run:()=>openPlay('bubbles')},
+  savour: {verb:'Hold onto it for a moment', run:()=>r3EmoSavour()},
+  kind:   {verb:'A few kind words', run:()=>r3EmoKind()}
+};
+const N_ = (t,a,p)=>[t,a,p];
+const EMO_NEEDS = {
+ Frustrated:[N_('Some space to cool down','squeeze'),N_('One small next step','step'),N_('To be heard','talk')],
+ Resentful:[N_('To be heard','talk'),N_('Fairness','write','What felt unfair, and what would fair look like?'),N_('Some space to cool down','breathe')],
+ Annoyed:[N_('A moment to reset','pause'),N_('To let it out','squeeze'),N_('Some quiet','sit')],
+ Defensive:[N_('Feeling safe','ground'),N_('To be understood','talk'),N_('A moment before responding','pause')],
+ Furious:[N_('Some space to cool down','breathe'),N_('To let it out safely','squeeze'),N_('A clear boundary','write','What line was crossed, and what do I need instead?')],
+ Disrespected:[N_('To be heard','talk'),N_('A clear boundary','write','What do I need from them next time?'),N_('Kindness toward yourself','kind')],
+ Lonely:[N_('Someone to talk to','talk'),N_('Comfort','kind'),N_('A gentle way to reach out','write','Who is one person I could send a small message to?')],
+ Disappointed:[N_('Comfort','kind'),N_('Time to let it settle','sit'),N_('To talk it through','talk')],
+ Grieving:[N_('Comfort','kind'),N_('Space to remember','write','What do I want to remember?'),N_('Someone to sit with you','talk')],
+ Low:[N_('Rest','sit'),N_('Gentleness with yourself','kind'),N_('One small next step','step')],
+ Defeated:[N_('Rest','sit'),N_('One small next step','step'),N_('Encouragement','kind')],
+ Guilty:[N_('To understand it','info'),N_('A way to make it right','write','Is there anything I could do to make this right?'),N_('Kindness toward yourself','kind')],
+ Anxious:[N_('A slower breath','breathe'),N_('Something steady','ground'),N_('Reassurance','talk')],
+ Overwhelmed:[N_('A moment to catch up','pause'),N_('One small next step','step'),N_('Something steady','ground')],
+ Insecure:[N_('Reassurance','kind'),N_('To be understood','talk'),N_('More information','info')],
+ Scared:[N_('Feeling safe','ground'),N_('A slower breath','breathe'),N_('Someone with you','talk')],
+ Worried:[N_('To get it out of your head','write','What am I worried might happen? What would I tell a friend?'),N_('Something steady','ground'),N_('One small next step','step')],
+ Vulnerable:[N_('Gentleness with yourself','kind'),N_('Feeling safe','ground'),N_('Someone to sit with you','talk')],
+ Content:[N_('To savour it','savour'),N_('To remember it later','write','What made this moment good?'),N_('Quiet time','sit')],
+ Hopeful:[N_('To savour it','savour'),N_('One small next step','step'),N_('To share it','talk')],
+ Proud:[N_('To savour it','savour'),N_('To remember it later','write','What did I do that I’m proud of?'),N_('To share it','talk')],
+ Playful:[N_('To play a little','play'),N_('To savour it','savour'),N_('To share it','talk')],
+ Grateful:[N_('To remember it later','write','What am I grateful for right now?'),N_('To savour it','savour'),N_('To share it','talk')],
+ Calm:[N_('Quiet time','sit'),N_('To savour it','savour'),N_('To remember it later','write','What helped me feel calm?')],
+ Close:[N_('To savour it','savour'),N_('To remember it later','write','What made me feel close to them?'),N_('To share it','talk')],
+ Caring:[N_('A way to show it','write','How could I show them I care?'),N_('Care for yourself too','kind'),N_('To talk it through','talk')],
+ Affectionate:[N_('A way to express it','write','What would I like them to know?'),N_('To savour it','savour'),N_('To share it','talk')],
+ Trusting:[N_('To savour it','savour'),N_('To remember it later','write','What helps me feel safe with them?'),N_('Quiet time','sit')],
+ Longing:[N_('Comfort','kind'),N_('Space to remember','write','What am I longing for?'),N_('Someone to talk to','talk')],
+ Compassionate:[N_('A way to help','step'),N_('Care for yourself too','kind'),N_('To talk it through','talk')],
+ Startled:[N_('A moment to catch up','pause'),N_('Something steady','ground'),N_('A slower breath','breathe')],
+ Confused:[N_('More information','info'),N_('To sort your thoughts','write','What do I know for sure, and what am I unsure about?'),N_('To talk it through','talk')],
+ Amazed:[N_('To savour it','savour'),N_('To remember it later','write','What amazed me?'),N_('To share it','talk')],
+ Curious:[N_('More information','info'),N_('To explore it','write','What am I curious about?'),N_('To talk it through','talk')],
+ Disoriented:[N_('A moment to catch up','pause'),N_('Something steady','ground'),N_('More information','info')],
+ Stirred:[N_('A moment to catch up','pause'),N_('Space to feel it','sit'),N_('To talk it through','talk')],
+ // leaves that need their own
+ Foggy:[N_('A moment to catch up','pause'),N_('Something steady','ground'),N_('One small next step','step')],
+ Scattered:[N_('Something steady','ground'),N_('To sort your thoughts','write','What’s on my mind right now? Just list it.'),N_('One small next step','step')],
+ Panicky:[N_('A slower breath','breathe'),N_('Something steady','ground'),N_('Someone with you','talk')],
+ Numb:[N_('Rest','sit'),N_('Something steady','ground'),N_('Gentleness with yourself','kind')],
+ Restless:[N_('To move a little','squeeze'),N_('A slower breath','breathe'),N_('Something steady','ground')],
+ Explosive:[N_('Some space to cool down','breathe'),N_('To let it out safely','squeeze'),N_('Someone to talk to','talk')],
+ Ashamed:[N_('Kindness toward yourself','kind'),N_('To understand it','info'),N_('Someone to talk to','talk')]
+};
+const EMO_FAM_NEEDS = { anger:'Frustrated', sadness:'Low', fear:'Anxious', joy:'Content', love:'Close', surprise:'Disoriented' };
+function emoDef(w){ return EMO_DEF[w] || ''; }
+function emoNeedsFor(c){ return EMO_NEEDS[c.word] || EMO_NEEDS[c.mid] || EMO_NEEDS[EMO_FAM_NEEDS[c.fam]] || []; }
+let emoMoreOpen=false, emoKbd=false;
+
+emoPick1=function(k){ emoFam=k; emoMid=null; emoChosen=null; emoMoreOpen=false; renderEmoFinder(); r3EmoFocus('.emoseg'); };
+emoPick2=function(m){ emoMid=m; emoChosen=null; emoMoreOpen=false; renderEmoFinder(); r3EmoFocus('.emoseg'); };
+emoPick3=function(w){ emoChosen={fam:emoFam, mid:emoMid, word:w}; emoMoreOpen=false; renderEmoFinder(); renderForYou(); r3EmoFocus('#emoResult .emoword'); };
+emoBack=function(){ if(emoMid) emoMid=null; else emoFam=null; emoChosen=null; emoMoreOpen=false; renderEmoFinder(); r3EmoFocus('.emoseg'); };
+emoBodyChoose=function(fam, mid){ emoFam=fam; emoMid=mid; emoChosen={fam, mid, word:mid}; emoView='wheel'; emoBodyIdx=null; emoMoreOpen=false; renderEmoFinder(); renderForYou(); r3EmoFocus('#emoResult .emoword'); };
+emoReset=function(){ emoChosen=null; emoFam=null; emoMid=null; emoMoreOpen=false; renderEmoFinder(); renderForYou(); };
+function r3EmoChooseMid(){ if(!emoMid) return; emoChosen={fam:emoFam, mid:emoMid, word:emoMid}; emoMoreOpen=false; renderEmoFinder(); renderForYou(); r3EmoFocus('#emoResult .emoword'); }
+function r3EmoFocus(sel){ if(!emoKbd) return; emoKbd=false; setTimeout(()=>{ const e=document.querySelector('#emoCard '+sel); if(e) e.focus(); }, 0); }
+
+/* the level you're on, explained, before you pick a final word */
+function r3EmoLevelLine(){
+  if(emoChosen || emoView!=='wheel' || !emoFam) return '';
+  const f=emoFamOf(emoFam), w=emoMid || f.name;
+  return `<div class="emodefline" aria-live="polite"><b>${r3esc(w)}</b><span>${r3esc(emoDef(w))}</span>
+    ${emoMid?`<button class="link" onclick="r3EmoChooseMid()">That’s it: ${r3esc(emoMid.toLowerCase())}</button>`:'<small class="muted">Pick the shade that fits best.</small>'}</div>`;
+}
+renderEmoResult = function(){
+  if(!emoChosen) return r3EmoLevelLine();
+  const c=emoChosen, f=emoFamOf(c.fam), needs=emoNeedsFor(c), types=needs.map(n=>n[1]);
+  const where = c.word!==c.mid ? `A shade of ${c.mid.toLowerCase()}, within ${f.name.toLowerCase()}.` : `One shade of ${f.name.toLowerCase()}.`;
+  const hasInfo=types.includes('info'), hasTalk=types.includes('talk'), hasGround=types.some(t=>t==='ground'||t==='breathe'||t==='pause');
+  const learn=emoMatchingCards();
+  const acts=[];
+  if(!hasInfo) acts.push(`<button class="btn sm" aria-expanded="${emoMoreOpen}" aria-controls="emoMore" onclick="r3EmoMore()">${emoMoreOpen?'Show less':'Understand this feeling'}</button>`);
+  if(!hasGround) acts.push(`<button class="btn line sm" onclick="emoGround()">Ground me</button>`);
+  if(!hasTalk) acts.push(`<button class="btn line sm" onclick="emoTalk()">Talk it through</button>`);
+  return `<div class="emoresult" id="emoResult">
+    <div class="eyebrow" style="margin:0 0 4px">You might be feeling</div>
+    <div class="emoword" tabindex="-1">${r3esc(c.word)}</div>
+    <p class="emodef">${r3esc(emoDef(c.word))}</p>
+    <small class="muted" style="display:block;margin:2px 0 4px">${where}</small>
+    <div class="eyebrow" style="margin:12px 0 6px">What might help?</div>
+    <div class="needchips" role="group" aria-label="What might help">${needs.map(([t,a],i)=>`<button class="needchip" ${a==='info'?`aria-expanded="${emoMoreOpen}" aria-controls="emoMore"`:''} onclick="r3EmoNeed(${i})"><b>${r3esc(t)}</b><small>${EMO_NEED_ACTS[a].verb}${a==='info'&&emoMoreOpen?' · open':''}</small></button>`).join('')}</div>
+    <div class="emomore" id="emoMore" ${emoMoreOpen?'':'hidden'}>
+      <p><b>${r3esc(c.word)}.</b> ${r3esc(emoDef(c.word))}</p>
+      ${c.word!==c.mid?`<p>It sits close to <b>${r3esc(c.mid.toLowerCase())}</b>: ${r3esc(emoDef(c.mid).replace(/^./,ch=>ch.toLowerCase()))}</p>`:''}
+      <p>${r3esc(f.about)}</p>
+      <p>Feelings aren’t instructions, and they aren’t facts about you. They usually pass, and naming one can make it a little easier to hold.</p>
+      ${learn.length?`<button class="link" onclick="openLearn('${learn[0].id}')">Read: ${r3esc(learn[0].title)} ›</button>`:''}
+    </div>
+    ${acts.length?`<div class="emoacts">${acts.join('')}</div>`:''}
+    ${c.word==='Panicky'||c.word==='Explosive'?`<p class="note" style="margin-top:10px">If it feels like too much to handle alone, <button class="link" onclick="getHelp()">Get help now</button>.</p>`:''}
+    <button class="link" style="margin-top:8px" onclick="emoReset()">Not quite, start again</button>
+  </div>`;
+};
+function r3EmoNeed(i){ const c=emoChosen; if(!c) return; const n=emoNeedsFor(c)[i]; if(!n) return;
+  const a=EMO_NEED_ACTS[n[1]]; if(a) a.run(n[2] || `What’s this ${c.word.toLowerCase()} feeling about?`); }
+function r3EmoMore(){ emoMoreOpen=!emoMoreOpen;
+  renderEmoFinder(); if(emoMoreOpen){ const m=document.getElementById('emoMore'); if(m) m.scrollIntoView({block:'nearest', behavior:R3_REDUCE()?'auto':'smooth'}); } }
+function r3EmoPause(){
+  r3sheet(`<div class="promptcat">A short pause</div><p class="prompttext" style="font-size:20px">Let’s give it a minute to catch up with you.</p>
+    <p class="muted" style="line-height:1.6">Nothing to work out right now. Choose whichever feels easier.</p>
+    <button class="btn" onclick="closeTool();r3EmoBreathe()">Breathe slowly for a minute</button>
+    <button class="btn line" onclick="closeTool();go('sanctuary');setTimeout(()=>enterSitting(),450)">Just sit quietly</button>
+    <button class="btn quiet" onclick="closeTool()">Not now</button>`);
+}
+function r3EmoBreathe(){ go('sanctuary'); setTimeout(()=>{ if(typeof setPracticeGoal==='function') try{ setPracticeGoal(1); }catch(e){} tapBreath(); }, 450); }
+const R3_GROUND_STEPS=[['5','things you can see','Look around slowly. Name five things you can see, out loud or in your head.'],
+  ['4','things you can feel','Your feet on the floor, your back against the chair, the air on your skin, your clothes.'],
+  ['3','things you can hear','Near or far. Traffic, a fridge, your own breath.'],
+  ['2','things you can smell','Or two smells you like, if nothing’s around.'],
+  ['1','slow breath','In through your nose, and a long, slow breath out.']];
+function r3EmoGround(i){ i=i||0; const s=R3_GROUND_STEPS[i], last=i===R3_GROUND_STEPS.length-1;
+  r3sheet(`<div class="promptcat">Something steady · 5-4-3-2-1</div>
+    <p class="prompttext" style="font-size:24px"><b style="color:var(--plum)">${s[0]}</b> ${s[1]}</p>
+    <p class="muted" style="line-height:1.6">${s[2]}</p>
+    <p class="note" aria-live="polite">Step ${i+1} of ${R3_GROUND_STEPS.length}. Take as long as you like.</p>
+    ${last?`<button class="btn" onclick="closeTool()">I’m done</button>`:`<button class="btn" onclick="r3EmoGround(${i+1})">Next</button>`}
+    ${i>0?`<button class="btn line" onclick="r3EmoGround(${i-1})">Back</button>`:''}
+    <button class="btn quiet" onclick="closeTool()">Stop here</button>`);
+  setTimeout(()=>{ const b=document.querySelector('#toolBody .btn'); if(b) b.focus(); }, 30);
+}
+function r3EmoSavour(){ const w=emoChosen?emoChosen.word.toLowerCase():'this';
+  r3sheet(`<div class="promptcat">Savour it</div><p class="prompttext" style="font-size:20px">Stay with ${r3esc(w)} for a few breaths.</p>
+    <p class="muted" style="line-height:1.6">Notice where you feel it in your body. What’s the best part of it? Let it be here a little longer before you move on.</p>
+    <button class="btn" onclick="closeTool();openWriter('What made this moment good?')">Write it down to remember</button>
+    <button class="btn quiet" onclick="closeTool()">Done</button>`); }
+function r3EmoKind(){ const w=emoChosen?emoChosen.word.toLowerCase():'this';
+  r3sheet(`<div class="promptcat">A few kind words</div><p class="prompttext" style="font-size:20px">It makes sense to feel ${r3esc(w)}.</p>
+    <p class="muted" style="line-height:1.7">You don’t have to fix it right now. Lots of people feel this way, and it doesn’t say anything bad about you. What would you say to a friend who felt like this? You can say it to yourself, too.</p>
+    <button class="btn line" onclick="closeTool();openWriter('What would I say to a friend who felt this way?')">Write it to myself</button>
+    <button class="btn quiet" onclick="closeTool()">Close</button>`); }
+/* keyboard: the wheel's segments act like buttons */
+document.addEventListener('keydown', e=>{
+  const t=e.target; if(!t || !t.closest) return;
+  const seg=t.closest('#emoCard .emoseg, #emoCard .emocentre');
+  if(seg && (e.key==='Enter' || e.key===' ')){ e.preventDefault(); emoKbd=true; seg.dispatchEvent(new MouseEvent('click', {bubbles:true})); }
+});
+document.addEventListener('keydown', e=>{ if(e.target && e.target.closest && e.target.closest('#emoCard') && (e.key==='Enter'||e.key===' ')) emoKbd=true; }, true);
+
+
+try{ renderHome(); }catch(e){}
+window.__presentR3='ready';
 </script>
 </body>
 </html>

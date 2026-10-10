@@ -247,7 +247,7 @@ async function memoryBlock(env, user, useMemory) {
   const { results } = await env.DB.prepare('SELECT text FROM memories WHERE user_id = ? ORDER BY created_at DESC LIMIT 40').bind(user.id).all();
   const rows = (results || []).map(r => '- ' + String(r.text).slice(0, 300));
   if (!rows.length) return `\n\n==================================================\nMEMORY\n==================================================\nNothing is saved in this person's memory yet. Do not claim to remember anything from other conversations.`;
-  return `\n\n==================================================\nSAVED MEMORIES — things this person shared before and are saved in their own account\n==================================================\n${rows.join('\n')}\n\nUse these only when they're relevant, naturally and lightly — the way a friend who remembers would. Don't list them, don't announce "I remember", and never add details that aren't written here or in this conversation. If they ask what you remember, tell them plainly and mention they can view or delete memories under Me → Memory.`;
+  return `\n\n==================================================\nSAVED MEMORIES — things this person shared before and are saved in their own account\n==================================================\n${rows.join('\n')}\n\nUse these only when they're relevant, naturally and lightly — the way a friend who remembers would. Don't list them, don't announce "I remember", and never add details that aren't written here or in this conversation. If they ask what you remember, tell them plainly and mention they can view or delete memories under Settings → What Present knows.`;
 }
 
 async function handleGenerate(request, env, user) {
@@ -291,13 +291,23 @@ async function handleExtract(request, env, user) {
   if (!user.memory_enabled) return json({ saved: [], reason: 'memory_off' });
   if (!env.ANTHROPIC_API_KEY) return json({ saved: [], reason: 'ai_off' });
   let body; try { body = await request.json(); } catch { return json({ error: 'Bad request' }, 400); }
-  const cid = String(body.conversation_id || '');
-  const conv = await env.DB.prepare('SELECT id, last_extracted_id FROM conversations WHERE id = ? AND user_id = ?').bind(cid, user.id).first();
-  if (!conv) return json({ error: 'Not found' }, 404);
-  const latest = await env.DB.prepare("SELECT id, content FROM messages WHERE conversation_id = ? AND user_id = ? AND role = 'user' ORDER BY id DESC LIMIT 1").bind(cid, user.id).first();
-  if (!latest || latest.id <= conv.last_extracted_id) return json({ saved: [] });
-  await env.DB.prepare('UPDATE conversations SET last_extracted_id = ? WHERE id = ? AND user_id = ?').bind(latest.id, cid, user.id).run();
-  const prev = await env.DB.prepare("SELECT content FROM messages WHERE conversation_id = ? AND user_id = ? AND role = 'assistant' AND id < ? ORDER BY id DESC LIMIT 1").bind(cid, user.id, latest.id).first();
+  let cid = body.conversation_id ? String(body.conversation_id) : null;
+  let latest, prev;
+  if (cid) {
+    const conv = await env.DB.prepare('SELECT id, last_extracted_id FROM conversations WHERE id = ? AND user_id = ?').bind(cid, user.id).first();
+    if (!conv) return json({ error: 'Not found' }, 404);
+    latest = await env.DB.prepare("SELECT id, content FROM messages WHERE conversation_id = ? AND user_id = ? AND role = 'user' ORDER BY id DESC LIMIT 1").bind(cid, user.id).first();
+    if (!latest || latest.id <= conv.last_extracted_id) return json({ saved: [] });
+    await env.DB.prepare('UPDATE conversations SET last_extracted_id = ? WHERE id = ? AND user_id = ?').bind(latest.id, cid, user.id).run();
+    prev = await env.DB.prepare("SELECT content FROM messages WHERE conversation_id = ? AND user_id = ? AND role = 'assistant' AND id < ? ORDER BY id DESC LIMIT 1").bind(cid, user.id, latest.id).first();
+  } else {
+    // Conversation saving is off: the client sends just the latest message (and the reply before it, as context).
+    // Neither is stored; only a memory the model picks out is saved, because memory is on.
+    const l = typeof body.latest === 'string' ? body.latest.trim() : '';
+    if (!l) return json({ error: 'Bad request' }, 400);
+    latest = { content: l.slice(0, MAX_MESSAGE_CHARS) };
+    prev = typeof body.previous === 'string' && body.previous.trim() ? { content: body.previous.slice(0, 2000) } : null;
+  }
   const { results } = await env.DB.prepare('SELECT text FROM memories WHERE user_id = ? ORDER BY created_at DESC LIMIT 60').bind(user.id).all();
   const existing = (results || []).map(r => r.text);
   const count = await env.DB.prepare('SELECT COUNT(*) AS n FROM memories WHERE user_id = ?').bind(user.id).first();
